@@ -20,16 +20,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 public class GenericYamlLoader<T> {
 
   private T t;
-
-  private List<String> fileList = new ArrayList<>();
 
 
   public GenericYamlLoader(T t) {
@@ -42,37 +43,33 @@ public class GenericYamlLoader<T> {
    * @return
    * @throws FileNotFoundException
    */
-  public T load(String fileName) throws FileNotFoundException {
+  public HashMap<String, T> load(String fileName) throws FileNotFoundException {
 
-    Yaml yaml = new Yaml(new Constructor(t.getClass()));
-
+    Constructor constructor = new Constructor(t.getClass());
+    TypeDescription customTypeDescription = new TypeDescription(t.getClass());
+    constructor.addTypeDescription(customTypeDescription);
+    Yaml yaml = new Yaml(constructor);
     InputStream inputStream = new FileInputStream(fileName);
+    HashMap<String, T> hashMap = new HashMap<>();
+    yaml.loadAll(inputStream).forEach(element -> {
+      try {
+        String label = (String) element.getClass().getMethod("getLabel").invoke((T) element);
 
-    T t = yaml.load(inputStream);
+        hashMap.put(label, (T) element);
 
-    return t;
-  }
-
-  /**
-   *
-   * @param path
-   * @return
-   */
-  public List<String> getAllFiles(String path) {
-
-    File folder = new File(path);
-    File[] listOfFiles = folder.listFiles();
-
-    for (File file : listOfFiles) {
-      if (file.isFile() && (file.getName().endsWith(".yaml") || file.getName().endsWith(".yml"))) {
-        this.fileList.add(path + "/" + file.getName());
-      } else if (file.isDirectory()) {
-        this.getAllFiles(path + "/" + file.getName());
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
       }
-    }
 
-    return this.fileList;
+    });
+
+    return hashMap;
 
   }
+
 
 }
