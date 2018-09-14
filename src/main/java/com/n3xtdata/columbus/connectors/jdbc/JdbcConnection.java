@@ -17,6 +17,17 @@
 package com.n3xtdata.columbus.connectors.jdbc;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Driver;
+import java.util.Arrays;
+import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+
 public class JdbcConnection {
 
   private String label;
@@ -29,15 +40,21 @@ public class JdbcConnection {
 
   private String driverClass;
 
+  private String driverPath;
+
+  private byte[] jdbcDriverJar;
+
   public JdbcConnection() {
   }
 
-  public JdbcConnection(String label, String username, String password, String url, String driverClass) {
+  public JdbcConnection(String label, String username, String password, String url, String driverClass, String driverPath)
+      throws IOException {
     this.label = label;
     this.username = username;
     this.password = password;
     this.url = url;
     this.driverClass = driverClass;
+    setDriverPath(driverPath);
   }
 
   public String getLabel() {
@@ -76,9 +93,27 @@ public class JdbcConnection {
     return driverClass;
   }
 
+  public String getDriverPath() {
+    return driverPath;
+  }
+
+  public void setDriverPath(String driverPath) throws IOException {
+    this.jdbcDriverJar = loadJdbcDriverJar(driverPath);
+    this.driverPath = driverPath;
+  }
+
+
+
+
+
   public void setDriverClass(String driverClass) {
     this.driverClass = driverClass;
   }
+
+  public byte[] getJdbcDriverJar() {
+    return jdbcDriverJar;
+  }
+
 
   @Override
   public String toString() {
@@ -88,6 +123,47 @@ public class JdbcConnection {
         ", password='" + password + '\'' +
         ", url='" + url + '\'' +
         ", driverClass='" + driverClass + '\'' +
+        ", driverPath='" + driverPath + '\'' +
         '}';
   }
+
+  public void executeQuery(String query, RowCallbackHandler handler) throws QueryExecutionException {
+    try {
+      JdbcTemplate template = getJdbcTemplateFromConnection();
+      template.query(query, handler);
+    } catch (Exception e) {
+      throw new QueryExecutionException("unable to execute query", e);
+    }
+  }
+
+  private byte[] loadJdbcDriverJar(String inputPath) throws IOException {
+    Path path = Paths.get(inputPath);
+
+    byte[] jdbcDriverJar = Files.readAllBytes(path);
+
+    return jdbcDriverJar;
+  }
+
+  private JdbcTemplate getJdbcTemplateFromConnection() throws DriverLoadException {
+    return new JdbcTemplate(createDataSourceFromEntity());
+  }
+
+  private DataSource createDataSourceFromEntity() throws DriverLoadException {
+    byte[] jdbcDriverJar = getJdbcDriverJar();
+    String connectorClass = getDriverClass();
+    String url = getUrl();
+
+    DriverFactory driverFactory = new DriverFactory();
+
+
+    Driver driver = driverFactory.createDriverFromJar(connectorClass, jdbcDriverJar);
+
+    SimpleDriverDataSource dataSource = new SimpleDriverDataSource(driver, url);
+    dataSource.setPassword(getPassword());
+    dataSource.setUsername(getUsername());
+
+    return dataSource;
+  }
+
+
 }

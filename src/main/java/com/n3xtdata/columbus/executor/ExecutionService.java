@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package com.n3xtdata.columbus.data;
+package com.n3xtdata.columbus.executor;
 
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
-import com.n3xtdata.columbus.connectors.ssh.SshConnection;
 import com.n3xtdata.columbus.core.Check;
-import java.util.HashMap;
-import java.util.Set;
 
-public interface MetadataService {
+public interface ExecutionService {
 
-  Set<Check> getAllChecks();
-
-  Check getCheckByLabel(String label) throws Exception;
-
-  Set<JdbcConnection> getAllJdbcConnections();
-
-  JdbcConnection getJdbcConnectionByLabel(String label) throws Exception;
-
-  Set<SshConnection> getAllSshConnections();
-
-  SshConnection getSshConnectionByLabel(String label) throws Exception;
-
-  void loadAll() throws Exception;
+  void execute(Check check);
 
 }
