@@ -72,8 +72,6 @@ public class JdbcConnectorServiceImpl implements JdbcConnectorService {
     dataSource.setPassword(jdbcConnection.getPassword());
     dataSource.setUsername(jdbcConnection.getUsername());
 
-    System.out.println(dataSource.toString());
-
     return dataSource;
   }
 
