@@ -51,6 +51,8 @@ class GenericYamlLoader<T> {
         //noinspection unchecked
         String label = (String) element.getClass().getMethod("getLabel").invoke(element);
 
+        element.getClass().getMethod("setPath", String.class).invoke(element, fileName);
+
         //noinspection unchecked
         hashMap.put(label, (T) element);
 

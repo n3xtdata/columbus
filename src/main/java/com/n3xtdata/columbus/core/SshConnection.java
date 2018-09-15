@@ -30,6 +30,8 @@ public class SshConnection {
 
   private Integer port;
 
+  private String path;
+
   @SuppressWarnings({"unused"})
   public SshConnection() {
 
@@ -105,11 +107,23 @@ public class SshConnection {
     this.port = port;
   }
 
+  @SuppressWarnings({"unused"})
+  public String getPath() {
+
+    return path;
+  }
+
+  @SuppressWarnings({"unused"})
+  public void setPath(String path) {
+
+    this.path = path;
+  }
+
   @Override
   public String toString() {
 
     return "SshConnection{" + "label='" + label + '\'' + ", username='" + username + '\'' + ", publicKey='" + publicKey
-        + '\'' + ", host='" + host + '\'' + ", port=" + port + '}';
+        + '\'' + ", host='" + host + '\'' + ", port=" + port + ", path='" + path + '\'' + '}';
   }
 
   @Override
@@ -123,12 +137,13 @@ public class SshConnection {
     }
     SshConnection that = (SshConnection) o;
     return Objects.equals(label, that.label) && Objects.equals(username, that.username) && Objects
-        .equals(publicKey, that.publicKey) && Objects.equals(host, that.host) && Objects.equals(port, that.port);
+        .equals(publicKey, that.publicKey) && Objects.equals(host, that.host) && Objects.equals(port, that.port)
+        && Objects.equals(path, that.path);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(label, username, publicKey, host, port);
+    return Objects.hash(label, username, publicKey, host, port, path);
   }
 }

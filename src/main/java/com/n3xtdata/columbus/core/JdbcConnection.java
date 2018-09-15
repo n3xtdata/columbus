@@ -40,6 +40,8 @@ public class JdbcConnection {
 
   private byte[] driverJar;
 
+  private String path;
+
   @SuppressWarnings({"unused"})
   public JdbcConnection() {
 
@@ -142,11 +144,23 @@ public class JdbcConnection {
     this.driverJar = driverJar;
   }
 
+  @SuppressWarnings({"unused"})
+  public String getPath() {
+
+    return path;
+  }
+
+  @SuppressWarnings({"unused"})
+  public void setPath(String path) {
+
+    this.path = path;
+  }
+
   @Override
   public String toString() {
 
-    return "JdbcConnection{" + "label='" + label + '\'' + ", username='" + username + '\'' + ", password='" + password
-        + '\'' + ", url='" + url + '\'' + ", driverClass='" + driverClass + '\'' + ", driverPath='" + driverPath + '\''
+    return "JdbcConnection{" + "label='" + label + '\'' + ", username='" + username + '\'' + ", url='" + url + '\''
+        + ", driverClass='" + driverClass + '\'' + ", driverPath='" + driverPath + '\'' + ", path='" + path + '\''
         + '}';
   }
 
@@ -163,13 +177,13 @@ public class JdbcConnection {
     return Objects.equals(label, that.label) && Objects.equals(username, that.username) && Objects
         .equals(password, that.password) && Objects.equals(url, that.url) && Objects
         .equals(driverClass, that.driverClass) && Objects.equals(driverPath, that.driverPath) && Arrays
-        .equals(driverJar, that.driverJar);
+        .equals(driverJar, that.driverJar) && Objects.equals(path, that.path);
   }
 
   @Override
   public int hashCode() {
 
-    int result = Objects.hash(label, username, password, url, driverClass, driverPath);
+    int result = Objects.hash(label, username, password, url, driverClass, driverPath, path);
     result = 31 * result + Arrays.hashCode(driverJar);
     return result;
   }

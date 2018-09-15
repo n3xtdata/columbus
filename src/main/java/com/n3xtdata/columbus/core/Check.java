@@ -24,13 +24,15 @@ public class Check {
 
   private Set<Component> components;
 
+  private String path;
+
   @SuppressWarnings({"unused"})
   public Check() {
 
   }
 
   @SuppressWarnings({"unused"})
-  public Check(String label, String description, Set<Component> components) {
+  public Check(String label, String description, Set<Component> components, String path) {
 
     this.label = label;
     this.description = description;
@@ -73,11 +75,23 @@ public class Check {
     this.components = components;
   }
 
+  @SuppressWarnings({"unused"})
+  public String getPath() {
+
+    return path;
+  }
+
+  @SuppressWarnings({"unused"})
+  public void setPath(String path) {
+
+    this.path = path;
+  }
+
   @Override
   public String toString() {
 
     return "Check{" + "label='" + label + '\'' + ", description='" + description + '\'' + ", components=" + components
-        + '}';
+        + ", path='" + path + '\'' + '}';
   }
 
   @Override
@@ -91,12 +105,12 @@ public class Check {
     }
     Check check = (Check) o;
     return Objects.equals(label, check.label) && Objects.equals(description, check.description) && Objects
-        .equals(components, check.components);
+        .equals(components, check.components) && Objects.equals(path, check.path);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(label, description, components);
+    return Objects.hash(label, description, components, path);
   }
 }
