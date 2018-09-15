@@ -41,8 +41,13 @@ public class JdbcConnection {
   private byte[] driverJar;
 
   @SuppressWarnings({"unused"})
+  public JdbcConnection() {
+
+  }
+
+  @SuppressWarnings({"unused"})
   public JdbcConnection(String label, String username, String password, String url, String driverClass,
-      String driverPath, byte[] driverJar) throws IOException {
+      String driverPath) throws IOException {
 
     this.label = label;
     this.username = username;
@@ -137,13 +142,12 @@ public class JdbcConnection {
     this.driverJar = driverJar;
   }
 
-
   @Override
   public String toString() {
 
     return "JdbcConnection{" + "label='" + label + '\'' + ", username='" + username + '\'' + ", password='" + password
         + '\'' + ", url='" + url + '\'' + ", driverClass='" + driverClass + '\'' + ", driverPath='" + driverPath + '\''
-        + ", driverJar=" + Arrays.toString(driverJar) + '}';
+        + '}';
   }
 
   @Override

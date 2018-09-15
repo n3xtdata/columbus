@@ -19,6 +19,8 @@ import java.util.Map;
 
 public interface JdbcConnectorService {
 
-  List<Map<String, Object>> execute(JdbcConnection connection, String query)
-      throws QueryExecutionException;
+  List<Map<String, Object>> execute(JdbcConnection jdbcConnection, String query) throws QueryExecutionException;
+
+  void executeDdlDml(JdbcConnection jdbcConnection, String query) throws QueryExecutionException;
+
 }

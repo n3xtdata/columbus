@@ -28,9 +28,14 @@ import org.springframework.context.ApplicationContext;
 
 public class ColumbusYamlLoader<T> {
 
-  private T t;
   private final List<String> fileList = new ArrayList<>();
+  private T t;
 
+  private static ApplicationContext context = SpringContext.getAppContext();
+
+  private static Properties properties = (Properties) context.getBean("properties");
+
+  private static String COLUMBUS_HOME = properties.getHome();
 
   public ColumbusYamlLoader(Class<T> t) throws IllegalAccessException, InstantiationException {
 
@@ -42,11 +47,7 @@ public class ColumbusYamlLoader<T> {
 
     GenericYamlLoader<T> loader = new GenericYamlLoader<>(t);
 
-    ApplicationContext context = SpringContext.getAppContext();
-
-    Properties properties = (Properties) context.getBean("properties");
-
-    String path = properties.getHome();
+    String path = COLUMBUS_HOME;
 
     if (t instanceof Check) {
       path = path + "/checks";

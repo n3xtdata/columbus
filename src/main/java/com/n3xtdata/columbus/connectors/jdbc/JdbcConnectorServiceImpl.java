@@ -15,12 +15,10 @@ package com.n3xtdata.columbus.connectors.jdbc;
 
 import com.n3xtdata.columbus.core.JdbcConnection;
 import java.sql.Driver;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
 
@@ -28,30 +26,32 @@ import org.springframework.stereotype.Service;
 public class JdbcConnectorServiceImpl implements JdbcConnectorService {
 
 
-  public List<Map<String, Object>> execute(JdbcConnection connection, String query)
-      throws QueryExecutionException {
+  public List<Map<String, Object>> execute(JdbcConnection jdbcConnection, String query) throws QueryExecutionException {
 
-    final List<Map<String, Object>> queryResult = new ArrayList<>();
+    List<Map<String, Object>> queryResult;
 
-
-    RowCallbackHandler handler = resultSet -> queryResult.addAll(ResultSetConverter.convertResultSet(resultSet));
-
-    this.executeQuery(connection, query, handler);
+    try {
+      JdbcTemplate template = getJdbcTemplateFromConnection(jdbcConnection);
+      queryResult = template.queryForList(query);
+    } catch (Exception e) {
+      throw new QueryExecutionException("unable to execute query", e);
+    }
 
     return queryResult;
 
   }
 
-  private void executeQuery(JdbcConnection jdbcConnection, String query, RowCallbackHandler handler) throws QueryExecutionException {
-
+  public void executeDdlDml(JdbcConnection jdbcConnection, String query) throws QueryExecutionException {
 
     try {
       JdbcTemplate template = getJdbcTemplateFromConnection(jdbcConnection);
-      template.query(query, handler);
+      template.execute(query);
     } catch (Exception e) {
       throw new QueryExecutionException("unable to execute query", e);
     }
+
   }
+
 
   private JdbcTemplate getJdbcTemplateFromConnection(JdbcConnection jdbcConnection) throws DriverLoadException {
 

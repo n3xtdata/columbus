@@ -1,0 +1,21 @@
+---
+label: test-1
+description: a short description ...
+components:
+  - connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
+---
+label: test-2
+description: a short description ...
+components:
+  - connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
+---
+label: test-3
+description: a short description ...
+components:
+  - connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy

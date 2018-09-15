@@ -24,6 +24,12 @@ public class Check {
 
   private Set<Component> components;
 
+  @SuppressWarnings({"unused"})
+  public Check() {
+
+  }
+
+  @SuppressWarnings({"unused"})
   public Check(String label, String description, Set<Component> components) {
 
     this.label = label;

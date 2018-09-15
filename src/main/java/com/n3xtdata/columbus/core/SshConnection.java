@@ -31,6 +31,11 @@ public class SshConnection {
   private Integer port;
 
   @SuppressWarnings({"unused"})
+  public SshConnection() {
+
+  }
+
+  @SuppressWarnings({"unused"})
   public SshConnection(String label, String username, String publicKey, String host, Integer port) {
 
     this.label = label;

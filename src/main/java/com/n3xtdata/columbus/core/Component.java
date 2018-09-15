@@ -26,6 +26,12 @@ public class Component {
 
   private String command;
 
+  @SuppressWarnings({"unused"})
+  public Component() {
+
+  }
+
+  @SuppressWarnings({"unused"})
   public Component(String connectionType, String connectionLabel, String command) {
 
     this.connectionType = connectionType;
