@@ -1,0 +1,7 @@
+---
+label: jdbc-sqllite
+username:
+password:
+url: jdbc:sqlite:src/test/resources/jdbc-tests/test.db
+driverClass: org.sqlite.JDBC
+driverPath: src/test/resources/jdbc-tests/sqllite-jdbc.jar
