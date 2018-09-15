@@ -31,10 +31,11 @@ public class ColumbusYamlLoader<T> {
   private final List<String> fileList = new ArrayList<>();
   private T t;
 
-  private static ApplicationContext context = SpringContext.getAppContext();
+  private static final ApplicationContext context = SpringContext.getAppContext();
 
-  private static Properties properties = (Properties) context.getBean("properties");
+  private static final Properties properties = (Properties) context.getBean("properties");
 
+  @SuppressWarnings("CanBeFinal")
   private static String COLUMBUS_HOME = properties.getHome();
 
   public ColumbusYamlLoader(Class<T> t) throws IllegalAccessException, InstantiationException {

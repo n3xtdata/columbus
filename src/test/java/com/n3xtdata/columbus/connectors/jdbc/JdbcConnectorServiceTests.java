@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class JdbcConnectorServiceTests extends ColumbusApplicationTests {
 
-  Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   JdbcConnectorService jdbcConnectorService;

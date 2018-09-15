@@ -33,12 +33,11 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
   private HashMap<String, JdbcConnection> jdbcConnections;
   private HashMap<String, SshConnection> sshConnections;
 
-  private static String COLUMBUS_TEST_HOME = "src/test/resources/yaml-loader-tests";
-
   @Before
   public void loadYamlFiles() throws Exception {
 
     ColumbusYamlLoader<Check> checkLoader = new ColumbusYamlLoader<>(Check.class);
+    String COLUMBUS_TEST_HOME = "src/test/resources/yaml-loader-tests";
     ReflectionTestUtils.setField(checkLoader, "COLUMBUS_HOME", COLUMBUS_TEST_HOME);
     this.checks = checkLoader.load();
 
