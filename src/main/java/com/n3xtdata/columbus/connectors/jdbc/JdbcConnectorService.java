@@ -13,10 +13,12 @@
 
 package com.n3xtdata.columbus.connectors.jdbc;
 
-class QueryExecutionException extends Exception {
+import com.n3xtdata.columbus.core.JdbcConnection;
+import java.util.List;
+import java.util.Map;
 
-  public QueryExecutionException(String message, Exception cause) {
+public interface JdbcConnectorService {
 
-    super(message, cause);
-  }
+  List<Map<String, Object>> execute(JdbcConnection connection, String query)
+      throws QueryExecutionException;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2018 https://github.com/n3xtdata
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.n3xtdata.columbus.connectors.ssh;
+package com.n3xtdata.columbus.core;
+
+import java.util.Objects;
 
 public class SshConnection {
 
@@ -28,10 +30,9 @@ public class SshConnection {
 
   private Integer port;
 
-  public SshConnection() {
-  }
-
+  @SuppressWarnings({"unused"})
   public SshConnection(String label, String username, String publicKey, String host, Integer port) {
+
     this.label = label;
     this.username = username;
     this.publicKey = publicKey;
@@ -39,54 +40,90 @@ public class SshConnection {
     this.port = port;
   }
 
+  @SuppressWarnings({"unused"})
   public String getLabel() {
+
     return label;
   }
 
+  @SuppressWarnings({"unused"})
   public void setLabel(String label) {
+
     this.label = label;
   }
 
+  @SuppressWarnings({"unused"})
   public String getUsername() {
+
     return username;
   }
 
+  @SuppressWarnings({"unused"})
   public void setUsername(String username) {
+
     this.username = username;
   }
 
+  @SuppressWarnings({"unused"})
   public String getPublicKey() {
+
     return publicKey;
   }
 
+  @SuppressWarnings({"unused"})
   public void setPublicKey(String publicKey) {
+
     this.publicKey = publicKey;
   }
 
+  @SuppressWarnings({"unused"})
   public String getHost() {
+
     return host;
   }
 
+  @SuppressWarnings({"unused"})
   public void setHost(String host) {
+
     this.host = host;
   }
 
+  @SuppressWarnings({"unused"})
   public Integer getPort() {
+
     return port;
   }
 
+  @SuppressWarnings({"unused"})
   public void setPort(Integer port) {
+
     this.port = port;
   }
 
   @Override
   public String toString() {
-    return "SshConnection{" +
-        "label='" + label + '\'' +
-        ", username='" + username + '\'' +
-        ", publicKey='" + publicKey + '\'' +
-        ", host='" + host + '\'' +
-        ", port=" + port +
-        '}';
+
+    return "SshConnection{" + "label='" + label + '\'' + ", username='" + username + '\'' + ", publicKey='" + publicKey
+        + '\'' + ", host='" + host + '\'' + ", port=" + port + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SshConnection that = (SshConnection) o;
+    return Objects.equals(label, that.label) && Objects.equals(username, that.username) && Objects
+        .equals(publicKey, that.publicKey) && Objects.equals(host, that.host) && Objects.equals(port, that.port);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(label, username, publicKey, host, port);
   }
 }
