@@ -13,6 +13,13 @@
 
 package com.n3xtdata.columbus.core;
 
+import com.n3xtdata.columbus.evaluation.CompareEvaluation;
+import com.n3xtdata.columbus.evaluation.Evaluation;
+import com.n3xtdata.columbus.evaluation.SimpleEvaluation;
+import com.n3xtdata.columbus.evaluation.Status;
+import com.sun.istack.internal.NotNull;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,6 +31,11 @@ public class Check {
 
   private Set<Component> components;
 
+  private EvaluationType evaluationType;
+
+  @NotNull
+  private Evaluation evaluation;
+
   private String path;
 
   @SuppressWarnings({"unused"})
@@ -32,16 +44,17 @@ public class Check {
   }
 
   @SuppressWarnings({"unused"})
-  public Check(String label, String description, Set<Component> components, String path) {
-
+  public Check(String label, String description, Set<Component> components,
+      EvaluationType evaluationType, String path) {
     this.label = label;
     this.description = description;
     this.components = components;
+    this.evaluationType = evaluationType;
+    this.path = path;
   }
 
   @SuppressWarnings({"unused"})
   public String getLabel() {
-
     return label;
   }
 
@@ -87,16 +100,42 @@ public class Check {
     this.path = path;
   }
 
+  @SuppressWarnings({"unused"})
+  public void setEvaluationType(EvaluationType evaluationType) {
+    this.evaluationType = evaluationType;
+
+    if (evaluationType == EvaluationType.SIMPLE) {
+      this.evaluation = new SimpleEvaluation();
+
+    } else if (evaluationType == EvaluationType.COMPARE) {
+      this.evaluation = new CompareEvaluation();
+    }
+  }
+
+  @SuppressWarnings({"unused"})
+  public Evaluation getEvaluation() {
+    return evaluation;
+  }
+
+  @SuppressWarnings({"unused"})
+  public void setEvaluation(Evaluation evaluation) {
+
+    this.evaluation = evaluation;
+  }
+
   @Override
   public String toString() {
-
-    return "Check{" + "label='" + label + '\'' + ", description='" + description + '\'' + ", components=" + components
-        + ", path='" + path + '\'' + '}';
+    return "Check{" +
+        "label='" + label + '\'' +
+        ", description='" + description + '\'' +
+        ", components=" + components +
+        ", evaluation=" + evaluation +
+        ", path='" + path + '\'' +
+        '}';
   }
 
   @Override
   public boolean equals(Object o) {
-
     if (this == o) {
       return true;
     }
@@ -104,13 +143,43 @@ public class Check {
       return false;
     }
     Check check = (Check) o;
-    return Objects.equals(label, check.label) && Objects.equals(description, check.description) && Objects
-        .equals(components, check.components) && Objects.equals(path, check.path);
+    return Objects.equals(label, check.label) &&
+        Objects.equals(description, check.description) &&
+        Objects.equals(components, check.components) &&
+        Objects.equals(evaluation, check.evaluation) &&
+        Objects.equals(path, check.path);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(label, description, components, path);
+    return Objects.hash(label, description, components, evaluation, path);
+  }
+
+  @SuppressWarnings({"unused"})
+  public Boolean validate() {
+    if (this.evaluation instanceof SimpleEvaluation) {
+      return this.validateSimple();
+    } else if (this.evaluation instanceof CompareEvaluation) {
+      return this.validateCompare();
+    }
+    return false;
+  }
+
+  public Status evaluate(Map<String, List<Map<String, Object>>> runs) {
+    return this.getEvaluation().evaluate(runs);
+  }
+
+
+  private Boolean validateSimple() {
+    return this.components.size() == 1;
+  }
+
+  private Boolean validateCompare() {
+    return this.components.size() == 2;
+  }
+
+  enum EvaluationType {
+    SIMPLE, COMPARE
   }
 }

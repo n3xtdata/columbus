@@ -4,3 +4,4 @@ components:
   - connectionType: jdbc
     connectionLabel: jdbc-sqllite
     command: SELECT * FROM dummy
+evaluationType: SIMPLE

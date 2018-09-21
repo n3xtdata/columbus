@@ -43,10 +43,10 @@ class DriverFactory {
     return getDriverFromClass(connectorClass, clazz);
   }
 
-  private Driver getDriverFromClass(String connectorClass, Class<?> klass) throws DriverLoadException {
+  private Driver getDriverFromClass(String connectorClass, Class<?> specificClass) throws DriverLoadException {
 
     try {
-      Driver d = (Driver) klass.newInstance();
+      Driver d = (Driver) specificClass.newInstance();
       return new DriverProxy(d);
     } catch (Exception e) {
       throw new DriverLoadException("unable to instantiate " + connectorClass, e);

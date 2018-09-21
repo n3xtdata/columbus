@@ -11,13 +11,24 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.evaluation;
 
-import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.evaluation.Status;
+import static org.junit.Assert.assertEquals;
 
-public interface ExecutionService {
+import org.junit.Test;
 
-  Status execute(Check check);
+public class StatusTests {
+
+  @Test
+  public void shouldReturnTechnicalErrorWhenNotFound() {
+    String status = "WHATEVER";
+    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
+  }
+
+  @Test
+  public void shouldReturnEnumWhenFound() {
+    String status = "success";
+    assertEquals(Status.SUCCESS, Status.contains(status));
+  }
 
 }

@@ -36,18 +36,29 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
 
     GenericYamlLoader<Check> checkFileLoader = new GenericYamlLoader<>(new Check());
 
-    HashMap<String, Check> checkHashMap = checkFileLoader.load("src/test/resources/yaml-loader-tests/checks/test1.yml");
+    HashMap<String, Check> checkHashMap = checkFileLoader
+        .load("src/test/resources/generic-yaml-loader-tests/checks/test1.yml");
 
     Check check = checkHashMap.get("test-1");
 
-    Component component = new Component("jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
+    Component component = new Component("componentLabel", "jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
 
     assertEquals(check.getDescription(), "a short description ...");
     assertEquals(1, check.getComponents().size());
     assertTrue(check.getComponents().contains(component));
-    assertEquals("src/test/resources/yaml-loader-tests/checks/test1.yml", check.getPath());
+    assertEquals("src/test/resources/generic-yaml-loader-tests/checks/test1.yml", check.getPath());
 
+  }
 
+  @Test
+  public void shouldOnlyLoadValidatedCheckFile() throws FileNotFoundException {
+
+    GenericYamlLoader<Check> checkFileLoader = new GenericYamlLoader<>(new Check());
+
+    HashMap<String, Check> checkHashMap = checkFileLoader
+        .load("src/test/resources/generic-yaml-loader-tests/checks/test2.yml");
+
+    assertEquals(checkHashMap.size(), 2);
   }
 
   @Test
@@ -56,15 +67,13 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
     GenericYamlLoader<JdbcConnection> jdbcLoader = new GenericYamlLoader<>(new JdbcConnection());
 
     HashMap<String, JdbcConnection> jdbcConnectionsHashMap = jdbcLoader
-        .load("src/test/resources/yaml-loader-tests/connections/jdbc/test1.yml");
+        .load("src/test/resources/generic-yaml-loader-tests/connections/jdbc/test1.yml");
 
     JdbcConnection jdbcConnection = jdbcConnectionsHashMap.get("jdbc-sqllite");
 
-
-
     assertEquals(jdbcConnection.getUrl(), "jdbc:sqlite:src/test/resources/jdbc-tests/test.db");
     assertNotNull(jdbcConnection.getDriverJar());
-    assertEquals("src/test/resources/yaml-loader-tests/connections/jdbc/test1.yml", jdbcConnection.getPath());
+    assertEquals("src/test/resources/generic-yaml-loader-tests/connections/jdbc/test1.yml", jdbcConnection.getPath());
 
 
   }
@@ -76,14 +85,12 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
     GenericYamlLoader<SshConnection> sshLoader = new GenericYamlLoader<>(new SshConnection());
 
     HashMap<String, SshConnection> sshConnectionsHashMap = sshLoader
-        .load("src/test/resources/yaml-loader-tests/connections/ssh/test1.yml");
+        .load("src/test/resources/generic-yaml-loader-tests/connections/ssh/test1.yml");
 
     SshConnection sshConnection = sshConnectionsHashMap.get("ssh-test");
 
     assertEquals(sshConnection.getUsername(), "user");
-    assertEquals("src/test/resources/yaml-loader-tests/connections/ssh/test1.yml", sshConnection.getPath());
-
-
+    assertEquals("src/test/resources/generic-yaml-loader-tests/connections/ssh/test1.yml", sshConnection.getPath());
   }
 
 }

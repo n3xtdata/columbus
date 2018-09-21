@@ -1,0 +1,8 @@
+label: test-1
+description: a short description ...
+components:
+  - label: componentLabel
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
+evaluationType: SIMPLE

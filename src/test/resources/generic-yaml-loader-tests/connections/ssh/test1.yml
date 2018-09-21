@@ -1,0 +1,5 @@
+label: ssh-test
+username: user
+publicKey: pwd
+host: blabla
+port: 22

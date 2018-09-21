@@ -146,4 +146,8 @@ public class SshConnection {
 
     return Objects.hash(label, username, publicKey, host, port, path);
   }
+
+  public Boolean validate() {
+    return true;
+  }
 }

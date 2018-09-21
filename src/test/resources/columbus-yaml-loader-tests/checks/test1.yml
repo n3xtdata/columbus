@@ -1,0 +1,38 @@
+---
+label: test-1
+description: a short description ...
+components:
+  - label: componentLabel
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
+evaluationType: SIMPLE
+---
+label: test-2
+description: a short description ...
+components:
+  - connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
+evaluationType: SIMPLE
+---
+label: test-3
+description: a short description ...
+components:
+  - label: first
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT 'WARNING' as status FROM dual
+  - label: second
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT 'WARNING' as status FROM dual
+evaluationType: SIMPLE
+---
+label: test-4
+description: a short description ...
+evaluationType: SIMPLE
+---
+label: test-5
+description: a short description ...
+evaluationType: SIMPLE

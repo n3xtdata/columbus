@@ -53,8 +53,12 @@ class GenericYamlLoader<T> {
 
         element.getClass().getMethod("setPath", String.class).invoke(element, fileName);
 
-        //noinspection unchecked
-        hashMap.put(label, (T) element);
+        Boolean validated = (Boolean) element.getClass().getMethod("validate").invoke(element);
+
+        if (validated) {
+          //noinspection unchecked
+          hashMap.put(label, (T) element);
+        }
 
       } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
         e.printStackTrace();

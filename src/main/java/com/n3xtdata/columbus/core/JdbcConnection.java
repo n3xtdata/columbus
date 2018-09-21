@@ -195,5 +195,8 @@ public class JdbcConnection {
     return Files.readAllBytes(path);
   }
 
+  public Boolean validate() {
+    return true;
+  }
 
 }

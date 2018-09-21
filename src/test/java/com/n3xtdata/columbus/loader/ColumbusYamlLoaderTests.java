@@ -37,7 +37,7 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
   public void loadYamlFiles() throws Exception {
 
     ColumbusYamlLoader<Check> checkLoader = new ColumbusYamlLoader<>(Check.class);
-    String COLUMBUS_TEST_HOME = "src/test/resources/yaml-loader-tests";
+    String COLUMBUS_TEST_HOME = "src/test/resources/columbus-yaml-loader-tests";
     ReflectionTestUtils.setField(checkLoader, "COLUMBUS_HOME", COLUMBUS_TEST_HOME);
     this.checks = checkLoader.load();
 
@@ -53,7 +53,7 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
 
   @Test
   public void shouldLoadChecks() {
-    assertEquals(5, this.checks.size());
+    assertEquals(4, this.checks.size());
   }
 
   @Test
@@ -65,11 +65,6 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
   public void shouldLoadSshConnections() {
     assertEquals(1, this.sshConnections.size());
   }
-
-
-
-
-
 
 
 }

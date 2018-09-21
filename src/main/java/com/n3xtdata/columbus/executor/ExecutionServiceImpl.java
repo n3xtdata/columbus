@@ -16,62 +16,49 @@ package com.n3xtdata.columbus.executor;
 import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Component;
-import com.n3xtdata.columbus.core.JdbcConnection;
 import com.n3xtdata.columbus.data.MetadataService;
+import com.n3xtdata.columbus.evaluation.Status;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExecutionServiceImpl implements ExecutionService {
 
-  private final MetadataService metadataService;
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
+  private final MetadataService metadataService;
   private final JdbcConnectorService jdbcConnectorService;
 
-  public ExecutionServiceImpl(MetadataService metadataService, JdbcConnectorService jdbcConnectorService) {
-
+  public ExecutionServiceImpl(MetadataService metadataService,
+      JdbcConnectorService jdbcConnectorService) {
     this.metadataService = metadataService;
     this.jdbcConnectorService = jdbcConnectorService;
   }
 
   @Override
-  public void execute(Check check) {
+  public Status execute(Check check) {
+    Map<String, List<Map<String, Object>>> results = new HashMap<>();
+    try {
+      this.executeComponents(results, check);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Could not execute Components");
+      return Status.TECHNICAL_ERROR;
+    }
 
-    check.getComponents().forEach(component -> {
-
-      switch (component.getConnectionType()) {
-        case "jdbc":
-          try {
-            this.executeJdbcConnector(component);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-          break;
-        case "ssh":
-
-          break;
-        default:
-
-          break;
-      }
-
-    });
-
-
+    Status status = check.evaluate(results);
+    logger.info("RESULT is: " + status);
+    return status;
   }
 
-  private void executeJdbcConnector(Component component) throws Exception {
-
-    System.out.println(component.getCommand());
-
-    JdbcConnection connection = this.metadataService.getJdbcConnectionByLabel(component.getConnectionLabel());
-
-    List<Map<String, Object>> result = jdbcConnectorService.execute(connection, component.getCommand());
-
-    System.out.println(result.toString());
-
+  private void executeComponents(Map<String, List<Map<String, Object>>> runs, Check check) throws Exception {
+    for (Component component : check.getComponents()) {
+      component.execute(runs, metadataService, jdbcConnectorService);
+    }
+    logger.info("Executed " + check.getComponents().size() + " Components for Check: " + check.getLabel());
   }
-
-
 }

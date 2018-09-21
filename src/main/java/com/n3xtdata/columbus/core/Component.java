@@ -16,9 +16,19 @@
 
 package com.n3xtdata.columbus.core;
 
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
+import com.n3xtdata.columbus.data.MetadataService;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Component {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+
+  private String label;
 
   private String connectionType;
 
@@ -32,11 +42,16 @@ public class Component {
   }
 
   @SuppressWarnings({"unused"})
-  public Component(String connectionType, String connectionLabel, String command) {
-
+  public Component(String label, String connectionType, String connectionLabel, String command) {
+    this.label = label;
     this.connectionType = connectionType;
     this.connectionLabel = connectionLabel;
     this.command = command;
+  }
+
+  @SuppressWarnings({"unused"})
+  public void setLabel(String label) {
+    this.label = label;
   }
 
   @SuppressWarnings({"unused"})
@@ -77,14 +92,16 @@ public class Component {
 
   @Override
   public String toString() {
-
-    return "Component{" + "connectionType='" + connectionType + '\'' + ", connectionLabel='" + connectionLabel + '\''
-        + ", command='" + command + '\'' + '}';
+    return "Component{" +
+        "label='" + label + '\'' +
+        ", connectionType='" + connectionType + '\'' +
+        ", connectionLabel='" + connectionLabel + '\'' +
+        ", command='" + command + '\'' +
+        '}';
   }
 
   @Override
   public boolean equals(Object o) {
-
     if (this == o) {
       return true;
     }
@@ -92,13 +109,41 @@ public class Component {
       return false;
     }
     Component component = (Component) o;
-    return Objects.equals(connectionType, component.connectionType) && Objects
-        .equals(connectionLabel, component.connectionLabel) && Objects.equals(command, component.command);
+    return Objects.equals(label, component.label) &&
+        Objects.equals(connectionType, component.connectionType) &&
+        Objects.equals(connectionLabel, component.connectionLabel) &&
+        Objects.equals(command, component.command);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(connectionType, connectionLabel, command);
+    return Objects.hash(label, connectionType, connectionLabel, command);
+  }
+
+  public void execute(Map<String, List<Map<String, Object>>> results, MetadataService metadataService,
+      JdbcConnectorService jdbcConnectorService) throws Exception {
+    switch (this.getConnectionType()) {
+      case "jdbc":
+        results.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
+        break;
+      case "ssh":
+        break;
+      default:
+        break;
+    }
+  }
+
+  private List<Map<String, Object>> executeJdbcConnector(MetadataService metadataService,
+      JdbcConnectorService jdbcConnectorService) throws Exception {
+
+    logger.info(this.getCommand());
+
+    JdbcConnection connection = metadataService.getJdbcConnectionByLabel(this.getConnectionLabel());
+    List<Map<String, Object>> result = jdbcConnectorService.execute(connection, this.getCommand());
+
+    logger.info(result.toString());
+
+    return result;
   }
 }
