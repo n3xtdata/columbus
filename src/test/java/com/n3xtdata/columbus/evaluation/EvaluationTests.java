@@ -16,6 +16,7 @@ package com.n3xtdata.columbus.evaluation;
 import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class EvaluationTests extends ColumbusApplicationTests {
 
     Evaluation evaluation = new SimpleEvaluation();
 
-    Map<String, List<Map<String, Object>>> runs = new HashMap<>();
+    ExecutionRuns runs = new ExecutionRuns();
     List<Map<String, Object>> records = new ArrayList<>();
     Map<String, Object> row = new HashMap<>();
     row.put("status", "SUCCESS");

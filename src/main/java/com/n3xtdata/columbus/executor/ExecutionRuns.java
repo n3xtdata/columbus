@@ -11,11 +11,25 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.executor;
 
-import com.n3xtdata.columbus.executor.ExecutionRuns;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public interface Evaluation {
+public class ExecutionRuns {
 
-  Status evaluate(ExecutionRuns runs);
+  private final Map<String, List<Map<String, Object>>> runs;
+
+  public ExecutionRuns() {
+    this.runs = new HashMap<>();
+  }
+
+  public void put(String key, List<Map<String, Object>> value) {
+    this.runs.put(key, value);
+  }
+
+  public List<Map<String, Object>> get(String key) {
+    return this.runs.get(key);
+  }
 }

@@ -18,6 +18,7 @@ package com.n3xtdata.columbus.core;
 
 import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import com.n3xtdata.columbus.data.MetadataService;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -121,11 +122,11 @@ public class Component {
     return Objects.hash(label, connectionType, connectionLabel, command);
   }
 
-  public void execute(Map<String, List<Map<String, Object>>> results, MetadataService metadataService,
+  public void execute(ExecutionRuns executionResults, MetadataService metadataService,
       JdbcConnectorService jdbcConnectorService) throws Exception {
     switch (this.getConnectionType()) {
       case "jdbc":
-        results.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
+        executionResults.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
         break;
       case "ssh":
         break;

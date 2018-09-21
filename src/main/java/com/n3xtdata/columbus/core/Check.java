@@ -17,9 +17,8 @@ import com.n3xtdata.columbus.evaluation.CompareEvaluation;
 import com.n3xtdata.columbus.evaluation.Evaluation;
 import com.n3xtdata.columbus.evaluation.SimpleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.sun.istack.internal.NotNull;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -103,11 +102,13 @@ public class Check {
   @SuppressWarnings({"unused"})
   public void setEvaluationType(EvaluationType evaluationType) {
     this.evaluationType = evaluationType;
+    this.setEvaluationImpl();
+  }
 
-    if (evaluationType == EvaluationType.SIMPLE) {
+  private void setEvaluationImpl() {
+    if (this.evaluationType == EvaluationType.SIMPLE) {
       this.evaluation = new SimpleEvaluation();
-
-    } else if (evaluationType == EvaluationType.COMPARE) {
+    } else if (this.evaluationType == EvaluationType.COMPARE) {
       this.evaluation = new CompareEvaluation();
     }
   }
@@ -166,7 +167,7 @@ public class Check {
     return false;
   }
 
-  public Status evaluate(Map<String, List<Map<String, Object>>> runs) {
+  public Status evaluate(ExecutionRuns runs) {
     return this.getEvaluation().evaluate(runs);
   }
 

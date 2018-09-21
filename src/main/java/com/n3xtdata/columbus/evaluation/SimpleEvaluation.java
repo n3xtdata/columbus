@@ -13,13 +13,13 @@
 
 package com.n3xtdata.columbus.evaluation;
 
-import java.util.List;
-import java.util.Map;
+
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 
 public class SimpleEvaluation implements Evaluation {
 
   @Override
-  public Status evaluate(Map<String, List<Map<String, Object>>> runs) {
+  public Status evaluate(ExecutionRuns runs) {
     Object object = runs.get("first").get(0).get("status");
     if (object instanceof String) {
       return Status.contains((String) object);

@@ -13,8 +13,7 @@
 
 package com.n3xtdata.columbus.evaluation;
 
-import java.util.List;
-import java.util.Map;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 
 public class CompareEvaluation implements Evaluation {
 
@@ -22,7 +21,7 @@ public class CompareEvaluation implements Evaluation {
   }
 
   @Override
-  public Status evaluate(Map<String, List<Map<String, Object>>> runs) {
+  public Status evaluate(ExecutionRuns runs) {
     return Status.ERROR;
   }
 

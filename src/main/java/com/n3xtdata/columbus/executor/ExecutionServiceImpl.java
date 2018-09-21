@@ -18,9 +18,6 @@ import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Component;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.evaluation.Status;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,23 +38,23 @@ public class ExecutionServiceImpl implements ExecutionService {
 
   @Override
   public Status execute(Check check) {
-    Map<String, List<Map<String, Object>>> results = new HashMap<>();
+    ExecutionRuns executionResults = new ExecutionRuns();
     try {
-      this.executeComponents(results, check);
+      this.executeComponents(executionResults, check);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Could not execute Components");
       return Status.TECHNICAL_ERROR;
     }
 
-    Status status = check.evaluate(results);
+    Status status = check.getEvaluation().evaluate(executionResults);
     logger.info("RESULT is: " + status);
     return status;
   }
 
-  private void executeComponents(Map<String, List<Map<String, Object>>> runs, Check check) throws Exception {
+  private void executeComponents(ExecutionRuns results, Check check) throws Exception {
     for (Component component : check.getComponents()) {
-      component.execute(runs, metadataService, jdbcConnectorService);
+      component.execute(results, metadataService, jdbcConnectorService);
     }
     logger.info("Executed " + check.getComponents().size() + " Components for Check: " + check.getLabel());
   }
