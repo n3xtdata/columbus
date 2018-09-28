@@ -5,3 +5,8 @@ components:
     connectionLabel: jdbc-sqllite
     command: SELECT * FROM dummy
 evaluationType: SIMPLE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10

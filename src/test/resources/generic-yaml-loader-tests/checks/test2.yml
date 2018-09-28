@@ -5,6 +5,11 @@ components:
     connectionLabel: jdbc-sqllite
     command: SELECT * FROM dummy
 evaluationType: SIMPLE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
 label: test-2
 description: a short description ...
@@ -13,6 +18,11 @@ components:
     connectionLabel: jdbc-sqllite
     command: SELECT * FROM dummy
 evaluationType: SIMPLE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
 label: test-3
 description: a short description ...
@@ -26,6 +36,11 @@ components:
     connectionLabel: jdbc-sqllite
     command: SELECT 'WARNING' as status FROM dual
 evaluationType: SIMPLE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
 label: test-4
 description: a short description ...

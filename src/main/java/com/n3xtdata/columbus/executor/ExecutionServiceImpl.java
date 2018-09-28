@@ -37,18 +37,24 @@ public class ExecutionServiceImpl implements ExecutionService {
   }
 
   @Override
-  public Status execute(Check check) {
+  public Status execute(String checkLabel) throws Exception {
+
+    logger.info("Executing check " + checkLabel);
+
     ExecutionRuns executionResults = new ExecutionRuns();
+
+    Check check = this.metadataService.getCheckByLabel(checkLabel);
+
     try {
       this.executeComponents(executionResults, check);
     } catch (Exception e) {
       e.printStackTrace();
-      logger.error("Could not execute Components");
+      logger.error("Could not execute components for check " + check.getLabel());
       return Status.TECHNICAL_ERROR;
     }
 
     Status status = check.getEvaluation().evaluate(executionResults);
-    logger.info("RESULT is: " + status);
+    logger.info("Result for check " + check.getLabel() + " is: " + status);
     return status;
   }
 
@@ -56,6 +62,6 @@ public class ExecutionServiceImpl implements ExecutionService {
     for (Component component : check.getComponents()) {
       component.execute(results, metadataService, jdbcConnectorService);
     }
-    logger.info("Executed " + check.getComponents().size() + " Components for Check: " + check.getLabel());
+    logger.info("Executed " + check.getComponents().size() + " components for check: " + check.getLabel());
   }
 }

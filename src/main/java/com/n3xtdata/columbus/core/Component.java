@@ -138,12 +138,12 @@ public class Component {
   private List<Map<String, Object>> executeJdbcConnector(MetadataService metadataService,
       JdbcConnectorService jdbcConnectorService) throws Exception {
 
-    logger.info(this.getCommand());
+    logger.debug(this.getCommand());
 
     JdbcConnection connection = metadataService.getJdbcConnectionByLabel(this.getConnectionLabel());
     List<Map<String, Object>> result = jdbcConnectorService.execute(connection, this.getCommand());
 
-    logger.info(result.toString());
+    logger.debug(result.toString());
 
     return result;
   }

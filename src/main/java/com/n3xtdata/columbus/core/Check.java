@@ -19,6 +19,7 @@ import com.n3xtdata.columbus.evaluation.SimpleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.sun.istack.internal.NotNull;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,6 +36,8 @@ public class Check {
   @NotNull
   private Evaluation evaluation;
 
+  private List<Schedule> schedules;
+
   private String path;
 
   @SuppressWarnings({"unused"})
@@ -44,11 +47,12 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public Check(String label, String description, Set<Component> components,
-      EvaluationType evaluationType, String path) {
+      EvaluationType evaluationType, List<Schedule> schedules, String path) {
     this.label = label;
     this.description = description;
     this.components = components;
     this.evaluationType = evaluationType;
+    this.schedules = schedules;
     this.path = path;
   }
 
@@ -85,6 +89,21 @@ public class Check {
   public void setComponents(Set<Component> components) {
 
     this.components = components;
+  }
+
+  public EvaluationType getEvaluationType() {
+
+    return evaluationType;
+  }
+
+  public List<Schedule> getSchedules() {
+
+    return schedules;
+  }
+
+  public void setSchedules(List<Schedule> schedules) {
+
+    this.schedules = schedules;
   }
 
   @SuppressWarnings({"unused"})
@@ -126,17 +145,15 @@ public class Check {
 
   @Override
   public String toString() {
-    return "Check{" +
-        "label='" + label + '\'' +
-        ", description='" + description + '\'' +
-        ", components=" + components +
-        ", evaluation=" + evaluation +
-        ", path='" + path + '\'' +
-        '}';
+
+    return "Check{" + "label='" + label + '\'' + ", description='" + description + '\'' + ", components=" + components
+        + ", evaluationType=" + evaluationType + ", evaluation=" + evaluation + ", schedules=" + schedules + ", path='"
+        + path + '\'' + '}';
   }
 
   @Override
   public boolean equals(Object o) {
+
     if (this == o) {
       return true;
     }
@@ -144,17 +161,16 @@ public class Check {
       return false;
     }
     Check check = (Check) o;
-    return Objects.equals(label, check.label) &&
-        Objects.equals(description, check.description) &&
-        Objects.equals(components, check.components) &&
-        Objects.equals(evaluation, check.evaluation) &&
-        Objects.equals(path, check.path);
+    return Objects.equals(label, check.label) && Objects.equals(description, check.description) && Objects
+        .equals(components, check.components) && evaluationType == check.evaluationType && Objects
+        .equals(evaluation, check.evaluation) && Objects.equals(schedules, check.schedules) && Objects
+        .equals(path, check.path);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(label, description, components, evaluation, path);
+    return Objects.hash(label, description, components, evaluationType, evaluation, schedules, path);
   }
 
   @SuppressWarnings({"unused"})

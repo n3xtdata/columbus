@@ -14,6 +14,7 @@
 package com.n3xtdata.columbus;
 
 import com.n3xtdata.columbus.data.MetadataService;
+import com.n3xtdata.columbus.scheduler.SchedulingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -24,10 +25,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
   private final MetadataService metadataService;
 
+  private final SchedulingService schedulingService;
+
   @Autowired
-  public Bootstrap(MetadataService metadataService) {
+  public Bootstrap(MetadataService metadataService, SchedulingService schedulingService) {
 
     this.metadataService = metadataService;
+    this.schedulingService = schedulingService;
   }
 
   @Override
@@ -35,6 +39,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     try {
       this.metadataService.loadAll();
+      this.schedulingService.scheduleChecks(this.metadataService.getAllChecks());
     } catch (Exception e) {
       e.printStackTrace();
     }

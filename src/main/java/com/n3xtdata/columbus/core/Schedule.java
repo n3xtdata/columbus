@@ -11,13 +11,45 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.evaluation.Status;
 
-public interface ExecutionService {
+public class Schedule {
 
-  Status execute(String checkLabel) throws Exception;
+  private String type;
+
+  private String value;
+
+  public Schedule() {
+
+  }
+
+  public Schedule(String type, String value) {
+
+    this.type = type;
+    this.value = value;
+  }
+
+  public String getType() {
+
+    return type;
+  }
+
+  public void setType(String type) {
+
+    this.type = type;
+  }
+
+  public String getValue() {
+
+    return value;
+  }
+
+  public void setValue(String value) {
+
+    this.value = value;
+  }
 
 }
+
