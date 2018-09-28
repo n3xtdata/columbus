@@ -45,7 +45,12 @@ schedules:
     value: 10
 ---
 label: test-4
-description: a short description ...
+description: a short description ..
+components:
+  - label: componentLabel
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON
@@ -55,6 +60,11 @@ schedules:
 ---
 label: test-5
 description: a short description ...
+components:
+  - label: componentLabel
+    connectionType: jdbc
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON

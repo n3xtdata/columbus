@@ -58,7 +58,7 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
     HashMap<String, Check> checkHashMap = checkFileLoader
         .load("src/test/resources/generic-yaml-loader-tests/checks/test2.yml");
 
-    assertEquals(checkHashMap.size(), 2);
+    assertEquals(4, checkHashMap.size());
   }
 
   @Test
