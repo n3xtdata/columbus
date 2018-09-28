@@ -14,17 +14,32 @@
 package com.n3xtdata.columbus.evaluation;
 
 
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimpleEvaluation implements Evaluation {
 
+  Logger logger = LoggerFactory.getLogger(getClass());
+
   @Override
-  public Status evaluate(ExecutionRuns runs) {
+  public Status evaluate(ExecutionRuns runs) throws EvaluationException {
+
+    this.validateRowCount(runs);
+
     Object object = runs.get("first").get(0).get("status");
     if (object instanceof String) {
       return Status.contains((String) object);
     }
     return Status.TECHNICAL_ERROR;
+  }
+
+  private void validateRowCount(ExecutionRuns runs) throws EvaluationException {
+
+    if (runs.get("first").size() != 1) {
+      throw new EvaluationException("Type SIMPLE must have exactly one row");
+    }
   }
 
 
