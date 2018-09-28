@@ -11,12 +11,17 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.evaluation.exceptions;
 
-import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
-import com.n3xtdata.columbus.executor.ExecutionRuns;
+public class EvaluationException extends Exception {
 
-public interface Evaluation {
+  public EvaluationException(String message) {
 
-  Status evaluate(ExecutionRuns runs) throws EvaluationException;
+    super(message);
+  }
+
+  public EvaluationException() {
+
+  }
+
 }

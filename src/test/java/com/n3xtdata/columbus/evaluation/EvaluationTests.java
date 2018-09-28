@@ -16,6 +16,7 @@ package com.n3xtdata.columbus.evaluation;
 import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import org.junit.Test;
 public class EvaluationTests extends ColumbusApplicationTests {
 
   @Test
-  public void shouldEvaluateSimpleQueryCheck() {
+  public void shouldEvaluateSimpleQueryCheck() throws Exception {
 
     Evaluation evaluation = new SimpleEvaluation();
 
@@ -40,5 +41,34 @@ public class EvaluationTests extends ColumbusApplicationTests {
     Status status = evaluation.evaluate(runs);
     assertEquals(status, Status.SUCCESS);
   }
+
+  @Test(expected = EvaluationException.class)
+  public void shouldThrowExceptionWhenSimpleEvalReturnsMultipleRows() throws Exception {
+
+    Evaluation evaluation = new SimpleEvaluation();
+
+    ExecutionRuns runs = new ExecutionRuns();
+    List<Map<String, Object>> records = new ArrayList<>();
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", "SUCCESS");
+    records.add(0, row);
+    records.add(1, row);
+    runs.put("first", records);
+
+    evaluation.evaluate(runs);
+  }
+
+  @Test(expected = EvaluationException.class)
+  public void shouldThrowExceptionWhenSimpleEvalReturnsZeroRows() throws Exception {
+
+    Evaluation evaluation = new SimpleEvaluation();
+
+    ExecutionRuns runs = new ExecutionRuns();
+    List<Map<String, Object>> records = new ArrayList<>();
+    runs.put("first", records);
+
+    evaluation.evaluate(runs);
+  }
+
 
 }

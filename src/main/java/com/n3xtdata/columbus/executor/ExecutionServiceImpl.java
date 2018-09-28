@@ -18,6 +18,7 @@ import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Component;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,8 @@ public class ExecutionServiceImpl implements ExecutionService {
   private final MetadataService metadataService;
   private final JdbcConnectorService jdbcConnectorService;
 
-  public ExecutionServiceImpl(MetadataService metadataService,
-      JdbcConnectorService jdbcConnectorService) {
+  public ExecutionServiceImpl(MetadataService metadataService, JdbcConnectorService jdbcConnectorService) {
+
     this.metadataService = metadataService;
     this.jdbcConnectorService = jdbcConnectorService;
   }
@@ -41,26 +42,38 @@ public class ExecutionServiceImpl implements ExecutionService {
 
     logger.info("Executing check " + checkLabel);
 
-    ExecutionRuns executionResults = new ExecutionRuns();
+    ExecutionRuns runs = new ExecutionRuns();
 
     Check check = this.metadataService.getCheckByLabel(checkLabel);
 
     try {
-      this.executeComponents(executionResults, check);
+      this.executeComponents(runs, check);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("Could not execute components for check " + check.getLabel());
       return Status.TECHNICAL_ERROR;
     }
 
-    Status status = check.getEvaluation().evaluate(executionResults);
+    Status status = this.evaluate(runs, check);
+
+
     logger.info("Result for check " + check.getLabel() + " is: " + status);
     return status;
   }
 
-  private void executeComponents(ExecutionRuns results, Check check) throws Exception {
+  private Status evaluate(ExecutionRuns runs, Check check) {
+    try {
+      return check.getEvaluation().evaluate(runs);
+    } catch (EvaluationException e) {
+      logger.error("Could not evaluate Check " + check.getLabel() + ": " + e.getMessage());
+      return Status.TECHNICAL_ERROR;
+    }
+  }
+
+  private void executeComponents(ExecutionRuns runs, Check check) throws Exception {
+
     for (Component component : check.getComponents()) {
-      component.execute(results, metadataService, jdbcConnectorService);
+      component.execute(runs, metadataService, jdbcConnectorService);
     }
     logger.info("Executed " + check.getComponents().size() + " components for check: " + check.getLabel());
   }

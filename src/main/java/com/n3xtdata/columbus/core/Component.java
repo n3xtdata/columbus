@@ -122,11 +122,11 @@ public class Component {
     return Objects.hash(label, connectionType, connectionLabel, command);
   }
 
-  public void execute(ExecutionRuns executionResults, MetadataService metadataService,
+  public void execute(ExecutionRuns runs, MetadataService metadataService,
       JdbcConnectorService jdbcConnectorService) throws Exception {
     switch (this.getConnectionType()) {
       case "jdbc":
-        executionResults.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
+        runs.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
         break;
       case "ssh":
         break;

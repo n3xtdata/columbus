@@ -183,7 +183,7 @@ public class Check {
     return false;
   }
 
-  public Status evaluate(ExecutionRuns runs) {
+  public Status evaluate(ExecutionRuns runs) throws Exception {
     return this.getEvaluation().evaluate(runs);
   }
 
