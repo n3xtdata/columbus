@@ -13,8 +13,8 @@
 
 package com.n3xtdata.columbus.scheduler;
 
-import java.io.IOException;
 import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,29 +35,26 @@ public class SpringQrtzScheduler {
 
   @PostConstruct
   public void init() {
-
     logger.info("Hello world from Spring...");
   }
 
   @Bean
   public SpringBeanJobFactory springBeanJobFactory() {
-
     AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
-    logger.debug("Configuring Job factory");
+    logger.info("Configuring Job factory");
 
     jobFactory.setApplicationContext(applicationContext);
     return jobFactory;
   }
 
-
   @Bean
-  public SchedulerFactoryBean scheduler() throws IOException {
+  public SchedulerFactoryBean scheduler() {
 
     SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
     schedulerFactory.setConfigLocation(new ClassPathResource("quartz.properties"));
-    logger.debug("Setting the Scheduler up");
-    schedulerFactory.setJobFactory(springBeanJobFactory());
 
+    logger.info("Setting the Scheduler up");
+    schedulerFactory.setJobFactory(springBeanJobFactory());
     return schedulerFactory;
   }
 

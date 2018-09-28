@@ -30,6 +30,8 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,7 +44,6 @@ public class SchedulingServiceImpl implements SchedulingService {
 
     this.scheduler = scheduler;
   }
-
 
   @Override
   public void scheduleChecks(Set<Check> checks) {

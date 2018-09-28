@@ -14,15 +14,30 @@
 package com.n3xtdata.columbus.evaluation;
 
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CompareEvaluation implements Evaluation {
+
+  Logger logger = LoggerFactory.getLogger(getClass());
+
 
   public CompareEvaluation() {
   }
 
   @Override
   public Status evaluate(ExecutionRuns runs) {
+
+
+    Object firstValue = runs.get("first").get(0).get("value");
+    Object secondValue = runs.get("second").get(0).get("value");
+
+    if(firstValue.equals(secondValue)) {
+      return Status.SUCCESS;
+    }
+
     return Status.ERROR;
+
   }
 
 }
