@@ -11,12 +11,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.notifications.mail;
 
-import com.n3xtdata.columbus.evaluation.Status;
+import java.util.Collection;
 
-public interface ExecutionService {
+public interface EmailService {
 
-  Status execute(String checkLabel) throws Exception;
-
+  void sendSimpleMail(Collection<String> recipients,
+      String subject,
+      String text,
+      String from);
 }

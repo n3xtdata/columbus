@@ -37,7 +37,9 @@ public class SimpleEvaluation implements Evaluation {
 
   private void validateRowCount(ExecutionRuns runs) throws EvaluationException {
 
-    if (runs.get("first").size() != 1) {
+    if (runs.get("first") == null) {
+      throw new EvaluationException("Type SIMPLE must have a component with label first");
+    } else if (runs.get("first").size() != 1) {
       throw new EvaluationException("Type SIMPLE must have exactly one row");
     }
   }

@@ -14,10 +14,8 @@
 package com.n3xtdata.columbus.scheduler;
 
 import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +26,13 @@ import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 @Configuration
 public class SpringQrtzScheduler {
 
-  Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired
-  private ApplicationContext applicationContext;
+  private final ApplicationContext applicationContext;
+
+  public SpringQrtzScheduler(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
 
   @PostConstruct
   public void init() {

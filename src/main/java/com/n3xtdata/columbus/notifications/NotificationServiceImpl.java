@@ -11,30 +11,24 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.scheduler;
+package com.n3xtdata.columbus.notifications;
 
-import com.n3xtdata.columbus.executor.ExecutionService;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import com.n3xtdata.columbus.notifications.mail.EmailService;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-/**
- * This class is a Sample Job
- */
-@Component
-public class ColumbusJob implements Job {
+@Service
+public class NotificationServiceImpl implements NotificationService {
+
+  private final static String SUBJECT = "Columbus Notification";
+  private final static String FROM = "firstname.lastname@example.com";
 
   @Autowired
-  private ExecutionService executionService;
+  private EmailService emailService;
 
-  public void execute(JobExecutionContext context) {
-
-    try {
-      executionService.execute(context.getJobDetail().getKey().getName());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  @Override
+  public void sendNotification(Set<String> recipients) {
+    emailService.sendSimpleMail(recipients, SUBJECT, "lorem ipsum", FROM);
   }
 }
-

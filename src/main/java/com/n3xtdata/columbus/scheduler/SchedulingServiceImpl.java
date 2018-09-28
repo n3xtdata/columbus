@@ -30,8 +30,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -60,7 +58,6 @@ public class SchedulingServiceImpl implements SchedulingService {
   }
 
 
-
   private void scheduleCheck(Check check) throws SchedulerException {
 
     JobDetail job = this.addJob(check);
@@ -73,7 +70,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 
   private JobDetail addJob(Check check) {
 
-    JobDetail job = null;
+    JobDetail job;
 
     JobKey jobKey = new JobKey(check.getLabel(), "COLUMBUS");
 
@@ -114,8 +111,6 @@ public class SchedulingServiceImpl implements SchedulingService {
 
         this.scheduler.scheduleJob(trigger);
 
-
-      } else {
 
       }
 

@@ -13,8 +13,6 @@
 
 package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.evaluation.Status;
-
 public class Schedule {
 
   private String type;

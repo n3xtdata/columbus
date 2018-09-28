@@ -11,12 +11,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.notifications;
 
-import com.n3xtdata.columbus.evaluation.Status;
+import java.util.Set;
 
-public interface ExecutionService {
+public interface NotificationService {
 
-  Status execute(String checkLabel) throws Exception;
-
+  void sendNotification(Set<String> recipients);
 }

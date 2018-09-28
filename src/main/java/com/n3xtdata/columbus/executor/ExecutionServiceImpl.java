@@ -19,6 +19,7 @@ import com.n3xtdata.columbus.core.Component;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.evaluation.Status;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
+import com.n3xtdata.columbus.notifications.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,14 @@ public class ExecutionServiceImpl implements ExecutionService {
 
   private final MetadataService metadataService;
   private final JdbcConnectorService jdbcConnectorService;
+  private final NotificationService notificationService;
 
-  public ExecutionServiceImpl(MetadataService metadataService, JdbcConnectorService jdbcConnectorService) {
+  public ExecutionServiceImpl(MetadataService metadataService, JdbcConnectorService jdbcConnectorService,
+      NotificationService notificationService) {
 
     this.metadataService = metadataService;
     this.jdbcConnectorService = jdbcConnectorService;
+    this.notificationService = notificationService;
   }
 
   @Override
@@ -56,8 +60,14 @@ public class ExecutionServiceImpl implements ExecutionService {
 
     Status status = this.evaluate(runs, check);
 
-
     logger.info("Result for check " + check.getLabel() + " is: " + status);
+
+    if (check.getNotifications().size() > 0) {
+      if (status.equals(Status.ERROR) || status.equals(Status.WARNING)) {
+        logger.info("Sending mail for check " + check.getLabel() + " to " + check.getNotifications().toString());
+        this.notificationService.sendNotification(check.getNotifications());
+      }
+    }
     return status;
   }
 
