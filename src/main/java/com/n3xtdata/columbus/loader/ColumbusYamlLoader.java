@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 public class ColumbusYamlLoader<T> {
@@ -33,6 +35,7 @@ public class ColumbusYamlLoader<T> {
   @SuppressWarnings("CanBeFinal")
   private static String COLUMBUS_HOME = properties.getHome();
   private final List<String> fileList = new ArrayList<>();
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private T t;
 
   public ColumbusYamlLoader(Class<T> t) throws IllegalAccessException, InstantiationException {
@@ -80,14 +83,21 @@ public class ColumbusYamlLoader<T> {
   private List<String> getAllFiles(String path) {
 
     File folder = new File(path);
+
     File[] listOfFiles = folder.listFiles();
 
-    for (File file : Objects.requireNonNull(listOfFiles)) {
-      if (file.isFile() && (file.getName().endsWith(".yaml") || file.getName().endsWith(".yml"))) {
-        this.fileList.add(path + "/" + file.getName());
-      } else if (file.isDirectory()) {
-        this.getAllFiles(path + "/" + file.getName());
+    try {
+      Objects.requireNonNull(listOfFiles);
+      for (File file : listOfFiles) {
+        if (file.isFile() && (file.getName().endsWith(".yaml") || file.getName().endsWith(".yml"))) {
+          this.fileList.add(path + "/" + file.getName());
+        } else if (file.isDirectory()) {
+          this.getAllFiles(path + "/" + file.getName());
+        }
       }
+    } catch (NullPointerException e) {
+      logger.error("Folder " + folder.getPath() + " does not exist!");
+      System.exit(0);
     }
 
     return this.fileList;

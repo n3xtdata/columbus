@@ -29,11 +29,10 @@ public class CompareEvaluation implements Evaluation {
   @Override
   public Status evaluate(ExecutionRuns runs) {
 
-
     Object firstValue = runs.get("first").get(0).get("value");
     Object secondValue = runs.get("second").get(0).get("value");
 
-    if(firstValue.equals(secondValue)) {
+    if (firstValue.equals(secondValue)) {
       return Status.SUCCESS;
     }
 

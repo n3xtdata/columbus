@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -25,6 +27,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 class GenericYamlLoader<T> {
 
   private final T t;
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
   public GenericYamlLoader(T t) {
@@ -46,14 +49,16 @@ class GenericYamlLoader<T> {
     Yaml yaml = new Yaml(constructor);
     InputStream inputStream = new FileInputStream(fileName);
     HashMap<String, T> hashMap = new HashMap<>();
-    yaml.loadAll(inputStream).forEach(element -> {
-      try {
-        //noinspection unchecked
-        String label = (String) element.getClass().getMethod("getLabel").invoke(element);
 
-        element.getClass().getMethod("setPath", String.class).invoke(element, fileName);
+    try {
+      yaml.loadAll(inputStream).forEach(element -> {
+        try {
+          //noinspection unchecked
+          String label = (String) element.getClass().getMethod("getLabel").invoke(element);
 
-        Boolean validated = (Boolean) element.getClass().getMethod("validate").invoke(element);
+          element.getClass().getMethod("setPath", String.class).invoke(element, fileName);
+
+          Boolean validated = (Boolean) element.getClass().getMethod("validate").invoke(element);
 
         if (validated) {
           element.getClass().getMethod("init").invoke(element);
@@ -61,11 +66,14 @@ class GenericYamlLoader<T> {
           hashMap.put(label, (T) element);
         }
 
-      } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-        e.printStackTrace();
-      }
-
-    });
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+          e.printStackTrace();
+        }
+      });
+    } catch (Exception e) {
+      logger.error("An error occurred while parsing config file '" + fileName + "': " + e.getMessage());
+      System.exit(0);
+    }
 
     return hashMap;
 
