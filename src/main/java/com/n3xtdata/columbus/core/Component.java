@@ -16,7 +16,7 @@
 
 package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.data.MetadataService;
+import com.n3xtdata.columbus.core.componentDetails.ComponentDetailsFactory;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class Component {
 
@@ -41,13 +40,6 @@ public class Component {
   @SuppressWarnings({"unused"})
   public Component() {
 
-  }
-
-  @SuppressWarnings({"unused"})
-  public Component(String label, ComponentType componentType, String connectionLabel, String command) {
-    logger.info("Component Constructor");
-    this.label = label;
-    this.componentType = componentType;
   }
 
   @SuppressWarnings({"unused"})
@@ -72,6 +64,7 @@ public class Component {
     this.componentType = componentType;
   }
 
+  @SuppressWarnings({"unused"})
   public HashMap<String, Object> getComponentDetails() {
     return componentDetails;
   }
@@ -95,16 +88,12 @@ public class Component {
     return result;
   }
 
-  void initDetails() {
-    logger.info(this.componentDetails.toString());
-    logger.info(this.componentType.toString());
+  public void initDetails() {
     this.details = ComponentDetailsFactory.build(this.componentType, this.componentDetails);
-    logger.info(this.details.toString());
   }
 
   @Override
   public boolean equals(Object o) {
-
     if (this == o) {
       return true;
     }
@@ -112,9 +101,11 @@ public class Component {
       return false;
     }
     Component component = (Component) o;
-    return Objects.equals(logger, component.logger) && Objects.equals(label, component.label)
-        && componentType == component.componentType && Objects.equals(componentDetails, component.componentDetails)
-        && Objects.equals(details, component.details);
+    return Objects.equals(logger, component.logger) &&
+        Objects.equals(label, component.label) &&
+        componentType == component.componentType &&
+        Objects.equals(componentDetails, component.componentDetails) &&
+        Objects.equals(details, component.details);
   }
 
   @Override
@@ -125,13 +116,16 @@ public class Component {
 
   @Override
   public String toString() {
-
-    return "Component{" + "label='" + label + '\'' + ", componentType=" + componentType + ", componentDetails="
-        + componentDetails + ", details=" + details + '}';
+    return "Component{" +
+        "label='" + label + '\'' +
+        ", componentType=" + componentType +
+        ", componentDetails=" + componentDetails +
+        ", details=" + details +
+        '}';
   }
 
-  enum ComponentType {
-    JDBC, SSH, REST
+  public enum ComponentType {
+    JDBC
   }
 
 }

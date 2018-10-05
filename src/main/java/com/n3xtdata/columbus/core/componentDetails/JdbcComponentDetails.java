@@ -11,14 +11,17 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.componentDetails;
 
 
 import com.n3xtdata.columbus.config.SpringContext;
+import com.n3xtdata.columbus.core.ComponentDetails;
+import com.n3xtdata.columbus.core.Connection;
 import com.n3xtdata.columbus.data.MetadataService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,24 +35,21 @@ public class JdbcComponentDetails implements ComponentDetails {
 
   private String connectionLabel;
 
-  private String command;
+  private String sqlQuery;
 
+  public JdbcComponentDetails() {
+  }
 
   public JdbcComponentDetails(HashMap<String, Object> map) {
 
     this.connectionLabel = (String) map.get("connection");
-    this.command = (String) map.get("sqlQuery");
+    this.sqlQuery = (String) map.get("sqlQuery");
   }
 
   @Override
   public List<Map<String, Object>> execute() throws Exception {
-
-    logger.info(this.command + " + " + this.connectionLabel);
-      logger.info("NOT FOUND: " + metadataService);
-
     Connection connection = metadataService.getConnectionByLabel(this.connectionLabel);
-
-    return connection.execute(this.command);
+    return connection.execute(this.sqlQuery);
   }
 
   public String getConnectionLabel() {
@@ -62,13 +62,41 @@ public class JdbcComponentDetails implements ComponentDetails {
     this.connectionLabel = connectionLabel;
   }
 
-  public String getCommand() {
+  public String getSqlQuery() {
 
-    return command;
+    return sqlQuery;
   }
 
-  public void setCommand(String command) {
+  public void setSqlQuery(String sqlQuery) {
 
-    this.command = command;
+    this.sqlQuery = sqlQuery;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    JdbcComponentDetails that = (JdbcComponentDetails) o;
+    return Objects.equals(logger, that.logger) &&
+        Objects.equals(connectionLabel, that.connectionLabel) &&
+        Objects.equals(sqlQuery, that.sqlQuery);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(logger, connectionLabel, sqlQuery);
+  }
+
+  @Override
+  public String toString() {
+    return "JdbcComponentDetails{" +
+        "connectionLabel='" + connectionLabel + '\'' +
+        ", sqlQuery='" + sqlQuery + '\'' +
+        '}';
   }
 }

@@ -2,9 +2,10 @@ label: test-1
 description: a short description ...
 components:
   - label: componentLabel
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON

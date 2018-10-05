@@ -10,14 +10,23 @@ label: exampleRowCountComparison
 description: this check compares a count of an oracle db table with a count on a mysql db table.
 components:
   - label: first
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT COUNT(*) as cnt FROM table
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT COUNT(*) as cnt FROM table
   - label: second
-    connectionType: jdbc
-    connectionLabel: jdbc-oracle
-    command: SELECT COUNT(*) as cnt FROM table
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-oracle
+      sqlQuery: SELECT COUNT(*) as cnt FROM table
 evaluationType: COMPARE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 20
+notifications:
+  - firstname.lastname@example.com
 ```
 ## To start using Columbus
 ##### Please wait for the first official release:

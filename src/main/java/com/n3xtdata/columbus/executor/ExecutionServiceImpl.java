@@ -13,7 +13,6 @@
 
 package com.n3xtdata.columbus.executor;
 
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.evaluation.Status;

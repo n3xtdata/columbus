@@ -13,9 +13,9 @@
 
 package com.n3xtdata.columbus.data;
 
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Connection;
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.SshConnection;
 import com.n3xtdata.columbus.loader.ColumbusYamlLoader;
 import java.util.HashMap;
@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -63,7 +62,6 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   public Connection getConnectionByLabel(String label) throws Exception {
-
 
     if (this.jdbcConnections.get(label) != null) {
       return this.jdbcConnections.get(label);

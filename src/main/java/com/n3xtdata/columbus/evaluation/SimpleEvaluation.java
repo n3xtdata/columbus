@@ -52,6 +52,4 @@ public class SimpleEvaluation implements Evaluation {
   }
 
 
-
-
 }

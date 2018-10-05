@@ -19,8 +19,8 @@ package com.n3xtdata.columbus.loader;
 import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
-import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
+import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.SshConnection;
 import java.util.HashMap;
 import org.junit.Before;

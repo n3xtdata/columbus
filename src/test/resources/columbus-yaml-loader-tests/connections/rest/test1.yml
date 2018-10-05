@@ -1,9 +1,0 @@
-label: service-1
-authorization: Basic Auth
-  username: admin
-  password: password
---
-label: service-2
-authorization: Basic Auth
-  username: admin
-  password: password

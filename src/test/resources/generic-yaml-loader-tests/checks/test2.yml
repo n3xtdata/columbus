@@ -1,9 +1,10 @@
 label: test-1
 description: a short description ...
 components:
-  - connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+  - componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON
@@ -14,9 +15,10 @@ schedules:
 label: test-2
 description: a short description ...
 components:
-  - connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+  - componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON
@@ -28,13 +30,15 @@ label: test-3
 description: a short description ...
 components:
   - label: first
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT 'WARNING' as status FROM dual
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT 'WARNING' as status FROM dual
   - label: second
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT 'WARNING' as status FROM dual
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT 'WARNING' as status FROM dual
 evaluationType: SIMPLE
 schedules:
   - type: CRON
@@ -46,9 +50,10 @@ label: test-4
 description: a short description ...
 components:
   - label: componentLabel
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON
@@ -60,9 +65,10 @@ label: test-5
 description: a short description ...
 components:
   - label: componentLabel
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+    componentType: JDBC
+    componentDetails:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
   - type: CRON

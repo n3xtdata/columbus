@@ -60,11 +60,11 @@ class GenericYamlLoader<T> {
 
           Boolean validated = (Boolean) element.getClass().getMethod("validate").invoke(element);
 
-        if (validated) {
-          element.getClass().getMethod("init").invoke(element);
-          //noinspection unchecked
-          hashMap.put(label, (T) element);
-        }
+          if (validated) {
+            element.getClass().getMethod("init").invoke(element);
+            //noinspection unchecked
+            hashMap.put(label, (T) element);
+          }
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
           e.printStackTrace();

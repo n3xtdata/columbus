@@ -16,7 +16,6 @@ package com.n3xtdata.columbus.connectors.jdbc;
 
 import com.n3xtdata.columbus.config.SpringContext;
 import com.n3xtdata.columbus.core.Connection;
-import com.n3xtdata.columbus.data.MetadataService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,17 +26,14 @@ import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 public class JdbcConnection implements Connection {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
-
-
   private static final ApplicationContext context = SpringContext.getAppContext();
-  private static final JdbcConnectorService jdbcConnectorService = (JdbcConnectorService) context.getBean("jdbcConnectorServiceImpl");
-
+  private static final JdbcConnectorService jdbcConnectorService = (JdbcConnectorService) context
+      .getBean("jdbcConnectorServiceImpl");
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private String label;
 
   private String username;

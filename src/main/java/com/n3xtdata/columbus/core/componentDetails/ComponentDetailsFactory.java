@@ -11,15 +11,16 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.componentDetails;
 
 import com.n3xtdata.columbus.core.Component.ComponentType;
+import com.n3xtdata.columbus.core.ComponentDetails;
 import java.util.HashMap;
 
 public class ComponentDetailsFactory {
 
-  static ComponentDetails build(ComponentType componentType, HashMap<String, Object> map) {
-    if(componentType == ComponentType.JDBC) {
+  public static ComponentDetails build(ComponentType componentType, HashMap<String, Object> map) {
+    if (componentType == ComponentType.JDBC) {
       return new JdbcComponentDetails(map);
     } else {
       return null;

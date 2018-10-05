@@ -13,9 +13,9 @@
 
 package com.n3xtdata.columbus.data;
 
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Connection;
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.SshConnection;
 import java.util.Set;
 

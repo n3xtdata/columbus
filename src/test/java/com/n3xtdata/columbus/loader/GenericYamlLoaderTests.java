@@ -18,12 +18,12 @@ package com.n3xtdata.columbus.loader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Component;
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
+import com.n3xtdata.columbus.core.Component.ComponentType;
 import com.n3xtdata.columbus.core.SshConnection;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -41,11 +41,18 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
 
     Check check = checkHashMap.get("test-1");
 
-    Component component = null; // = new Component("componentLabel", "jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
+    Component component = new Component();
+    component.setLabel("componentLabel");
+    component.setComponentType(ComponentType.JDBC);
+    HashMap<String, Object> componentDetails = new HashMap<>();
+    componentDetails.put("connection", "jdbc-sqllite");
+    componentDetails.put("sqlQuery", "SELECT * FROM dummy");
+    component.setComponentDetails(componentDetails);
+    component.initDetails();
 
     assertEquals(check.getDescription(), "a short description ...");
     assertEquals(1, check.getComponents().size());
-    assertTrue(check.getComponents().contains(component));
+    assertEquals(check.getComponents().iterator().next(), component);
     assertEquals("src/test/resources/generic-yaml-loader-tests/checks/test1.yml", check.getPath());
 
   }
