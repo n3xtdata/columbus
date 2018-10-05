@@ -11,12 +11,13 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
-import com.n3xtdata.columbus.executor.ExecutionRuns;
+import java.util.List;
+import java.util.Map;
 
-public interface Evaluation {
+public interface Connection {
 
-  Status evaluate(ExecutionRuns runs) throws EvaluationException;
+  List<Map<String, Object>> execute(String command) throws Exception;
+
 }

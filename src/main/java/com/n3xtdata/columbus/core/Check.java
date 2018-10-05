@@ -14,16 +14,19 @@
 package com.n3xtdata.columbus.core;
 
 import com.n3xtdata.columbus.evaluation.CompareEvaluation;
-import com.n3xtdata.columbus.evaluation.Evaluation;
 import com.n3xtdata.columbus.evaluation.SimpleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-import com.sun.istack.internal.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Check {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private String label;
 
@@ -33,7 +36,6 @@ public class Check {
 
   private EvaluationType evaluationType;
 
-  @NotNull
   private Evaluation evaluation;
 
   private List<Schedule> schedules;
@@ -46,8 +48,9 @@ public class Check {
   }
 
   @SuppressWarnings({"unused"})
-  public Check(String label, String description, Set<Component> components,
-      EvaluationType evaluationType, List<Schedule> schedules, String path) {
+  public Check(String label, String description, Set<Component> components, EvaluationType evaluationType,
+      List<Schedule> schedules, String path) {
+
     this.label = label;
     this.description = description;
     this.components = components;
@@ -58,6 +61,7 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public String getLabel() {
+
     return label;
   }
 
@@ -120,11 +124,13 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public void setEvaluationType(EvaluationType evaluationType) {
+
     this.evaluationType = evaluationType;
     this.setEvaluationImpl();
   }
 
   private void setEvaluationImpl() {
+
     if (this.evaluationType == EvaluationType.SIMPLE) {
       this.evaluation = new SimpleEvaluation();
     } else if (this.evaluationType == EvaluationType.COMPARE) {
@@ -134,6 +140,7 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public Evaluation getEvaluation() {
+
     return evaluation;
   }
 
@@ -175,26 +182,59 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public Boolean validate() {
-    if (this.evaluation instanceof SimpleEvaluation) {
-      return this.validateSimple();
-    } else if (this.evaluation instanceof CompareEvaluation) {
-      return this.validateCompare();
+
+    return this.validateComponentSize();
+  }
+
+  @SuppressWarnings({"unused"})
+  public void init() {
+    this.components.forEach(Component::initDetails);
+  }
+
+  private Boolean validateComponentSize() {
+
+    return this.evaluation.validate(this.components.size());
+  }
+
+
+  public Status execute() {
+
+    logger.info("Executing check " + this.label);
+
+    ExecutionRuns runs = new ExecutionRuns();
+
+    try {
+      this.executeComponents(runs);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Could not execute components for check " + this.getLabel());
+      return Status.TECHNICAL_ERROR;
     }
-    return false;
+
+    Status status = this.evaluate(runs);
+
+    logger.info("Result for check " + this.getLabel() + " is: " + status);
+    return status;
   }
 
-  public Status evaluate(ExecutionRuns runs) throws Exception {
-    return this.getEvaluation().evaluate(runs);
+  private Status evaluate(ExecutionRuns runs) {
+
+    try {
+      return this.getEvaluation().evaluate(runs);
+    } catch (EvaluationException e) {
+      logger.error("Could not evaluate Check " + this.getLabel() + ": " + e.getMessage());
+      return Status.TECHNICAL_ERROR;
+    }
   }
 
+  private void executeComponents(ExecutionRuns runs) throws Exception {
 
-  private Boolean validateSimple() {
-    return this.components.size() == 1;
+    for (Component component : this.getComponents()) {
+      component.execute(runs);
+    }
+    logger.info("Executed " + this.getComponents().size() + " components for check: " + this.getLabel());
   }
 
-  private Boolean validateCompare() {
-    return this.components.size() == 2;
-  }
 
   enum EvaluationType {
     SIMPLE, COMPARE

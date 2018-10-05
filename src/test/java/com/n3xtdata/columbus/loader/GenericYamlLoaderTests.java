@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import com.n3xtdata.columbus.ColumbusApplicationTests;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.Component;
-import com.n3xtdata.columbus.core.JdbcConnection;
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.SshConnection;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
 
     Check check = checkHashMap.get("test-1");
 
-    Component component = new Component("componentLabel", "jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
+    Component component = null; // = new Component("componentLabel", "jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
 
     assertEquals(check.getDescription(), "a short description ...");
     assertEquals(1, check.getComponents().size());

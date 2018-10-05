@@ -11,12 +11,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.evaluation.Status;
 
-public interface ExecutionService {
+import java.util.List;
+import java.util.Map;
 
-  Status execute(String checkLabel) throws Exception;
+public interface ComponentDetails {
+
+  List<Map<String, Object>> execute() throws Exception;
 
 }

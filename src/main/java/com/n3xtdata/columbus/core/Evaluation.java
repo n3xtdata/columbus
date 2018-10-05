@@ -11,12 +11,15 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.core;
 
 import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 
-public interface ExecutionService {
+public interface Evaluation {
 
-  Status execute(String checkLabel) throws Exception;
+  Status evaluate(ExecutionRuns runs) throws EvaluationException;
 
+  Boolean validate(Integer componentSize);
 }

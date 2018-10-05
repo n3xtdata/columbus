@@ -61,11 +61,29 @@ schedules:
 label: test-5
 description: a short description ...
 components:
-  - label: componentLabel
-    connectionType: jdbc
-    connectionLabel: jdbc-sqllite
-    command: SELECT * FROM dummy
+  - label: first
+    kind: jdbc
+    componentDetails:
+      command: SELECT 1 FROM dual
+      connection:
 evaluationType: SIMPLE
+schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
+--
+label: test-6
+description: a short description ...
+components:
+  - label: componentLabel
+    connectionType: rest
+    connectionLabel: service-1
+    command: GET url/bla
+  - label: componentLabel
+    connectionType: rest
+    connectionLabel: service-1
+    command: GET url/bla evaluationType: SIMPLE
 schedules:
   - type: CRON
     value: 0 0/2 * 1/1 * ? *

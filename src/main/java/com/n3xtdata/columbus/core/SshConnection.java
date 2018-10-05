@@ -150,4 +150,8 @@ public class SshConnection {
   public Boolean validate() {
     return true;
   }
+
+  public void init() {
+
+  }
 }

@@ -13,6 +13,7 @@
 
 package com.n3xtdata.columbus.evaluation;
 
+import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,11 @@ public class CompareEvaluation implements Evaluation {
 
     return Status.ERROR;
 
+  }
+
+  @Override
+  public Boolean validate(Integer componentSize) {
+    return componentSize == 2;
   }
 
 }

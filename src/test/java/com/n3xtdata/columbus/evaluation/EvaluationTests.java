@@ -16,6 +16,7 @@ package com.n3xtdata.columbus.evaluation;
 import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;

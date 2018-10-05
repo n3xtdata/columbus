@@ -16,14 +16,15 @@
 
 package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Component {
 
@@ -31,11 +32,11 @@ public class Component {
 
   private String label;
 
-  private String connectionType;
+  private ComponentType componentType;
 
-  private String connectionLabel;
+  private HashMap<String, Object> componentDetails;
 
-  private String command;
+  private ComponentDetails details;
 
   @SuppressWarnings({"unused"})
   public Component() {
@@ -43,11 +44,16 @@ public class Component {
   }
 
   @SuppressWarnings({"unused"})
-  public Component(String label, String connectionType, String connectionLabel, String command) {
+  public Component(String label, ComponentType componentType, String connectionLabel, String command) {
+    logger.info("Component Constructor");
     this.label = label;
-    this.connectionType = connectionType;
-    this.connectionLabel = connectionLabel;
-    this.command = command;
+    this.componentType = componentType;
+  }
+
+  @SuppressWarnings({"unused"})
+  public String getLabel() {
+
+    return label;
   }
 
   @SuppressWarnings({"unused"})
@@ -56,53 +62,49 @@ public class Component {
   }
 
   @SuppressWarnings({"unused"})
-  public String getConnectionType() {
-
-    return connectionType;
+  public ComponentType getComponentType() {
+    return componentType;
   }
 
   @SuppressWarnings({"unused"})
-  public void setConnectionType(String connectionType) {
+  public void setComponentType(ComponentType componentType) {
 
-    this.connectionType = connectionType;
+    this.componentType = componentType;
   }
 
-  @SuppressWarnings({"unused"})
-  public String getConnectionLabel() {
-
-    return connectionLabel;
+  public HashMap<String, Object> getComponentDetails() {
+    return componentDetails;
   }
 
-  @SuppressWarnings({"unused"})
-  public void setConnectionLabel(String connectionLabel) {
-
-    this.connectionLabel = connectionLabel;
+  public void setComponentDetails(HashMap<String, Object> componentDetails) {
+    this.componentDetails = componentDetails;
   }
 
-  @SuppressWarnings({"unused"})
-  public String getCommand() {
-
-    return command;
+  public void execute(ExecutionRuns runs) throws Exception {
+    runs.put(this.label, this.executeConnector());
   }
 
-  @SuppressWarnings({"unused"})
-  public void setCommand(String command) {
+  private List<Map<String, Object>> executeConnector() throws Exception {
 
-    this.command = command;
+    List<Map<String, Object>> result;
+
+    result = this.details.execute();
+
+    logger.debug(result.toString());
+
+    return result;
   }
 
-  @Override
-  public String toString() {
-    return "Component{" +
-        "label='" + label + '\'' +
-        ", connectionType='" + connectionType + '\'' +
-        ", connectionLabel='" + connectionLabel + '\'' +
-        ", command='" + command + '\'' +
-        '}';
+  void initDetails() {
+    logger.info(this.componentDetails.toString());
+    logger.info(this.componentType.toString());
+    this.details = ComponentDetailsFactory.build(this.componentType, this.componentDetails);
+    logger.info(this.details.toString());
   }
 
   @Override
   public boolean equals(Object o) {
+
     if (this == o) {
       return true;
     }
@@ -110,41 +112,26 @@ public class Component {
       return false;
     }
     Component component = (Component) o;
-    return Objects.equals(label, component.label) &&
-        Objects.equals(connectionType, component.connectionType) &&
-        Objects.equals(connectionLabel, component.connectionLabel) &&
-        Objects.equals(command, component.command);
+    return Objects.equals(logger, component.logger) && Objects.equals(label, component.label)
+        && componentType == component.componentType && Objects.equals(componentDetails, component.componentDetails)
+        && Objects.equals(details, component.details);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(label, connectionType, connectionLabel, command);
+    return Objects.hash(logger, label, componentType, componentDetails, details);
   }
 
-  public void execute(ExecutionRuns runs, MetadataService metadataService,
-      JdbcConnectorService jdbcConnectorService) throws Exception {
-    switch (this.getConnectionType()) {
-      case "jdbc":
-        runs.put(this.label, this.executeJdbcConnector(metadataService, jdbcConnectorService));
-        break;
-      case "ssh":
-        break;
-      default:
-        break;
-    }
+  @Override
+  public String toString() {
+
+    return "Component{" + "label='" + label + '\'' + ", componentType=" + componentType + ", componentDetails="
+        + componentDetails + ", details=" + details + '}';
   }
 
-  private List<Map<String, Object>> executeJdbcConnector(MetadataService metadataService,
-      JdbcConnectorService jdbcConnectorService) throws Exception {
-
-    logger.debug(this.getCommand());
-
-    JdbcConnection connection = metadataService.getJdbcConnectionByLabel(this.getConnectionLabel());
-    List<Map<String, Object>> result = jdbcConnectorService.execute(connection, this.getCommand());
-
-    logger.debug(result.toString());
-
-    return result;
+  enum ComponentType {
+    JDBC, SSH, REST
   }
+
 }

@@ -14,6 +14,7 @@
 package com.n3xtdata.columbus.evaluation;
 
 
+import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import org.slf4j.Logger;
@@ -41,6 +42,14 @@ public class SimpleEvaluation implements Evaluation {
       throw new EvaluationException("Type SIMPLE must have exactly one row");
     }
   }
+
+  @Override
+  public Boolean validate(Integer componentSize) {
+
+    return componentSize == 1;
+  }
+
+
 
 
 }

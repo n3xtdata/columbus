@@ -13,7 +13,6 @@
 
 package com.n3xtdata.columbus.connectors.jdbc;
 
-import com.n3xtdata.columbus.core.JdbcConnection;
 import java.util.List;
 import java.util.Map;
 
