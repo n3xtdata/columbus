@@ -1,5 +1,5 @@
 # Columbus
-Columbus is an open source tool for monitoring.<br>
+Columbus is an open source monitoring tool.<br>
 Our monitoring solution ist able to execute queries across various jdbc compatible database systems and compares those results.
 
 For example:<br>
