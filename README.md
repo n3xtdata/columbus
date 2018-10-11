@@ -36,7 +36,7 @@ Create your own checks and store those .yml files in the previously set $COLUMBU
 ```
 $HOME/columbus
       │
-      └──-connections
+      └───connections
       │   │   
       │   └───jdbc
       │   │   │   oracleDbs.yml
