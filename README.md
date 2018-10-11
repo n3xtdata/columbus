@@ -28,10 +28,10 @@ $ yet to come!
 After installation, the columbus-home variable and directory have to be created and set:
 ```
 $ mkdir $HOME/columbus
-$ export COLUMBUS $HOME/columbus
+$ export COLUMBUS_HOME $HOME/columbus
 ```
 In order to run checks on databases, you need to store the necessary jdbc-connection files as shown below.
-Create your own checks and store those .yml files in the previously set $COLUMBUS/checks directory.
+Create your own checks and store those .yml files in the previously set $COLUMBUS_HOME/checks directory.
 ##### Columbus-Home filesystem hierarchy:
 ```
 $HOME/columbus
