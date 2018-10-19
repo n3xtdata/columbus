@@ -221,7 +221,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "! (1==2 | 3==2) -> ERROR";
+    String allRules = "!(1==2 | 3==2) -> ERROR";
 
     ruleEvaluation.setAllRules(allRules);
 

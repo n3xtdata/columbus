@@ -119,13 +119,14 @@ public class Expression {
   @Override
   public String toString() {
     return "Expression{" +
-        "left='" + left + '\'' +
-        ", leftObject=" + leftObject +
-        ", operator='" + operator + '\'' +
-        ", right='" + right + '\'' +
-        ", rightObject=" + rightObject +
-        ", action='" + action + '\'' +
-        '}';
+            "left='" + left + '\'' +
+            ", leftObject=" + leftObject +
+            ", operator='" + operator + '\'' +
+            ", right='" + right + '\'' +
+            ", rightObject=" + rightObject +
+            ", action='" + action + '\'' +
+            ", originExpressionString='" + originExpressionString + '\'' +
+            '}';
   }
 
   private Boolean equals(Object l, Object r) {

@@ -91,7 +91,7 @@ public class RuleEvaluation implements Evaluation {
       String[] andExpressions = orExpression.split(Pattern.quote("&"));
       for(String andExpression : andExpressions) {
 
-        String[] all = andExpression.split(Pattern.quote("! "));
+        String[] all = andExpression.split(Pattern.quote("!("));
 
         for(String exp : all) {
 
