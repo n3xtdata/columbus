@@ -13,9 +13,14 @@
 
 package com.n3xtdata.columbus.evaluation;
 
+import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Expression {
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   private String left;
   private Object leftObject;
@@ -24,7 +29,7 @@ public class Expression {
   private Object rightObject;
   private String action;
 
-  public Expression(String left, String operator, String right, String action) {
+  Expression(String left, String operator, String right, String action) {
     this.left = left;
     this.operator = operator.replaceAll(" ", "");
     this.right = right;
@@ -79,9 +84,9 @@ public class Expression {
     this.rightObject = rightObject;
   }
 
-  public Boolean evaluate() throws Exception {
-    if(leftObject.getClass() != rightObject.getClass()) {
-      throw new Exception("Cannot compare two different classes");
+  public Boolean evaluate() throws EvaluationException {
+    if (leftObject.getClass() != rightObject.getClass()) {
+      throw new EvaluationException("Cannot compare two different classes");
     }
     switch (operator) {
       case "==":
@@ -114,52 +119,34 @@ public class Expression {
   }
 
   private Boolean equals(Object l, Object r) {
-    if (leftObject instanceof BigDecimal) {
-      BigDecimal n1 = new BigDecimal(leftObject.toString());
-      BigDecimal n2 = new BigDecimal(rightObject.toString());
-      return n1.compareTo(n2) == 0;
-    } else {
-      return l.toString().equals(r.toString());
-    }
+    return compareValue(l, r) == 0;
   }
 
   private Boolean lessThan(Object l, Object r) {
-    if (leftObject instanceof BigDecimal) {
-      BigDecimal n1 = new BigDecimal(leftObject.toString());
-      BigDecimal n2 = new BigDecimal(rightObject.toString());
-      return n1.compareTo(n2) < 0;
-    } else {
-      return l.toString().compareTo(r.toString()) < 0;
-    }
+    return compareValue(l, r) < 0;
   }
 
   private Boolean greaterThan(Object l, Object r) {
-    if (leftObject instanceof BigDecimal) {
-      BigDecimal n1 = new BigDecimal(leftObject.toString());
-      BigDecimal n2 = new BigDecimal(rightObject.toString());
-      return n1.compareTo(n2) > 0;
-    } else {
-      return l.toString().compareTo(r.toString()) > 0;
-    }
+    return compareValue(l, r) > 0;
   }
 
   private Boolean lessEqualsThan(Object l, Object r) {
-    if (leftObject instanceof BigDecimal) {
-      BigDecimal n1 = new BigDecimal(leftObject.toString());
-      BigDecimal n2 = new BigDecimal(rightObject.toString());
-      return n1.compareTo(n2) <= 0;
-    } else {
-      return l.toString().compareTo(r.toString()) <= 0;
-    }
+    return compareValue(l, r) <= 0;
   }
 
   private Boolean greaterEqualsThan(Object l, Object r) {
+    return compareValue(l, r) >= 0;
+  }
+
+  private Integer compareValue(Object l, Object r) {
+    logger.debug("Comparing: " + l.toString() + " & " + r.toString());
+    logger.debug("Datatypes: " + l.getClass() + " & " + r.getClass());
     if (leftObject instanceof BigDecimal) {
       BigDecimal n1 = new BigDecimal(leftObject.toString());
       BigDecimal n2 = new BigDecimal(rightObject.toString());
-      return n1.compareTo(n2) >= 0;
+      return n1.compareTo(n2);
     } else {
-      return l.toString().compareTo(r.toString()) >= 0;
+      return l.toString().compareTo(r.toString());
     }
   }
 

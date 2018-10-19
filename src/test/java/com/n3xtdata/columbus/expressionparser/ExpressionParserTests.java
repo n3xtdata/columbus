@@ -13,7 +13,6 @@
 
 package com.n3xtdata.columbus.expressionparser;
 
-import com.n3xtdata.columbus.ColumbusApplicationTests;
 import com.n3xtdata.columbus.evaluation.RuleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
@@ -22,74 +21,115 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ExpressionParserTests {
 
+  private RuleEvaluation ruleEvaluation;
+  private ExecutionRuns runs;
+  private List<Map<String, Object>> firstComponentRun;
+
+  @Before
+  public void before() {
+    this.ruleEvaluation = new RuleEvaluation();
+    this.runs = new ExecutionRuns();
+    this.firstComponentRun = new ArrayList<>();
+  }
+
   @Test
   public void testSimpleRule() throws EvaluationException {
 
-    RuleEvaluation ruleEvaluation = new RuleEvaluation();
-
-    ExecutionRuns runs = new ExecutionRuns();
-    List<Map<String, Object>> firstComponentRun = new ArrayList<>();
-
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
-
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
     String allRules = "{first.status} >= 'B' -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
-    Status status = ruleEvaluation.evaluate(runs);
+    this.ruleEvaluation.setAllRules(allRules);
+    Status status = this.ruleEvaluation.evaluate(runs);
 
-    assert(status.equals(Status.SUCCESS));
+    assert (status.equals(Status.SUCCESS));
   }
 
   @Test
-  public void testEqualsStrings() throws EvaluationException {
-
-    RuleEvaluation ruleEvaluation = new RuleEvaluation();
-
-    ExecutionRuns runs = new ExecutionRuns();
-    List<Map<String, Object>> firstComponentRun = new ArrayList<>();
+  public void testStringsShoudlBeEqual() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
-    row.put("status", "1");
+    row.put("status", "A");
 
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} == 1 -> SUCCESS";
+    String allRules = " \n {first.status} == A -> SUCCESS";
 
     ruleEvaluation.setAllRules(allRules);
     Status status = ruleEvaluation.evaluate(runs);
 
-    assert(status.equals(Status.SUCCESS));
+    assert (status.equals(Status.SUCCESS));
+  }
+
+  @Test
+  public void testStringsShoudlBeDifferent() throws EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", "A");
+
+    firstComponentRun.add(row);
+    runs.put("first", firstComponentRun);
+
+    String allRules = "{first.status} == B -> SUCCESS \n {first.status} != C -> WARNING";
+
+    ruleEvaluation.setAllRules(allRules);
+    Status status = ruleEvaluation.evaluate(runs);
+
+    assert (status.equals(Status.WARNING));
   }
 
   @Test(expected = EvaluationException.class)
   public void testInvalidComparison() throws EvaluationException {
 
-    RuleEvaluation ruleEvaluation = new RuleEvaluation();
-
-    ExecutionRuns runs = new ExecutionRuns();
-    List<Map<String, Object>> firstComponentRun = new ArrayList<>();
-
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
-
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
     String allRules = "{first.status} >= 1 -> SUCCESS";
-
     ruleEvaluation.setAllRules(allRules);
-    Status status = ruleEvaluation.evaluate(runs);
 
-    assert(status.equals(Status.SUCCESS));
+    ruleEvaluation.evaluate(runs);
+  }
+
+  @Test(expected = EvaluationException.class)
+  public void testInvalidOperatorShouldThrowException() throws EvaluationException {
+
+    String allRules = "{first.status} =! 1 -> SUCCESS";
+    ruleEvaluation.setAllRules(allRules);
+
+    ruleEvaluation.evaluate(runs);
+  }
+
+  @Test(expected = EvaluationException.class)
+  public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException {
+
+    String allRules = "{first.status} == 1 -> SUCCESS";
+    ruleEvaluation.setAllRules(allRules);
+
+    ruleEvaluation.evaluate(runs);
+  }
+
+  @Test(expected = EvaluationException.class)
+  public void testInvalidToBeReplacedValueShouldThrowException() throws EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", "1");
+    firstComponentRun.add(row);
+    runs.put("first", firstComponentRun);
+
+    String allRules = "{first.d} == 1 -> SUCCESS";
+    ruleEvaluation.setAllRules(allRules);
+
+    ruleEvaluation.evaluate(runs);
   }
 }

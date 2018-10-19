@@ -17,13 +17,16 @@ import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleEvaluation implements Evaluation {
 
-  private String allRules;
-
   private final String[] operators = {"==", "!=", "<=", ">=", "<", ">"};
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  private String allRules;
 
   @Override
   public Status evaluate(ExecutionRuns runs) throws EvaluationException {
@@ -36,44 +39,52 @@ public class RuleEvaluation implements Evaluation {
   private String parseRules(ExecutionRuns runs) throws EvaluationException {
 
     String[] rules = this.allRules.split(Pattern.quote("\n"));
-    String returnValue = null;
 
     for (String rule : rules) {
-
-      Expression expression;
-      try {
-        expression = this.parseRule(rule);
-        System.out.println(expression.toString());
-        this.replaceValues(expression, runs);
-        System.out.println("NEW: " + expression.toString());
-        if (expression.evaluate()) {
-          returnValue = expression.getAction();
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw new EvaluationException();
+      if (isEmptyLine(rule)) {
+        continue;
       }
+      Expression expression;
+      expression = this.parseRule(rule);
+      this.replaceValues(expression, runs);
 
+      if (expression.evaluate()) {
+        return expression.getAction();
+      }
     }
 
-    return returnValue;
+    throw new EvaluationException("No rules available");
   }
 
-  private Expression parseRule(String rule) throws Exception {
+  private Boolean isEmptyLine(String line) {
+    return removeAllWhitespaces(line).isEmpty();
+  }
 
-    String[] leftRightAndAction = splitByOperator(rule, "->");
+  private String removeAllWhitespaces(String str) {
+    return str.replaceAll(" ", "");
+  }
+
+  private Expression parseRule(String rule) throws EvaluationException {
+    logger.debug("Parsing rule: " + rule);
+    String[] leftRightAndAction = splitByStr(rule, "->");
     String leftRight = leftRightAndAction[0];
 
     for (String op : operators) {
       if (leftRight.contains(op)) {
-        String[] leftAndRight = splitByOperator(leftRight, op);
+        String[] leftAndRight = splitByStr(leftRight, op);
         return new Expression(leftAndRight[0], op, leftAndRight[1], leftRightAndAction[1]);
       }
     }
-    throw new Exception();
+    throw new EvaluationException("Operator is not supported! Please use one of those: " + Arrays
+        .toString(this.operators));
   }
 
-  private void replaceValues(Expression expression, ExecutionRuns runs) {
+  private String[] splitByStr(String part, String str) {
+    return part.split(Pattern.quote(str));
+  }
+
+  private void replaceValues(Expression expression, ExecutionRuns runs) throws EvaluationException {
+    logger.debug("Expression before replacement: " + expression.toString());
     String left = expression.getLeft();
     if (left.contains("{")) {
       Object o = this.getObject(left, runs);
@@ -84,8 +95,6 @@ public class RuleEvaluation implements Evaluation {
       left = left.replace("'", "");
 
       Object o = getDataType(left);
-      System.out.println(o);
-      System.out.println(o.getClass());
       expression.setLeftObject(o);
     }
 
@@ -99,39 +108,38 @@ public class RuleEvaluation implements Evaluation {
       right = right.replace("'", "");
 
       Object o = getDataType(right);
-      System.out.println(o);
-      System.out.println(o.getClass());
       expression.setRightObject(o);
-
-
     }
-
-    System.out.println("LeftO: " + expression.getLeftObject().getClass());
-    System.out.println("RightO: " + expression.getRightObject().getClass());
+    logger.debug("Expression after replacement: " + expression.toString());
   }
 
-  private Object getObject(String toBeReplaced, ExecutionRuns runs) {
-    String[] componentAndField = toBeReplaced.replaceAll(" ", "")
-        .replace("{", "")
-        .replace("}", "")
-        .split(Pattern.quote("."));
-    String component = componentAndField[0];
-    String field = componentAndField[1];
-    return runs.get(component).get(0).get(field);
+  private Object getObject(String toBeReplaced, ExecutionRuns runs) throws EvaluationException {
+    toBeReplaced = removeAllWhitespaces(toBeReplaced);
+    String[] componentAndField = splitByStr(removeBrackets(toBeReplaced), ".");
+    try {
+      String component = componentAndField[0];
+      String field = componentAndField[1];
+      return getValue(component, field, runs);
+    } catch (NullPointerException e) {
+      throw new EvaluationException("Could not find given value: " + toBeReplaced);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      throw new EvaluationException(
+          "Value to replace is: " + toBeReplaced + " but should be like {componentLabel.field}");
+    }
   }
 
-  private Object getDataType(Object o) {
+  private String removeBrackets(String str) {
+    return str.replace("{", "").replace("}", "");
+  }
 
+  private Object getDataType(Object o) throws EvaluationException {
     try {
       return new BigDecimal(o.toString());
     } catch (NumberFormatException e) {
       return o;
+    } catch (NullPointerException e) {
+      throw new EvaluationException("Could not convert Object because of Nullpointer");
     }
-  }
-
-
-  private String[] splitByOperator(String part, String operator) {
-    return part.split(Pattern.quote(operator));
   }
 
 

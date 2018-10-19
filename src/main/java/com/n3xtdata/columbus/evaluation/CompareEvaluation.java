@@ -22,7 +22,6 @@ public class CompareEvaluation implements Evaluation {
 
   Logger logger = LoggerFactory.getLogger(getClass());
 
-
   public CompareEvaluation() {
   }
 
