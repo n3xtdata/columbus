@@ -30,7 +30,7 @@ public class Lexer {
         input.ordinaryChar(')');
         input.ordinaryChar('&');
         input.ordinaryChar('|');
-        input.ordinaryChar('!');
+        input.ordinaryChar('?');
     }
     public int nextSymbol() {
         try {

@@ -6,6 +6,6 @@ public class And extends NonTerminal {
     }
 
     public String toString() {
-        return String.format("(%s AND %s)", left, right);
+        return String.format("(%s & %s)", left, right);
     }
 }

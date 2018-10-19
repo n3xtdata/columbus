@@ -6,6 +6,6 @@ public class Or extends NonTerminal {
     }
 
     public String toString() {
-        return String.format("(%s OR %s)", left, right);
+        return String.format("(%s | %s)", left, right);
     }
 }

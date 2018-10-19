@@ -85,13 +85,13 @@ public class RuleEvaluation implements Evaluation {
 
     List<String> allExpressions = new ArrayList();
 
-    String[] orExpressions = leftRight.split(Pattern.quote(" OR "));
+    String[] orExpressions = leftRight.split(Pattern.quote("|"));
 
     for(String orExpression : orExpressions) {
-      String[] andExpressions = orExpression.split(Pattern.quote(" AND "));
+      String[] andExpressions = orExpression.split(Pattern.quote("&"));
       for(String andExpression : andExpressions) {
 
-        String[] all = andExpression.split(Pattern.quote(" NOT "));
+        String[] all = andExpression.split(Pattern.quote("! "));
 
         for(String exp : all) {
 
@@ -139,10 +139,12 @@ public class RuleEvaluation implements Evaluation {
 
     BooleanEvaluator booleanEvaluator = new BooleanEvaluator();
 
+/*
     this.boolRules = this.boolRules.replaceAll(Pattern.quote("OR"), " OR ");
     this.boolRules = this.boolRules.replaceAll(Pattern.quote("AND"), " AND ");
     this.boolRules = this.boolRules.replaceAll(Pattern.quote("NOT"), " NOT ");
 
+*/
 
 
     System.out.println("Final Bool String = " +this.boolRules);
