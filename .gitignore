@@ -28,9 +28,9 @@ hs_err_pid*
 *.iml
 *.ipr
 
-
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
 .DS_Store
-files/
+files/checks
+files/connections
