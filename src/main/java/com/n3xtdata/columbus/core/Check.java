@@ -237,7 +237,7 @@ public class Check {
 
     try {
       return this.getEvaluation().evaluate(runs);
-    } catch (EvaluationException e) {
+    } catch (EvaluationException | InterruptedException e) {
       logger.error("Could not evaluate Check " + this.getLabel() + ": " + e.getMessage());
       return Status.TECHNICAL_ERROR;
     }

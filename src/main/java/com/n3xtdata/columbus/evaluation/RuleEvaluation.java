@@ -16,41 +16,50 @@ package com.n3xtdata.columbus.evaluation;
 import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+
+import java.awt.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("MagicConstant")
 public class RuleEvaluation implements Evaluation {
 
   private final String[] operators = {"==", "!=", "<=", ">=", "<", ">"};
   private Logger logger = LoggerFactory.getLogger(getClass());
   private String allRules;
+  private String boolRules;
 
   @Override
-  public Status evaluate(ExecutionRuns runs) throws EvaluationException {
+  public Status evaluate(ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
 
     String status = this.parseRules(runs);
     return Status.contains(status);
   }
 
 
-  private String parseRules(ExecutionRuns runs) throws EvaluationException {
+  private String parseRules(ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
 
     String[] rules = this.allRules.split(Pattern.quote("\n"));
+
+    String result;
 
     for (String rule : rules) {
       if (isEmptyLine(rule)) {
         continue;
       }
-      Expression expression;
-      expression = this.parseRule(rule);
-      this.replaceValues(expression, runs);
 
-      if (expression.evaluate()) {
-        return expression.getAction();
+
+      result = this.parseRule(rule, runs);
+
+      if(result != "NO_RESULT") {
+        return result;
       }
+
     }
 
     throw new EvaluationException("No rules available");
@@ -64,19 +73,96 @@ public class RuleEvaluation implements Evaluation {
     return str.replaceAll(" ", "");
   }
 
-  private Expression parseRule(String rule) throws EvaluationException {
+  private String parseRule(String rule, ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
     logger.debug("Parsing rule: " + rule);
     String[] leftRightAndAction = splitByStr(rule, "->");
-    String leftRight = leftRightAndAction[0];
 
-    for (String op : operators) {
-      if (leftRight.contains(op)) {
-        String[] leftAndRight = splitByStr(leftRight, op);
-        return new Expression(leftAndRight[0], op, leftAndRight[1], leftRightAndAction[1]);
+    String leftRight = leftRightAndAction[0];
+    String action = leftRightAndAction[1];
+    System.out.println("ACTION = " + action);
+
+    this.boolRules = leftRight;
+
+    List<String> allExpressions = new ArrayList();
+
+    String[] orExpressions = leftRight.split(Pattern.quote(" OR "));
+
+    for(String orExpression : orExpressions) {
+      String[] andExpressions = orExpression.split(Pattern.quote(" AND "));
+      for(String andExpression : andExpressions) {
+
+        String[] all = andExpression.split(Pattern.quote(" NOT "));
+
+        for(String exp : all) {
+
+          exp = exp.replaceAll(Pattern.quote("("), "");
+          exp = exp.replaceAll(Pattern.quote(")"), "");
+
+          allExpressions.add(exp);
+        }
       }
     }
-    throw new EvaluationException("Operator is not supported! Please use one of those: " + Arrays
-        .toString(this.operators));
+
+    this.boolRules = this.boolRules.replaceAll(Pattern.quote(" "), "");
+
+    for(String exp : allExpressions) {
+      for (String op : operators) {
+        if (exp.contains(op)) {
+          System.out.println("Parsing expression " + exp);
+          String[] leftAndRight = splitByStr(exp, op);
+          Expression ex = new Expression(leftAndRight[0], op, leftAndRight[1], leftRightAndAction[1]);
+
+          this.replaceValues(ex, runs);
+
+          Boolean eval = ex.evaluate();
+          System.out.println("eval = " +  eval.toString());
+          // ({first.status} == 1 | 2==2 & a == b) | 1==1) -> SUCCESS
+          System.out.println("Bool String before = " + this.boolRules);
+
+          String originalExpression = ex.getOriginExpressionString();
+
+          originalExpression = originalExpression.replaceAll(Pattern.quote(" "), "");
+
+          Boolean contains = this.boolRules.contains(originalExpression);
+
+
+          this.boolRules = this.boolRules.replace(originalExpression, eval.toString());
+          System.out.println("Bool String after = " + this.boolRules);
+
+
+        }
+      }
+/*      throw new EvaluationException("Operator is not supported! Please use one of those: " + Arrays
+              .toString(this.operators));*/
+
+    }
+
+    BooleanEvaluator booleanEvaluator = new BooleanEvaluator();
+
+    this.boolRules = this.boolRules.replaceAll(Pattern.quote("OR"), " OR ");
+    this.boolRules = this.boolRules.replaceAll(Pattern.quote("AND"), " AND ");
+    this.boolRules = this.boolRules.replaceAll(Pattern.quote("NOT"), " NOT ");
+
+
+
+    System.out.println("Final Bool String = " +this.boolRules);
+
+    try {
+
+      Boolean result = booleanEvaluator.evaluate(this.boolRules);
+
+      if(result) {
+        System.out.println("Result for rule " + rule + " = " + action);
+        return action.replaceAll(Pattern.quote(" "), "");
+      }
+
+    }
+    catch (java.lang.RuntimeException e) {
+      throw new EvaluationException("Expression " + this.boolRules + " malformed");
+    }
+
+    return "NO_RESULT";
+
   }
 
   private String[] splitByStr(String part, String str) {

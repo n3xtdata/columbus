@@ -40,15 +40,16 @@ public class ExpressionParserTests {
     this.firstComponentRun = new ArrayList<>();
   }
 
+
   @Test
-  public void testSimpleRule() throws EvaluationException {
+  public void testSimpleRule() throws EvaluationException, InterruptedException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} >= 'B' -> SUCCESS";
+    String allRules = "{first.status} >= 'B' AND 'A' == 'A' -> SUCCESS";
 
     this.ruleEvaluation.setAllRules(allRules);
     Status status = this.ruleEvaluation.evaluate(runs);
@@ -57,7 +58,7 @@ public class ExpressionParserTests {
   }
 
   @Test
-  public void testStringsShoudlBeEqual() throws EvaluationException {
+  public void testStringsShoudlBeEqual() throws EvaluationException, InterruptedException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "A");
@@ -74,7 +75,7 @@ public class ExpressionParserTests {
   }
 
   @Test
-  public void testStringsShoudlBeDifferent() throws EvaluationException {
+  public void testStringsShoudlBeDifferent() throws EvaluationException, InterruptedException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "A");
@@ -90,8 +91,9 @@ public class ExpressionParserTests {
     assert (status.equals(Status.WARNING));
   }
 
+
   @Test(expected = EvaluationException.class)
-  public void testInvalidComparison() throws EvaluationException {
+  public void testInvalidComparison() throws EvaluationException, InterruptedException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
@@ -104,8 +106,9 @@ public class ExpressionParserTests {
     ruleEvaluation.evaluate(runs);
   }
 
+
   @Test(expected = EvaluationException.class)
-  public void testInvalidOperatorShouldThrowException() throws EvaluationException {
+  public void testInvalidOperatorShouldThrowException() throws EvaluationException, InterruptedException {
 
     String allRules = "{first.status} =! 1 -> SUCCESS";
     ruleEvaluation.setAllRules(allRules);
@@ -114,7 +117,7 @@ public class ExpressionParserTests {
   }
 
   @Test(expected = EvaluationException.class)
-  public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException {
+  public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException, InterruptedException {
 
     String allRules = "{first.status} == 1 -> SUCCESS";
     ruleEvaluation.setAllRules(allRules);
@@ -123,7 +126,7 @@ public class ExpressionParserTests {
   }
 
   @Test(expected = EvaluationException.class)
-  public void testInvalidToBeReplacedValueShouldThrowException() throws EvaluationException {
+  public void testInvalidToBeReplacedValueShouldThrowException() throws EvaluationException, InterruptedException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "1");
@@ -150,4 +153,23 @@ public class ExpressionParserTests {
     assertFalse(booleanEvaluator.evaluate("true & false"));
 
   }
+
+  @Test
+  public void bla() throws InterruptedException, EvaluationException {
+
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", 1);
+    firstComponentRun.add(row);
+    runs.put("first", firstComponentRun);
+
+    String allRules = "({first.status} == 2 OR 2==2 AND a==b) OR 1==1) -> ERROR \n ({first.status} == 1 OR 2==2 AND a==b) OR 1==1) -> SUCCESS";
+
+    ruleEvaluation.setAllRules(allRules);
+
+    ruleEvaluation.evaluate(runs);
+
+  }
+
+
 }

@@ -28,12 +28,17 @@ public class Expression {
   private String right;
   private Object rightObject;
   private String action;
+  private String originExpressionString;
 
   Expression(String left, String operator, String right, String action) {
+    this.originExpressionString = left+operator+right;
     this.left = left;
     this.operator = operator.replaceAll(" ", "");
     this.right = right;
     this.action = action.replaceAll(" ", "");
+
+    System.out.println("origin: " + this.originExpressionString);
+
   }
 
   public String getLeft() {
@@ -104,6 +109,11 @@ public class Expression {
       default:
         return false;
     }
+  }
+
+
+  public String getOriginExpressionString() {
+    return this.originExpressionString;
   }
 
   @Override

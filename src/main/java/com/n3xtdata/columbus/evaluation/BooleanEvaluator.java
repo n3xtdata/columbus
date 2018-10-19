@@ -10,7 +10,7 @@ public class BooleanEvaluator {
 
 
 
-    public Boolean evaluate(String expression) throws InterruptedException {
+    public Boolean evaluate(String expression) {
         Lexer lexer = new Lexer(new ByteArrayInputStream(expression.getBytes()));
         RecursiveDescentParser parser = new RecursiveDescentParser(lexer);
         BooleanExpression ast = parser.build();

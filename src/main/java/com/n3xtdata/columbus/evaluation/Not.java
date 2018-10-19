@@ -14,7 +14,7 @@ public class Not extends NonTerminal {
     }
 
     public String toString() {
-        return String.format("!%s", left);
+        return String.format(" NOT %s", left);
     }
 }
 

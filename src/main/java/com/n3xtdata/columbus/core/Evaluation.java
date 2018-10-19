@@ -19,7 +19,7 @@ import com.n3xtdata.columbus.executor.ExecutionRuns;
 
 public interface Evaluation {
 
-  Status evaluate(ExecutionRuns runs) throws EvaluationException;
+  Status evaluate(ExecutionRuns runs) throws EvaluationException, InterruptedException;
 
   Boolean validate(Integer componentSize);
 }
