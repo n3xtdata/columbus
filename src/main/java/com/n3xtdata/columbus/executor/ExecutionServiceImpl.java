@@ -45,12 +45,12 @@ public class ExecutionServiceImpl implements ExecutionService {
 
     Status status = check.execute();
 
-    if (check.getNotifications().size() > 0) {
-      if (status.equals(Status.ERROR) || status.equals(Status.WARNING)) {
-        logger.info("Sending mail for check " + check.getLabel() + " to " + check.getNotifications().toString());
-        this.notificationService.sendNotification(check.getNotifications());
-      }
-    }
+//  if (check.getNotifications() != null && check.getNotifications().size() > 0) {
+//      if (status.equals(Status.ERROR) || status.equals(Status.WARNING)) {
+//        logger.info("Sending mail for check " + check.getLabel() + " to " + check.getNotifications().toString());
+//        this.notificationService.sendNotification(check.getNotifications());
+//      }
+//    }
     return status;
   }
 
