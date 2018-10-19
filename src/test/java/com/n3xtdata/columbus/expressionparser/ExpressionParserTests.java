@@ -13,6 +13,7 @@
 
 package com.n3xtdata.columbus.expressionparser;
 
+import com.n3xtdata.columbus.evaluation.BooleanEvaluator;
 import com.n3xtdata.columbus.evaluation.RuleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
 
 public class ExpressionParserTests {
 
@@ -131,5 +134,20 @@ public class ExpressionParserTests {
     ruleEvaluation.setAllRules(allRules);
 
     ruleEvaluation.evaluate(runs);
+  }
+
+  @Test
+  public void booleanEvaluator() throws InterruptedException {
+
+    BooleanEvaluator booleanEvaluator = new BooleanEvaluator();
+
+    String allRules = "{first.status} >= 'B' -> SUCCESS";
+
+    RuleEvaluation ruleEvaluation = new RuleEvaluation();
+
+    ruleEvaluation.setAllRules(allRules);
+
+    assertFalse(booleanEvaluator.evaluate("true & false"));
+
   }
 }
