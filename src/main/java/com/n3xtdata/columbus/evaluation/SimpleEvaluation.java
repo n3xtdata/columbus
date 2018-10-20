@@ -13,7 +13,6 @@
 
 package com.n3xtdata.columbus.evaluation;
 
-
 import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;

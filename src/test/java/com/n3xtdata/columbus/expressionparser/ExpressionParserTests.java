@@ -13,15 +13,12 @@
 
 package com.n3xtdata.columbus.expressionparser;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.n3xtdata.columbus.evaluation.RuleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
-import com.n3xtdata.columbus.evaluation.booleanevaluator.BooleanEvaluator;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +43,7 @@ public class ExpressionParserTests {
 
 
   @Test
-  public void testSimpleRule() throws EvaluationException, InterruptedException {
+  public void testSimpleRule() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
@@ -55,14 +52,31 @@ public class ExpressionParserTests {
 
     String allRules = "{first.status} >= 'B'  AND 'A' == 'A' -> SUCCESS";
 
-    this.ruleEvaluation.setAllRules(allRules);
+    this.ruleEvaluation.setRules(allRules);
     Status status = this.ruleEvaluation.evaluate(runs);
 
     assert (status.equals(Status.SUCCESS));
   }
 
   @Test
-  public void testStringsShoudlBeEqual() throws EvaluationException, InterruptedException {
+  public void testStringsShouldBeEqual() throws EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", "A");
+
+    firstComponentRun.add(row);
+    runs.put("first", firstComponentRun);
+
+    String allRules = "{first.status} == 'A' -> SUCCESS";
+
+    ruleEvaluation.setRules(allRules);
+    Status status = ruleEvaluation.evaluate(runs);
+
+    assert (status.equals(Status.SUCCESS));
+  }
+
+  @Test
+  public void testShouldIgnoreEmptyLine() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "A");
@@ -72,14 +86,14 @@ public class ExpressionParserTests {
 
     String allRules = " \n {first.status} == 'A' -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
     Status status = ruleEvaluation.evaluate(runs);
 
     assert (status.equals(Status.SUCCESS));
   }
 
   @Test
-  public void testStringsShoudlBeDifferent() throws EvaluationException, InterruptedException {
+  public void testStringsShouldBeDifferent() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "A");
@@ -89,15 +103,27 @@ public class ExpressionParserTests {
 
     String allRules = "{first.status} == 'B' -> SUCCESS \n {first.status} != 'C' -> WARNING";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
     Status status = ruleEvaluation.evaluate(runs);
 
     assert (status.equals(Status.WARNING));
   }
 
+  @Test(expected = EvaluationException.class)
+  public void testNotExistingStatusShouldThrowException() throws EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", "C");
+    firstComponentRun.add(row);
+    runs.put("first", firstComponentRun);
+
+    String allRules = "{first.status} >= 1 ->";
+    ruleEvaluation.setRules(allRules);
+    ruleEvaluation.evaluate(runs);
+  }
 
   @Test(expected = EvaluationException.class)
-  public void testInvalidComparison() throws EvaluationException, InterruptedException {
+  public void testInvalidComparison() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "C");
@@ -105,32 +131,32 @@ public class ExpressionParserTests {
     runs.put("first", firstComponentRun);
 
     String allRules = "{first.status} >= 1 -> SUCCESS";
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     ruleEvaluation.evaluate(runs);
   }
 
 
   @Test(expected = EvaluationException.class)
-  public void testInvalidOperatorShouldThrowException() throws EvaluationException, InterruptedException {
+  public void testInvalidOperatorShouldThrowException() throws EvaluationException {
 
     String allRules = "{first.status} =! 1 -> SUCCESS";
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     ruleEvaluation.evaluate(runs);
   }
 
   @Test(expected = EvaluationException.class)
-  public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException, InterruptedException {
+  public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException {
 
     String allRules = "{first.status} == 1 -> SUCCESS";
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     ruleEvaluation.evaluate(runs);
   }
 
   @Test(expected = EvaluationException.class)
-  public void testInvalidToBeReplacedValueShouldThrowException() throws EvaluationException, InterruptedException {
+  public void testInvalidToBeReplacedValueShouldThrowException() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", "1");
@@ -138,13 +164,13 @@ public class ExpressionParserTests {
     runs.put("first", firstComponentRun);
 
     String allRules = "{first.d} == 1 -> SUCCESS";
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     ruleEvaluation.evaluate(runs);
   }
 
   @Test
-  public void bla() throws InterruptedException, EvaluationException {
+  public void bla() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -153,7 +179,7 @@ public class ExpressionParserTests {
 
     String allRules = "(({first.status} == 2) OR 2==2) AND 'a'=='b' OR 1==1 -> ERROR \n {first.status} == 1 OR 2==2  AND 'a'=='a' -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
@@ -161,9 +187,8 @@ public class ExpressionParserTests {
 
   }
 
-
   @Test
-  public void bla2() throws InterruptedException, EvaluationException {
+  public void bla2() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -173,16 +198,15 @@ public class ExpressionParserTests {
 
     String allRules = "({first.status} == 2  OR  {first.status} == 3)  OR  {first.value}==13  AND 'a'=='b'  OR  (2==3  AND 1==1) -> ERROR \n ({first.status} == 1  OR  {first.value}==13  AND 'a'=='b')  OR  1==1 -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
     assert (status.equals(Status.SUCCESS));
-
   }
 
   @Test
-  public void bla3() throws InterruptedException, EvaluationException {
+  public void bla3() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -191,7 +215,7 @@ public class ExpressionParserTests {
 
     String allRules = "(1==2  OR  3==2) -> ERROR \n (2==2  OR  3==2) -> WARNING";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
@@ -199,7 +223,7 @@ public class ExpressionParserTests {
   }
 
   @Test
-  public void bla4() throws InterruptedException, EvaluationException {
+  public void bla4() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -208,7 +232,7 @@ public class ExpressionParserTests {
 
     String allRules = "!(1==2  OR  3==2) -> ERROR";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
@@ -216,7 +240,7 @@ public class ExpressionParserTests {
   }
 
   @Test
-  public void bla5() throws InterruptedException, EvaluationException {
+  public void bla5() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 95);
@@ -225,9 +249,9 @@ public class ExpressionParserTests {
 
     runs.put("first", firstComponentRun);
 
-    String allRules = "(({first.status}/{first.value})*100) == 95  AND {first.value} == 100 -> SUCCESS";
+    String allRules = "(({first.status}/{first.value})*100) == 95 AND {first.value} == 100 -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
@@ -236,7 +260,7 @@ public class ExpressionParserTests {
 
 
   @Test
-  public void bla6() throws InterruptedException, EvaluationException {
+  public void bla6() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("a", 4);
@@ -248,7 +272,7 @@ public class ExpressionParserTests {
 
     String allRules = "{first.a} * {first.b} + {first.c} == 11 -> SUCCESS";
 
-    ruleEvaluation.setAllRules(allRules);
+    ruleEvaluation.setRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
@@ -263,7 +287,6 @@ public class ExpressionParserTests {
     Boolean bd = parser.parseExpression("(2 == 1+1 AND 2 == 2) AND !(5 == 4)").getValue(Boolean.class);
 
     assertTrue(bd);
-
   }
 
 }

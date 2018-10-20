@@ -33,4 +33,12 @@ public class ExecutionRuns {
     return this.runs.get(key);
   }
 
+  public Object getValue(String componentName, String field) throws NullPointerException {
+    Object o = runs.get(componentName).get(0).get(field);
+    if (o == null) {
+      throw new NullPointerException();
+    }
+    return o;
+  }
+
 }

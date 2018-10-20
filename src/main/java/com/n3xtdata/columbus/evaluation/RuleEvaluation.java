@@ -16,153 +16,135 @@ package com.n3xtdata.columbus.evaluation;
 import com.n3xtdata.columbus.core.Evaluation;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @SuppressWarnings("MagicConstant")
 public class RuleEvaluation implements Evaluation {
 
-  private final String[] operators = {"==", "!=", "<=", ">=", "<", ">"};
   private Logger logger = LoggerFactory.getLogger(getClass());
-  private String allRules;
-  private String boolRules;
+  private String rules;
 
   @Override
-  public Status evaluate(ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
+  public Status evaluate(ExecutionRuns runs) throws EvaluationException {
 
-    String status = this.parseRules(runs);
+    String status = this.parseRulesAndReturnStatus(runs);
     return Status.contains(status);
   }
 
 
-  private String parseRules(ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
+  private String parseRulesAndReturnStatus(ExecutionRuns runs) throws EvaluationException {
 
-    String[] rules = this.splitByStr(this.allRules, "\n");
-
-    String result;
-
-    for (String rule : rules) {
+    String[] separatedRules = getSplittedByStr(rules, "\n");
+    for (String rule : separatedRules) {
       if (isEmptyLine(rule)) {
         continue;
       }
 
-      result = this.parseRule(rule, runs);
-
-      if (result != "NO_RESULT") {
-        return result;
+      String status = this.parseRule(rule, runs);
+      if (status != null) {
+        return status;
       }
-
     }
 
-    throw new EvaluationException("No rules available");
+    throw new EvaluationException("No rules applicable");
   }
 
-  private Boolean isEmptyLine(String line) {
-    return removeAllWhitespaces(line).isEmpty();
-  }
-
-  private String removeAllWhitespaces(String str) {
-    return str.replaceAll(" ", "");
-  }
-
-  private String parseRule(String rule, ExecutionRuns runs) throws RuntimeException, EvaluationException {
-    logger.debug("Parsing rule: " + rule);
-    String[] leftRightAndAction = this.splitByStr(rule, "->");
-
-    String leftRight = leftRightAndAction[0];
-    String action = leftRightAndAction[1];
-
-    ExpressionParser parser = new SpelExpressionParser();
-
-
-    leftRight = this.replaceValues(leftRight, runs);
-
-
-    Boolean result = parser.parseExpression(leftRight).getValue(Boolean.class);
-
-
-    if(result) {
-      return action.replaceAll(Pattern.quote(" "), "");
-    }
-    else {
-      return "NO_RESULT";
-    }
-
-  }
-
-
-
-
-  private String[] splitByStr(String part, String str) {
+  private String[] getSplittedByStr(String part, String str) {
     return part.split(Pattern.quote(str));
   }
 
-  private String replaceValues(String expression, ExecutionRuns runs) throws EvaluationException {
+  private Boolean isEmptyLine(String line) {
+    line = removeAllWhitespaces(line);
+    return line.isEmpty();
+  }
 
+  private String removeAllWhitespaces(String str) {
+    return str.replaceAll(Pattern.quote(" "), "");
+  }
 
-    List<String> objects = this.findObjectStrings(expression);
+  private String parseRule(String rule, ExecutionRuns runs) throws EvaluationException {
+    logger.debug("Parsing rule: " + rule);
+    String[] expressionAndAction = getSplittedByStr(rule, "->");
 
-    System.out.println("Found " + objects.size() + " objects ");
+    String expression;
+    String pureStatus;
 
-    for(String str : objects) {
-      Object o = this.getObject(str, runs);
-
-      if(o instanceof Number) {
-        if(!o.toString().contains(".")) {
-          o = o.toString() + ".0";
-        }
-      }
-      else if(!o.toString().contains("'")) {
-        o = "'"+o.toString()+"'";
-      }
-
-      System.out.println("Object = " + o);
-
-      System.out.println(str);
-      expression = expression.replace(str, o.toString());
-
-
-      // expression.setLeftObject(getDataType(o));
+    try {
+      expression = expressionAndAction[0];
+      pureStatus = removeAllWhitespaces(expressionAndAction[1]);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      throw new EvaluationException("given rule does not match valid syntax");
     }
 
-    logger.debug("replaced expression: " + expression);
+    expression = replaceValues(expression, runs);
+    if (expressionIsTrue(expression)) {
+      return pureStatus;
+    } else {
+      return null;
+    }
+  }
 
+  private Boolean expressionIsTrue(String expression) throws EvaluationException {
+    ExpressionParser parser = new SpelExpressionParser();
+    try {
+      return parser.parseExpression(expression).getValue(Boolean.class);
+    } catch (SpelEvaluationException e) {
+      throw new EvaluationException("Parser could not evaluate " + expression);
+    }
+  }
+
+  private String replaceValues(String expression, ExecutionRuns runs) throws EvaluationException {
+    logger.debug("original expression: " + expression);
+    Set<String> objects = this.findObjectStrings(expression);
+
+    for (String str : objects) {
+      Object o = this.getObject(str, runs);
+      if (o instanceof Number) {
+        if (!o.toString().contains(".")) {
+          o = o.toString() + ".0";
+        }
+      } else if (!o.toString().contains("'")) {
+        o = "'" + o.toString() + "'";
+      }
+      logger.info("Replaced " + str + " with Object " + o + " Type: " + o.getClass());
+      expression = expression.replace(str, o.toString());
+    }
+    logger.info("new expression: " + expression);
     return expression;
-
   }
 
 
-  private List<String> findObjectStrings(String str) {
+  private Set<String> findObjectStrings(String str) {
 
     Pattern pattern = Pattern.compile("\\{(.*?)\\}"); // (.*?) means 'anything'
+    Matcher matcher = pattern.matcher(str);
 
-    Matcher matcher = pattern.matcher(str); //Note: replace <str> with your string variable, which contains the <str> and </str> codes (and the text between them).
+    Set<String> objectStrings = new HashSet<>();
 
-    List<String> objectStrings = new ArrayList<>();
-
-    while(matcher.find()) { // Loops every time the matcher has an occurrence , then adds that to the occurrence string.
-
-      System.out.println(matcher.group(0));
-      objectStrings.add(matcher.group(0)); //Change the ", " to anything that you want to separate the occurrence by.
+    while (matcher.find()) {
+      objectStrings.add(matcher.group(0));
     }
-
+    logger.info("Found " + objectStrings.size() + " distinct strings to be replaced: " + Arrays
+        .toString(objectStrings.toArray()));
     return objectStrings;
-
   }
 
   private Object getObject(String toBeReplaced, ExecutionRuns runs) throws EvaluationException {
     toBeReplaced = removeAllWhitespaces(toBeReplaced);
-    String[] componentAndField = splitByStr(removeBrackets(toBeReplaced), ".");
+    String[] componentAndField = getSplittedByStr(removeBrackets(toBeReplaced), ".");
     try {
       String component = componentAndField[0];
       String field = componentAndField[1];
-      return getValue(component, field, runs);
+      return runs.getValue(component, field);
     } catch (NullPointerException e) {
       throw new EvaluationException("Could not find given value: " + toBeReplaced);
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -172,19 +154,20 @@ public class RuleEvaluation implements Evaluation {
   }
 
   private String removeBrackets(String str) {
-    return str.replace("{", "").replace("}", "");
+    str = getRemovedStr(str, "{");
+    return getRemovedStr(str, "}");
   }
 
-
-
-  private Object getValue(String componentName, String field, ExecutionRuns runs) {
-    return runs.get(componentName).get(0).get(field);
+  private String getRemovedStr(String str, String toBeRemoved) {
+    return str.replace(toBeRemoved, "");
   }
 
+  public String getRules() {
+    return rules;
+  }
 
-
-  public void setAllRules(String allRules) {
-    this.allRules = allRules;
+  public void setRules(String rules) {
+    this.rules = rules;
   }
 
   @Override
