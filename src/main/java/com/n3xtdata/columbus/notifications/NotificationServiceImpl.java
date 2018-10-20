@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService {
 
   private final static String SUBJECT = "Columbus Notification";
-  private final static String FROM = "firstname.lastname@example.com";
+  private final static String FROM = "mail@robertpueschel.com";
 
   @Autowired
   private EmailService emailService;

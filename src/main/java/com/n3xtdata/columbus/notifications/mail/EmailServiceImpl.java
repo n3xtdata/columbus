@@ -30,6 +30,7 @@ public class EmailServiceImpl implements EmailService {
   public JavaMailSender emailSender;
 
   public void sendSimpleMail(Collection<String> recipients, String subject, String text, String from) {
+
     String[] list = recipients.toArray(new String[recipients.size()]);
     try {
       SimpleMailMessage message = new SimpleMailMessage();

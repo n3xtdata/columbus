@@ -6,26 +6,30 @@
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law | agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES | CONDITIONS OF ANY KIND, either express | implied. See the License for the
+ * Unless required by applicable law  OR  agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES  OR  CONDITIONS OF ANY KIND, either express  OR  implied. See the License for the
  * specific language governing permissions ? limitations under the License.
  */
 
 package com.n3xtdata.columbus.expressionparser;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.n3xtdata.columbus.evaluation.RuleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
 import com.n3xtdata.columbus.evaluation.booleanevaluator.BooleanEvaluator;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 public class ExpressionParserTests {
 
@@ -49,7 +53,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} >= 'B' & 'A' == 'A' -> SUCCESS";
+    String allRules = "{first.status} >= 'B'  AND 'A' == 'A' -> SUCCESS";
 
     this.ruleEvaluation.setAllRules(allRules);
     Status status = this.ruleEvaluation.evaluate(runs);
@@ -66,7 +70,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = " \n {first.status} == A -> SUCCESS";
+    String allRules = " \n {first.status} == 'A' -> SUCCESS";
 
     ruleEvaluation.setAllRules(allRules);
     Status status = ruleEvaluation.evaluate(runs);
@@ -83,7 +87,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} == B -> SUCCESS \n {first.status} != C -> WARNING";
+    String allRules = "{first.status} == 'B' -> SUCCESS \n {first.status} != 'C' -> WARNING";
 
     ruleEvaluation.setAllRules(allRules);
     Status status = ruleEvaluation.evaluate(runs);
@@ -140,21 +144,6 @@ public class ExpressionParserTests {
   }
 
   @Test
-  public void booleanEvaluator() throws InterruptedException {
-
-    BooleanEvaluator booleanEvaluator = new BooleanEvaluator();
-
-    String allRules = "{first.status} >= 'B' -> SUCCESS";
-
-    RuleEvaluation ruleEvaluation = new RuleEvaluation();
-
-    ruleEvaluation.setAllRules(allRules);
-
-    assertFalse(booleanEvaluator.evaluate("true & false"));
-
-  }
-
-  @Test
   public void bla() throws InterruptedException, EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
@@ -162,7 +151,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "({first.status} == 2 | 2==2 & a==b) | 1==1) -> ERROR \n (({first.status} == 1 | 2==2) & a==a)) -> SUCCESS";
+    String allRules = "(({first.status} == 2) OR 2==2) AND 'a'=='b' OR 1==1 -> ERROR \n {first.status} == 1 OR 2==2  AND 'a'=='a' -> SUCCESS";
 
     ruleEvaluation.setAllRules(allRules);
 
@@ -182,7 +171,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "({first.status} == 2 | {first.status} == 3) | {first.value}==13 & a==b) | (2==3 & 1==1) -> ERROR \n ({first.status} == 1 | {first.value}==13 & a==b) | 1==1) -> SUCCESS";
+    String allRules = "({first.status} == 2  OR  {first.status} == 3)  OR  {first.value}==13  AND 'a'=='b'  OR  (2==3  AND 1==1) -> ERROR \n ({first.status} == 1  OR  {first.value}==13  AND 'a'=='b')  OR  1==1 -> SUCCESS";
 
     ruleEvaluation.setAllRules(allRules);
 
@@ -200,7 +189,7 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "(1==2 | 3==2) -> ERROR \n (2==2 | 3==2) -> WARNING";
+    String allRules = "(1==2  OR  3==2) -> ERROR \n (2==2  OR  3==2) -> WARNING";
 
     ruleEvaluation.setAllRules(allRules);
 
@@ -217,13 +206,64 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "!(1==2 | 3==2) -> ERROR";
+    String allRules = "!(1==2  OR  3==2) -> ERROR";
 
     ruleEvaluation.setAllRules(allRules);
 
     Status status = ruleEvaluation.evaluate(runs);
 
     assert (status.equals(Status.ERROR));
+  }
+
+  @Test
+  public void bla5() throws InterruptedException, EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("status", 95);
+    row.put("value", 100);
+    firstComponentRun.add(row);
+
+    runs.put("first", firstComponentRun);
+
+    String allRules = "(({first.status}/{first.value})*100) == 95  AND {first.value} == 100 -> SUCCESS";
+
+    ruleEvaluation.setAllRules(allRules);
+
+    Status status = ruleEvaluation.evaluate(runs);
+
+    assert (status.equals(Status.SUCCESS));
+  }
+
+
+  @Test
+  public void bla6() throws InterruptedException, EvaluationException {
+
+    Map<String, Object> row = new HashMap<>();
+    row.put("a", 4);
+    row.put("b", 2);
+    row.put("c", 3);
+    firstComponentRun.add(row);
+
+    runs.put("first", firstComponentRun);
+
+    String allRules = "{first.a} * {first.b} + {first.c} == 11 -> SUCCESS";
+
+    ruleEvaluation.setAllRules(allRules);
+
+    Status status = ruleEvaluation.evaluate(runs);
+
+    assert (status.equals(Status.SUCCESS));
+  }
+
+  @Test
+  public void springExpressionParser() {
+
+    ExpressionParser parser = new SpelExpressionParser();
+
+    Boolean bd = parser.parseExpression("(2 == 1+1 AND 2 == 2) AND !(5 == 4)").getValue(Boolean.class);
+
+    assertTrue(bd);
+
   }
 
 }
