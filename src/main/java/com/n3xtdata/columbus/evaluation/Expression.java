@@ -27,18 +27,16 @@ public class Expression {
   private String operator;
   private String right;
   private Object rightObject;
+  private Boolean result;
   private String action;
   private String originExpressionString;
 
   Expression(String left, String operator, String right, String action) {
-    this.originExpressionString = left+operator+right;
+    this.originExpressionString = left + operator + right;
     this.left = left;
     this.operator = operator.replaceAll(" ", "");
     this.right = right;
     this.action = action.replaceAll(" ", "");
-
-    System.out.println("origin: " + this.originExpressionString);
-
   }
 
   public String getLeft() {
@@ -89,6 +87,14 @@ public class Expression {
     this.rightObject = rightObject;
   }
 
+  public Boolean getResult() {
+    return result;
+  }
+
+  public void setResult(Boolean result) {
+    this.result = result;
+  }
+
   public Boolean evaluate() throws EvaluationException {
     if (leftObject.getClass() != rightObject.getClass()) {
       throw new EvaluationException("Cannot compare two different classes");
@@ -119,14 +125,15 @@ public class Expression {
   @Override
   public String toString() {
     return "Expression{" +
-            "left='" + left + '\'' +
-            ", leftObject=" + leftObject +
-            ", operator='" + operator + '\'' +
-            ", right='" + right + '\'' +
-            ", rightObject=" + rightObject +
-            ", action='" + action + '\'' +
-            ", originExpressionString='" + originExpressionString + '\'' +
-            '}';
+        "left='" + left + '\'' +
+        ", leftObject=" + leftObject +
+        ", operator='" + operator + '\'' +
+        ", right='" + right + '\'' +
+        ", rightObject=" + rightObject +
+        ", result=" + result +
+        ", action='" + action + '\'' +
+        ", originExpressionString='" + originExpressionString + '\'' +
+        '}';
   }
 
   private Boolean equals(Object l, Object r) {

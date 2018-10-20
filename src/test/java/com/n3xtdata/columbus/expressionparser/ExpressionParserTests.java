@@ -13,9 +13,11 @@
 
 package com.n3xtdata.columbus.expressionparser;
 
-import com.n3xtdata.columbus.evaluation.BooleanEvaluator;
+import static org.junit.Assert.assertFalse;
+
 import com.n3xtdata.columbus.evaluation.RuleEvaluation;
 import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.evaluation.booleanevaluator.BooleanEvaluator;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;
@@ -24,9 +26,6 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ExpressionParserTests {
 
@@ -158,7 +157,6 @@ public class ExpressionParserTests {
   @Test
   public void bla() throws InterruptedException, EvaluationException {
 
-
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
     firstComponentRun.add(row);
@@ -178,13 +176,13 @@ public class ExpressionParserTests {
   @Test
   public void bla2() throws InterruptedException, EvaluationException {
 
-
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
+    row.put("value", 13);
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "({first.status} == 2 | {first.status} == 3) | 2==2 & a==b) | (2==3 & 1==1) -> ERROR \n ({first.status} == 1 | 2==2 & a==b) | 1==1) -> SUCCESS";
+    String allRules = "({first.status} == 2 | {first.status} == 3) | {first.value}==13 & a==b) | (2==3 & 1==1) -> ERROR \n ({first.status} == 1 | {first.value}==13 & a==b) | 1==1) -> SUCCESS";
 
     ruleEvaluation.setAllRules(allRules);
 
@@ -196,7 +194,6 @@ public class ExpressionParserTests {
 
   @Test
   public void bla3() throws InterruptedException, EvaluationException {
-
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -214,7 +211,6 @@ public class ExpressionParserTests {
 
   @Test
   public void bla4() throws InterruptedException, EvaluationException {
-
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);

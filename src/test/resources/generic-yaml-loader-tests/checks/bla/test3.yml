@@ -1,13 +1,13 @@
 label: test-5
 description: a short description ...
 components:
-  - componentType: JDBC
-    componentDetails:
-      connection: jdbc-sqllite
-      sqlQuery: SELECT * FROM dummy
+- componentType: JDBC
+  componentDetails:
+    connection: jdbc-sqllite
+    sqlQuery: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10

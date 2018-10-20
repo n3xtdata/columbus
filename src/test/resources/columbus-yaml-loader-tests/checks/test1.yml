@@ -2,78 +2,78 @@
 label: test-1
 description: a short description ...
 components:
-  - label: componentLabel
-    componentType: JDBC
-    componentDetails:
-      connectionLabel: jdbc-sqllite
-      command: SELECT * FROM dummy
+- label: componentLabel
+  componentType: JDBC
+  componentDetails:
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10
 ---
 label: test-2
 description: a short description ...
 components:
-  - componentType: JDBC
-    componentDetails:
-      connectionLabel: jdbc-sqllite
-      command: SELECT * FROM dummy
+- componentType: JDBC
+  componentDetails:
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10
 ---
 label: test-3
 description: a short description ...
 components:
-  - label: first
-    componentType: JDBC
-    componentDetails:
-      connectionLabel: jdbc-sqllite
-      command: SELECT 'WARNING' as status FROM dual
-  - label: second
-    componentType: JDBC
-    componentDetails:
-      connectionLabel: jdbc-sqllite
-      command: SELECT 'WARNING' as status FROM dual
+- label: first
+  componentType: JDBC
+  componentDetails:
+    connectionLabel: jdbc-sqllite
+    command: SELECT 'WARNING' as status FROM dual
+- label: second
+  componentType: JDBC
+  componentDetails:
+    connectionLabel: jdbc-sqllite
+    command: SELECT 'WARNING' as status FROM dual
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10
 ---
 label: test-4
 description: a short description ..
 components:
-  - label: componentLabel
-    componentType: JDBC
-    componentDetails:
-      connectionLabel: jdbc-sqllite
-      command: SELECT * FROM dummy
+- label: componentLabel
+  componentType: JDBC
+  componentDetails:
+    connectionLabel: jdbc-sqllite
+    command: SELECT * FROM dummy
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10
 ---
 label: test-5
 description: a short description ...
 components:
-  - label: first
-    componentType: JDBC
-    componentDetails:
-      command: SELECT 1 FROM dual
-      connection:
+- label: first
+  componentType: JDBC
+  componentDetails:
+    command: SELECT 1 FROM dual
+    connection:
 evaluationType: SIMPLE
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+- type: CRON
+  value: 0 0/2 * 1/1 * ? *
+- type: SIMPLE
+  value: 10

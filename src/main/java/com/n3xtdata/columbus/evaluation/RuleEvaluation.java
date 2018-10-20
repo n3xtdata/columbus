@@ -14,13 +14,11 @@
 package com.n3xtdata.columbus.evaluation;
 
 import com.n3xtdata.columbus.core.Evaluation;
+import com.n3xtdata.columbus.evaluation.booleanevaluator.BooleanEvaluator;
 import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-
-import java.awt.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -44,7 +42,7 @@ public class RuleEvaluation implements Evaluation {
 
   private String parseRules(ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
 
-    String[] rules = this.allRules.split(Pattern.quote("\n"));
+    String[] rules = this.splitByStr(this.allRules, "\n");
 
     String result;
 
@@ -53,10 +51,9 @@ public class RuleEvaluation implements Evaluation {
         continue;
       }
 
-
       result = this.parseRule(rule, runs);
 
-      if(result != "NO_RESULT") {
+      if (result != "NO_RESULT") {
         return result;
       }
 
@@ -73,62 +70,35 @@ public class RuleEvaluation implements Evaluation {
     return str.replaceAll(" ", "");
   }
 
-  private String parseRule(String rule, ExecutionRuns runs) throws RuntimeException, InterruptedException, EvaluationException {
+  private String parseRule(String rule, ExecutionRuns runs) throws RuntimeException, EvaluationException {
     logger.debug("Parsing rule: " + rule);
-    String[] leftRightAndAction = splitByStr(rule, "->");
+    String[] leftRightAndAction = this.splitByStr(rule, "->");
 
     String leftRight = leftRightAndAction[0];
     String action = leftRightAndAction[1];
-    System.out.println("ACTION = " + action);
 
     this.boolRules = leftRight;
 
-    List<String> allExpressions = new ArrayList();
-
-    String[] orExpressions = leftRight.split(Pattern.quote("|"));
-
-    for(String orExpression : orExpressions) {
-      String[] andExpressions = orExpression.split(Pattern.quote("&"));
-      for(String andExpression : andExpressions) {
-
-        String[] all = andExpression.split(Pattern.quote("!("));
-
-        for(String exp : all) {
-
-          exp = exp.replaceAll(Pattern.quote("("), "");
-          exp = exp.replaceAll(Pattern.quote(")"), "");
-
-          allExpressions.add(exp);
-        }
-      }
-    }
+    List<String> allExpressions = this.extractExpressions(leftRight);
 
     this.boolRules = this.boolRules.replaceAll(Pattern.quote(" "), "");
 
-    for(String exp : allExpressions) {
+    for (String exp : allExpressions) {
       for (String op : operators) {
         if (exp.contains(op)) {
-          System.out.println("Parsing expression " + exp);
-          String[] leftAndRight = splitByStr(exp, op);
-          Expression ex = new Expression(leftAndRight[0], op, leftAndRight[1], leftRightAndAction[1]);
-
-          this.replaceValues(ex, runs);
-
-          Boolean eval = ex.evaluate();
-          System.out.println("eval = " +  eval.toString());
-          // ({first.status} == 1 | 2==2 & a == b) | 1==1) -> SUCCESS
-          System.out.println("Bool String before = " + this.boolRules);
-
-          String originalExpression = ex.getOriginExpressionString();
-
-          originalExpression = originalExpression.replaceAll(Pattern.quote(" "), "");
-
-          Boolean contains = this.boolRules.contains(originalExpression);
-
-
+          logger.debug("Parsing expression " + exp);
+          String[] leftAndRight = this.splitByStr(exp, op);
+          Expression convertedExpression = new Expression(leftAndRight[0], op, leftAndRight[1], leftRightAndAction[1]);
+          this.replaceValues(convertedExpression, runs);
+          Boolean eval = convertedExpression.evaluate();
+          convertedExpression.setResult(eval);
+          logger.info(
+              "Result for expression " + convertedExpression.getOriginExpressionString() + " = " + convertedExpression
+                  .getResult() + " ("
+                  + convertedExpression.toString() + ")");
+          String originalExpression = convertedExpression.getOriginExpressionString();
+          originalExpression = this.removeAllWhitespaces(originalExpression);
           this.boolRules = this.boolRules.replace(originalExpression, eval.toString());
-          System.out.println("Bool String after = " + this.boolRules);
-
 
         }
       }
@@ -139,27 +109,20 @@ public class RuleEvaluation implements Evaluation {
 
     BooleanEvaluator booleanEvaluator = new BooleanEvaluator();
 
-/*
-    this.boolRules = this.boolRules.replaceAll(Pattern.quote("OR"), " OR ");
-    this.boolRules = this.boolRules.replaceAll(Pattern.quote("AND"), " AND ");
-    this.boolRules = this.boolRules.replaceAll(Pattern.quote("NOT"), " NOT ");
-
-*/
-
-
-    System.out.println("Final Bool String = " +this.boolRules);
+    logger.debug("Final Boolean String = " + this.boolRules);
 
     try {
 
       Boolean result = booleanEvaluator.evaluate(this.boolRules);
 
-      if(result) {
-        System.out.println("Result for rule " + rule + " = " + action);
+      if (result) {
+        logger.info("Result for rule " + rule + " = " + result.toString());
         return action.replaceAll(Pattern.quote(" "), "");
+      } else {
+        logger.info("Result for rule " + rule + " = " + result.toString());
       }
 
-    }
-    catch (java.lang.RuntimeException e) {
+    } catch (java.lang.RuntimeException e) {
       throw new EvaluationException("Expression " + this.boolRules + " malformed");
     }
 
@@ -167,9 +130,36 @@ public class RuleEvaluation implements Evaluation {
 
   }
 
+
+  private List<String> extractExpressions(String leftRight) {
+    List<String> allExpressions = new ArrayList();
+
+    String[] orExpressions = this.splitByStr(leftRight, "|");
+
+    for (String orExpression : orExpressions) {
+      String[] andExpressions = this.splitByStr(orExpression, "&");
+      for (String andExpression : andExpressions) {
+
+        String[] all = this.splitByStr(andExpression, "!(");
+
+        for (String exp : all) {
+
+          exp = exp.replaceAll(Pattern.quote("("), "");
+          exp = exp.replaceAll(Pattern.quote(")"), "");
+
+          allExpressions.add(exp);
+        }
+      }
+    }
+
+    return allExpressions;
+
+  }
+
   private String[] splitByStr(String part, String str) {
     return part.split(Pattern.quote(str));
   }
+
 
   private void replaceValues(Expression expression, ExecutionRuns runs) throws EvaluationException {
     logger.debug("Expression before replacement: " + expression.toString());

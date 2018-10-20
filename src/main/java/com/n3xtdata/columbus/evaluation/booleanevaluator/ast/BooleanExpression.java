@@ -1,4 +1,4 @@
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.evaluation.booleanevaluator.ast;
 
 /**
  * <expression>::=<term>{<or><term>}
@@ -10,5 +10,6 @@ package com.n3xtdata.columbus.evaluation;
  * <not>::='!'
  */
 public interface BooleanExpression {
-    public boolean interpret();
+
+  public boolean interpret();
 }
