@@ -19,7 +19,7 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.Schedule;
+import com.n3xtdata.columbus.core.schedule.Schedule;
 import java.util.List;
 import java.util.Set;
 import org.quartz.CronTrigger;
@@ -90,7 +90,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 
   private void addTriggers(JobDetail job, List<Schedule> schedules) throws SchedulerException {
 
-    Integer i = 0;
+    int i = 0;
 
     for (Schedule schedule : schedules) {
       if (schedule.getType().equals("CRON")) {

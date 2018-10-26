@@ -11,43 +11,17 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.expressionlanguage.exceptions;
 
-public class Schedule {
+public class EvaluationException extends Exception {
 
-  private String type;
+  public EvaluationException(String message) {
 
-  private String value;
-
-  public Schedule() {
-
+    super(message);
   }
 
-  public Schedule(String type, String value) {
+  public EvaluationException() {
 
-    this.type = type;
-    this.value = value;
-  }
-
-  public String getType() {
-
-    return type;
-  }
-
-  public void setType(String type) {
-
-    this.type = type;
-  }
-
-  public String getValue() {
-
-    return value;
-  }
-
-  public void setValue(String value) {
-
-    this.value = value;
   }
 
 }
-

@@ -61,12 +61,14 @@ class GenericYamlLoader<T> {
           Boolean validated = (Boolean) element.getClass().getMethod("validate").invoke(element);
 
           if (validated) {
+            element.getClass().getMethod("init").invoke(element);
             //noinspection unchecked
             hashMap.put(label, (T) element);
           }
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-          e.printStackTrace();
+          logger.error("An error occurred while parsing config file '" + fileName + "': " + e.getMessage());
+          System.exit(0);
         }
       });
     } catch (Exception e) {

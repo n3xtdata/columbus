@@ -13,9 +13,10 @@
 
 package com.n3xtdata.columbus.data;
 
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.JdbcConnection;
-import com.n3xtdata.columbus.core.SshConnection;
+import com.n3xtdata.columbus.core.connection.Connection;
+import com.n3xtdata.columbus.core.connection.SshConnection;
 import java.util.Set;
 
 public interface MetadataService {
@@ -25,6 +26,8 @@ public interface MetadataService {
   Check getCheckByLabel(String label) throws Exception;
 
   Set<JdbcConnection> getAllJdbcConnections();
+
+  Connection getConnectionByLabel(String label) throws Exception;
 
   JdbcConnection getJdbcConnectionByLabel(String label) throws Exception;
 

@@ -18,13 +18,14 @@ package com.n3xtdata.columbus.loader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.Component;
-import com.n3xtdata.columbus.core.JdbcConnection;
-import com.n3xtdata.columbus.core.SshConnection;
+import com.n3xtdata.columbus.core.component.Component;
+import com.n3xtdata.columbus.core.component.ComponentType;
+import com.n3xtdata.columbus.core.connection.SshConnection;
+import com.n3xtdata.columbus.utils.Params;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import org.junit.Test;
@@ -41,24 +42,31 @@ public class GenericYamlLoaderTests extends ColumbusApplicationTests {
 
     Check check = checkHashMap.get("test-1");
 
-    Component component = new Component("componentLabel", "jdbc", "jdbc-sqllite", "SELECT * FROM dummy");
+    Component component = new Component();
+    component.setLabel("componentLabel");
+    component.setType(ComponentType.JDBC);
+    Params componentDetails = new Params();
+    componentDetails.put("connection", "jdbc-sqllite");
+    componentDetails.put("sqlQuery", "SELECT * FROM dummy");
+    component.setParams(componentDetails);
+    component.initDetails();
 
     assertEquals(check.getDescription(), "a short description ...");
     assertEquals(1, check.getComponents().size());
-    assertTrue(check.getComponents().contains(component));
+    assertEquals(check.getComponents().iterator().next(), component);
     assertEquals("src/test/resources/generic-yaml-loader-tests/checks/test1.yml", check.getPath());
 
   }
 
   @Test
-  public void shouldOnlyLoadValidatedCheckFile() throws FileNotFoundException {
+  public void shouldLoadFiveChecks() throws FileNotFoundException {
 
     GenericYamlLoader<Check> checkFileLoader = new GenericYamlLoader<>(new Check());
 
     HashMap<String, Check> checkHashMap = checkFileLoader
         .load("src/test/resources/generic-yaml-loader-tests/checks/test2.yml");
 
-    assertEquals(4, checkHashMap.size());
+    assertEquals(5, checkHashMap.size());
   }
 
   @Test

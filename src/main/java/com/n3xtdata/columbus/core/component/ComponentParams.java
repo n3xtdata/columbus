@@ -11,24 +11,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.core.component;
 
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import java.util.List;
+import java.util.Map;
 
-public class StatusTests {
+interface ComponentParams {
 
-  @Test
-  public void shouldReturnTechnicalErrorWhenNotFound() {
-    String status = "WHATEVER";
-    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
-  }
-
-  @Test
-  public void shouldReturnEnumWhenFound() {
-    String status = "success";
-    assertEquals(Status.SUCCESS, Status.contains(status));
-  }
+  List<Map<String, Object>> execute() throws Exception;
 
 }

@@ -13,17 +13,21 @@
 
 package com.n3xtdata.columbus.core;
 
-import com.n3xtdata.columbus.evaluation.CompareEvaluation;
-import com.n3xtdata.columbus.evaluation.Evaluation;
-import com.n3xtdata.columbus.evaluation.SimpleEvaluation;
-import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.core.component.Component;
+import com.n3xtdata.columbus.core.evaluation.Evaluation;
+import com.n3xtdata.columbus.core.evaluation.Status;
+import com.n3xtdata.columbus.core.schedule.Schedule;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-import com.sun.istack.internal.NotNull;
+import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Check {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private String label;
 
@@ -31,9 +35,6 @@ public class Check {
 
   private Set<Component> components;
 
-  private EvaluationType evaluationType;
-
-  @NotNull
   private Evaluation evaluation;
 
   private List<Schedule> schedules;
@@ -47,14 +48,14 @@ public class Check {
 
   }
 
-  @SuppressWarnings({"unused"})
   public Check(String label, String description, Set<Component> components,
-      EvaluationType evaluationType, List<Schedule> schedules, String path) {
+      Evaluation evaluation, List<Schedule> schedules, Set<String> notifications, String path) {
     this.label = label;
     this.description = description;
     this.components = components;
-    this.evaluationType = evaluationType;
+    this.evaluation = evaluation;
     this.schedules = schedules;
+    this.notifications = notifications;
     this.path = path;
   }
 
@@ -93,22 +94,12 @@ public class Check {
     this.components = components;
   }
 
-  public EvaluationType getEvaluationType() {
-
-    return evaluationType;
-  }
-
-  @SuppressWarnings({"unused"})
-  public void setEvaluationType(EvaluationType evaluationType) {
-    this.evaluationType = evaluationType;
-    this.setEvaluationImpl();
-  }
-
   public List<Schedule> getSchedules() {
 
     return schedules;
   }
 
+  @SuppressWarnings({"unused"})
   public void setSchedules(List<Schedule> schedules) {
 
     this.schedules = schedules;
@@ -118,6 +109,7 @@ public class Check {
     return notifications;
   }
 
+  @SuppressWarnings({"unused"})
   public void setNotifications(Set<String> notifications) {
     this.notifications = notifications;
   }
@@ -134,14 +126,6 @@ public class Check {
     this.path = path;
   }
 
-  private void setEvaluationImpl() {
-    if (this.evaluationType == EvaluationType.SIMPLE) {
-      this.evaluation = new SimpleEvaluation();
-    } else if (this.evaluationType == EvaluationType.COMPARE) {
-      this.evaluation = new CompareEvaluation();
-    }
-  }
-
   @SuppressWarnings({"unused"})
   public Evaluation getEvaluation() {
     return evaluation;
@@ -151,20 +135,6 @@ public class Check {
   public void setEvaluation(Evaluation evaluation) {
 
     this.evaluation = evaluation;
-  }
-
-  @Override
-  public String toString() {
-    return "Check{" +
-        "label='" + label + '\'' +
-        ", description='" + description + '\'' +
-        ", components=" + components +
-        ", evaluationType=" + evaluationType +
-        ", evaluation=" + evaluation +
-        ", schedules=" + schedules +
-        ", notifications=" + notifications +
-        ", path='" + path + '\'' +
-        '}';
   }
 
   @Override
@@ -179,43 +149,72 @@ public class Check {
     return Objects.equals(label, check.label) &&
         Objects.equals(description, check.description) &&
         Objects.equals(components, check.components) &&
-        evaluationType == check.evaluationType &&
         Objects.equals(evaluation, check.evaluation) &&
         Objects.equals(schedules, check.schedules) &&
         Objects.equals(notifications, check.notifications) &&
         Objects.equals(path, check.path);
   }
 
-  @Override
-  public int hashCode() {
-
-    return Objects.hash(label, description, components, evaluationType, evaluation, schedules, notifications, path);
+  @SuppressWarnings({"unused"})
+  public Boolean validate() {
+    return true;
   }
 
   @SuppressWarnings({"unused"})
-  public Boolean validate() {
-    if (this.evaluation instanceof SimpleEvaluation) {
-      return this.validateSimple();
-    } else if (this.evaluation instanceof CompareEvaluation) {
-      return this.validateCompare();
+  public void init() {
+    this.evaluation.init();
+    this.components.forEach(Component::initDetails);
+  }
+
+
+  public Status execute() {
+
+    logger.info("Executing check " + this.label);
+
+    ExecutionRuns runs = new ExecutionRuns();
+
+    try {
+      this.executeComponents(runs);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Could not execute components for check " + this.getLabel());
+      return Status.TECHNICAL_ERROR;
     }
-    return false;
+
+    Status status = this.evaluate(runs);
+
+    logger.info("Result for check " + this.getLabel() + " is: " + status);
+    return status;
   }
 
-  public Status evaluate(ExecutionRuns runs) throws Exception {
-    return this.getEvaluation().evaluate(runs);
+  private Status evaluate(ExecutionRuns runs) {
+
+    try {
+      return this.getEvaluation().evaluate(runs);
+    } catch (EvaluationException e) {
+      logger.error("Could not evaluate Check " + this.getLabel() + ": " + e.getMessage());
+      return Status.TECHNICAL_ERROR;
+    }
   }
 
+  private void executeComponents(ExecutionRuns runs) throws Exception {
 
-  private Boolean validateSimple() {
-    return this.components.size() == 1;
+    for (Component component : this.getComponents()) {
+      component.execute(runs);
+    }
+    logger.info("Executed " + this.getComponents().size() + " components for check: " + this.getLabel());
   }
 
-  private Boolean validateCompare() {
-    return this.components.size() == 2;
-  }
-
-  enum EvaluationType {
-    SIMPLE, COMPARE
+  @Override
+  public String toString() {
+    return "Check{" +
+        "label='" + label + '\'' +
+        ", description='" + description + '\'' +
+        ", components=" + components +
+        ", expressionlanguage=" + evaluation +
+        ", schedules=" + schedules +
+        ", notifications=" + notifications +
+        ", path='" + path + '\'' +
+        '}';
   }
 }

@@ -11,17 +11,18 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation.exceptions;
+package com.n3xtdata.columbus.core.component;
 
-public class EvaluationException extends Exception {
+import com.n3xtdata.columbus.utils.Params;
 
-  public EvaluationException(String message) {
+class ComponentParamsFactory {
 
-    super(message);
-  }
-
-  public EvaluationException() {
-
+  static ComponentParams build(ComponentType componentType, Params map) {
+    if (componentType == ComponentType.JDBC) {
+      return new JdbcComponentParams(map);
+    } else {
+      return null;
+    }
   }
 
 }

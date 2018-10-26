@@ -15,9 +15,9 @@ package com.n3xtdata.columbus.loader;
 
 import com.n3xtdata.columbus.config.Properties;
 import com.n3xtdata.columbus.config.SpringContext;
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.JdbcConnection;
-import com.n3xtdata.columbus.core.SshConnection;
+import com.n3xtdata.columbus.core.connection.SshConnection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

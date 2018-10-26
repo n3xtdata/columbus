@@ -11,13 +11,25 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.executor;
+package com.n3xtdata.columbus.expressionlanguage;
+
+import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.core.evaluation.Status;
+import org.junit.Test;
 
-public interface ExecutionService {
+public class StatusTests {
 
-  @SuppressWarnings("UnusedReturnValue")
-  Status execute(String checkLabel) throws Exception;
+  @Test
+  public void shouldReturnTechnicalErrorWhenNotFound() {
+    String status = "WHATEVER";
+    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
+  }
+
+  @Test
+  public void shouldReturnEnumWhenFound() {
+    String status = "success";
+    assertEquals(Status.SUCCESS, Status.contains(status));
+  }
 
 }
