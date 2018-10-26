@@ -1,6 +1,5 @@
 # Columbus
 
-
 ## Overview 
 Columbus is an open source monitoring tool.<br>
 Columbus ist able to execute queries across various jdbc compatible database systems and compares those results.
