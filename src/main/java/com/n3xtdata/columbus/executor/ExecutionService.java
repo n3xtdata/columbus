@@ -17,6 +17,7 @@ import com.n3xtdata.columbus.core.evaluation.Status;
 
 public interface ExecutionService {
 
+  @SuppressWarnings("UnusedReturnValue")
   Status execute(String checkLabel) throws Exception;
 
 }

@@ -17,7 +17,7 @@ package com.n3xtdata.columbus.core.component;
 import java.util.List;
 import java.util.Map;
 
-public interface ComponentParams {
+interface ComponentParams {
 
   List<Map<String, Object>> execute() throws Exception;
 

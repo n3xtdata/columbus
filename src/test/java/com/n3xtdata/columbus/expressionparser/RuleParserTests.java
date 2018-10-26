@@ -15,9 +15,9 @@ package com.n3xtdata.columbus.expressionparser;
 
 import static org.junit.Assert.assertTrue;
 
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.n3xtdata.columbus.expressionlanguage.RuleParser;
 import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
-import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

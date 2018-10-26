@@ -90,7 +90,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 
   private void addTriggers(JobDetail job, List<Schedule> schedules) throws SchedulerException {
 
-    Integer i = 0;
+    int i = 0;
 
     for (Schedule schedule : schedules) {
       if (schedule.getType().equals("CRON")) {

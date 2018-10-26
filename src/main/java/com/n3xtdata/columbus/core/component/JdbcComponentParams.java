@@ -16,8 +16,8 @@ package com.n3xtdata.columbus.core.component;
 
 import com.n3xtdata.columbus.config.SpringContext;
 import com.n3xtdata.columbus.core.connection.Connection;
-import com.n3xtdata.columbus.utils.Params;
 import com.n3xtdata.columbus.data.MetadataService;
+import com.n3xtdata.columbus.utils.Params;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

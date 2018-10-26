@@ -13,6 +13,7 @@
 
 package com.n3xtdata.columbus.notifications;
 
+import com.n3xtdata.columbus.config.Properties;
 import com.n3xtdata.columbus.notifications.mail.EmailService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+
+  private final EmailService emailService;
+  private final Properties properties;
+
   private final static String SUBJECT = "Columbus Notification";
-  private final static String FROM = "mail@robertpueschel.com";
 
   @Autowired
-  private EmailService emailService;
+  public NotificationServiceImpl(EmailService emailService, Properties properties) {
+    this.emailService = emailService;
+    this.properties = properties;
+  }
 
   @Override
   public void sendNotification(Set<String> recipients) {
-    emailService.sendSimpleMail(recipients, SUBJECT, "lorem ipsum", FROM);
+    emailService.sendSimpleMail(recipients, SUBJECT, "lorem ipsum", this.properties.getNotification().getMail().getSender());
   }
 }

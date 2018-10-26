@@ -147,10 +147,12 @@ public class SshConnection {
     return Objects.hash(label, username, publicKey, host, port, path);
   }
 
+  @SuppressWarnings({"unused"})
   public Boolean validate() {
     return true;
   }
 
+  @SuppressWarnings({"unused"})
   public void init() {
 
   }

@@ -1,32 +1,55 @@
 # Columbus
-Columbus is an open source tool for monitoring.<br>
-Our monitoring solution ist able to execute queries across various jdbc compatible database systems and compares those results.
+
+
+## Overview 
+Columbus is an open source monitoring tool.<br>
+Columbus ist able to execute queries across various jdbc compatible database systems and compares those results.
 
 For example:<br>
 We want to check if an [Oracle database] table has the same amount of rows like a [SQLite database] table:
+
+
+## Getting Started
+
+### Installation 
+
+``` shell 
+curl -L https://github.com/n3xtdata/columbus/tree/artifacts/columbus-0.0.1-SNAPSHOT.jar
+
+```
+
+### Setup Connections 
+
+### First Check
+
 ##### example-check.yml
 ```yaml
 label: exampleRowCountComparison
 description: this check compares a count of an oracle db table with a count on a mysql db table.
 components:
-  - label: first
-    componentType: JDBC
-    componentDetails:
-      connection: jdbc-sqllite
-      sqlQuery: SELECT COUNT(*) as cnt FROM table
-  - label: second
-    componentType: JDBC
-    componentDetails:
+  - label: sourceDb
+    type: JDBC
+    params:
+      connection: jdbc-mysql
+      sqlQuery: SELECT COUNT(*) AS cnt FROM customers
+  - label: targetDb
+    type: JDBC
+    params:
       connection: jdbc-oracle
-      sqlQuery: SELECT COUNT(*) as cnt FROM table
-evaluationType: COMPARE
+      sqlQuery: SELECT COUNT(*) AS cnt FROM customers
+evaluation:
+  type: CUSTOM
+  params:
+    rules:
+      - "{sourceDb.cnt} / {targetDb.cnt} > 1 -> ERROR"
+      - "{sourceDb.cnt} / {targetDb.cnt} < 0.95 -> ERROR"
+      - "{sourceDb.cnt} / {targetDb.cnt} > 0.98 -> SUCCESS"
+      - "{sourceDb.cnt} / {targetDb.cnt} > 0.95 -> WARNING"
 schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
   - type: SIMPLE
-    value: 20
+    value: 10
 notifications:
-  - firstname.lastname@example.com
+  - mail@example.com
 ```
 ## To start using Columbus
 ##### Please wait for the first official release:
@@ -37,10 +60,10 @@ $ yet to come!
 After installation, the columbus-home variable and directory have to be created and set:
 ```
 $ mkdir $HOME/columbus
-$ export COLUMBUS $HOME/columbus
+$ export COLUMBUS_HOME $HOME/columbus
 ```
 In order to run checks on databases, you need to store the necessary jdbc-connection files as shown below.
-Create your own checks and store those .yml files in the previously set $COLUMBUS/checks directory.
+Create your own checks and store those .yml files in the previously set $COLUMBUS_HOME/checks directory.
 ##### Columbus-Home filesystem hierarchy:
 ```
 $HOME/columbus
@@ -68,12 +91,7 @@ $HOME/columbus
           └───project-2
           ...
 ```
-## To start developing Columbus
-```
-$ git clone https://github.com/n3xtdata/columbus
-$ cd columbus
-$ mvn clean package
-```
+
 ## Support
 If you need support, please feel free to contact us!
 

@@ -29,7 +29,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 @SuppressWarnings("MagicConstant")
 public class RuleParser {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private String rules;
 
   private String[] getSplittedByStr(String part, String str) {
@@ -102,7 +102,7 @@ public class RuleParser {
 
   private Set<String> findObjectStrings(String str) {
 
-    Pattern pattern = Pattern.compile("\\{(.*?)\\}"); // (.*?) means 'anything'
+    Pattern pattern = Pattern.compile("\\{(.*?)}"); // (.*?) means 'anything'
     Matcher matcher = pattern.matcher(str);
 
     Set<String> objectStrings = new HashSet<>();

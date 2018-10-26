@@ -1,23 +1,21 @@
 package com.n3xtdata.columbus.core.evaluation;
 
-import com.n3xtdata.columbus.utils.Params;
+import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.n3xtdata.columbus.expressionlanguage.RuleParser;
 import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
-import com.n3xtdata.columbus.executor.ExecutionRuns;
+import com.n3xtdata.columbus.utils.Params;
 import java.util.List;
 
 public class CustomEvaluationParams implements EvaluationParams {
 
   private List<String> rules;
 
-  public CustomEvaluationParams(Params params) {
+  @SuppressWarnings("unchecked")
+  CustomEvaluationParams(Params params) {
     this.rules = (List<String>) params.get("rules");
   }
 
-  public List<String> getRules() {
-    return rules;
-  }
-
+  @SuppressWarnings("unused")
   public void setRules(List<String> rules) {
     this.rules = rules;
   }

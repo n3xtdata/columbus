@@ -26,8 +26,12 @@ import org.springframework.stereotype.Component;
 public class EmailServiceImpl implements EmailService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final JavaMailSender emailSender;
+
   @Autowired
-  public JavaMailSender emailSender;
+  public EmailServiceImpl(JavaMailSender emailSender) {
+    this.emailSender = emailSender;
+  }
 
   public void sendSimpleMail(Collection<String> recipients, String subject, String text, String from) {
 

@@ -15,9 +15,9 @@ package com.n3xtdata.columbus.core.component;
 
 import com.n3xtdata.columbus.utils.Params;
 
-public class ComponentParamsFactory {
+class ComponentParamsFactory {
 
-  public static ComponentParams build(ComponentType componentType, Params map) {
+  static ComponentParams build(ComponentType componentType, Params map) {
     if (componentType == ComponentType.JDBC) {
       return new JdbcComponentParams(map);
     } else {

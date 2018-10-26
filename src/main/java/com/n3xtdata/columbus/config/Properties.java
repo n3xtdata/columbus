@@ -24,6 +24,8 @@ public class Properties {
 
   private String home;
 
+  private Notification notification;
+
   public String getHome() {
 
     return home;
@@ -36,6 +38,40 @@ public class Properties {
     }
 
     this.home = home;
+  }
+
+  public Notification getNotification() {
+    return notification;
+  }
+
+  public void setNotification(Notification notification) {
+    this.notification = notification;
+  }
+
+  public static class Notification {
+
+    private Mail mail;
+
+    public Mail getMail() {
+      return mail;
+    }
+
+    public void setMail(Mail mail) {
+      this.mail = mail;
+    }
+  }
+
+  public static class Mail {
+
+    private String sender;
+
+    public String getSender() {
+      return sender;
+    }
+
+    public void setSender(String sender) {
+      this.sender = sender;
+    }
   }
 
 

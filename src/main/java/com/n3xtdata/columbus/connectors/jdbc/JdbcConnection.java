@@ -207,6 +207,7 @@ public class JdbcConnection implements Connection {
     return true;
   }
 
+  @SuppressWarnings("EmptyMethod")
   public void init() {
 
   }
