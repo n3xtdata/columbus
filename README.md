@@ -5,7 +5,7 @@ Columbus is an open source monitoring tool.<br>
 Columbus ist able to execute queries across various jdbc compatible database systems and compares those results.
 
 For example:<br>
-We want to check if an [Oracle database] table has the same amount of rows like a [MySQL database] table:
+We want to check if an [Oracle database] table has the same amount of rows like a [MySQL database] table.
 
 
 ## Getting Started
