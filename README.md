@@ -6,21 +6,92 @@ Columbus is an open source monitoring tool.<br>
 Columbus ist able to execute queries across various jdbc compatible database systems and compares those results.
 
 For example:<br>
-We want to check if an [Oracle database] table has the same amount of rows like a [SQLite database] table:
+We want to check if an [Oracle database] table has the same amount of rows like a [MySQL database] table:
 
 
 ## Getting Started
 
 ### Installation 
 
-``` shell 
-curl -L https://github.com/n3xtdata/columbus/tree/artifacts/columbus-0.0.1-SNAPSHOT.jar
+Download Columbus
 
+``` shell 
+curl -L https://github.com/n3xtdata/columbus/raw/artifacts/columbus-0.0.1-SNAPSHOT.jar -o columbus.jar
+```
+
+Setup Environment
+
+``` shell 
+export COLUMBUS_HOME=/Users/horst/columbus
+export COLUMBUS_MAIL_HOST=example.com
+export COLUMBUS_MAIL_USERNAME=name@example.com
+export COLUMBUS_MAIL_PASSWORD=password
+export COLUMBUS_MAIL_PORT=465
+export COLUMBUS_MAIL_SENDER=name@example.com
+```
+
+Setup the Columbus Home Directory
+
+``` shell 
+mkdir $COLUMBUS_HOME/checks 
+mdkir $COLUMBS_HOME/connections
+mdkir $COLUMBS_HOME/connections/jdbc
+```
+
+### Directory Structure
+
+In order to run checks on databases, you need to store the necessary jdbc-connection files as shown below.
+Create your own checks and store those .yml files in the previously set $COLUMBUS_HOME/checks directory.
+
+```
+users/horst/columbus
+      │
+      └───connections
+      │   │   
+      │   └───jdbc
+      │       │   mysql.yml
+      │       │   oracle.yml
+      │       │   ...
+      │
+      └───checks
+          │   check1.yml
+          │   check2.yml
+          │
+          └───project-1
+          │   │   firstCheck.yml
+          │   │   ...
+          │
+          └───project-2
+          ...
 ```
 
 ### Setup Connections 
 
+Create a new Yaml File "mysql.yml" in $COLUMBUS_HOME/connections/jdbc:
+
+``` yaml 
+label: jdbc-mysql
+username: admin
+password: password
+url: jdbc:mysql://localhost:3306/YourDBName
+driverClass: com.mysql.jdbc.Driver
+driverPath: /Users/horst/drivers/mysql-connector-java-5.1.12.jar
+```
+
+Setup a second connection in $COLUMBUS_HOME/connections/jdbc/oracle.yml
+
+``` yaml 
+label: jdbc-oracle
+username: admin
+password: password
+url: jdbc:oracle:thin:@myhost:1521:orc
+driverClass: oracle.jdbc.OracleDriver
+driverPath: /Users/horst/drivers/ojdbc6.jar
+```
+
 ### First Check
+
+Create your first check in Columbus:
 
 ##### example-check.yml
 ```yaml
@@ -51,49 +122,15 @@ schedules:
 notifications:
   - mail@example.com
 ```
-## To start using Columbus
-##### Please wait for the first official release:
+## Start Columbus
 ```
-$ yet to come!
+$ java -jar columbus.jar
 ```
 
-After installation, the columbus-home variable and directory have to be created and set:
-```
-$ mkdir $HOME/columbus
-$ export COLUMBUS_HOME $HOME/columbus
-```
-In order to run checks on databases, you need to store the necessary jdbc-connection files as shown below.
-Create your own checks and store those .yml files in the previously set $COLUMBUS_HOME/checks directory.
-##### Columbus-Home filesystem hierarchy:
-```
-$HOME/columbus
-      │
-      └──-connections
-      │   │   
-      │   └───jdbc
-      │   │   │   oracleDbs.yml
-      │   │   │   hiveDbs.yml
-      │   │   │   ...
-      │   │
-      │   └───ssh
-      │       │   server-a.yml
-      │       │   server-b.yml
-      │       │   ...
-      │   
-      └───checks
-          │   check1.yml
-          │   check2.yml
-          │
-          └───project-1
-          │   │   firstCheck.yml
-          │   │   ...
-          │
-          └───project-2
-          ...
-```
+
 
 ## Support
 If you need support, please feel free to contact us!
 
 [Oracle database]: https://www.oracle.com/database/technologies/index.html
-[SQLite database]: https://www.sqlite.org/
+[MySQL database]: https://www.mysql.com/de/
