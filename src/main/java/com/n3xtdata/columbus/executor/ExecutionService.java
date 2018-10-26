@@ -13,7 +13,7 @@
 
 package com.n3xtdata.columbus.executor;
 
-import com.n3xtdata.columbus.evaluation.Status;
+import com.n3xtdata.columbus.core.evaluation.Status;
 
 public interface ExecutionService {
 

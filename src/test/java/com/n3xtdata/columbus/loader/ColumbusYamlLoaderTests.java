@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import com.n3xtdata.columbus.ColumbusApplicationTests;
 import com.n3xtdata.columbus.connectors.jdbc.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.SshConnection;
+import com.n3xtdata.columbus.core.connection.SshConnection;
 import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
 
   @Test
   public void shouldLoadChecks() {
-    assertEquals(4, this.checks.size());
+    assertEquals(5, this.checks.size());
   }
 
   @Test

@@ -67,7 +67,8 @@ class GenericYamlLoader<T> {
           }
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-          e.printStackTrace();
+          logger.error("An error occurred while parsing config file '" + fileName + "': " + e.getMessage());
+          System.exit(0);
         }
       });
     } catch (Exception e) {

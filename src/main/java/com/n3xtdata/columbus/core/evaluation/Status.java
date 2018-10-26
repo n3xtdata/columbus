@@ -11,17 +11,17 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation.exceptions;
+package com.n3xtdata.columbus.core.evaluation;
 
-public class EvaluationException extends Exception {
+public enum Status {
+  SUCCESS, WARNING, ERROR, TECHNICAL_ERROR;
 
-  public EvaluationException(String message) {
-
-    super(message);
+  public static Status contains(String str) {
+    for (Status status : Status.values()) {
+      if (status.name().equalsIgnoreCase(str)) {
+        return status;
+      }
+    }
+    return Status.TECHNICAL_ERROR;
   }
-
-  public EvaluationException() {
-
-  }
-
 }

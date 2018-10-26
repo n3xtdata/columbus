@@ -11,15 +11,18 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.component;
 
-import com.n3xtdata.columbus.evaluation.Status;
-import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
-import com.n3xtdata.columbus.executor.ExecutionRuns;
+import com.n3xtdata.columbus.utils.Params;
 
-public interface Evaluation {
+public class ComponentParamsFactory {
 
-  Status evaluate(ExecutionRuns runs) throws EvaluationException, InterruptedException;
+  public static ComponentParams build(ComponentType componentType, Params map) {
+    if (componentType == ComponentType.JDBC) {
+      return new JdbcComponentParams(map);
+    } else {
+      return null;
+    }
+  }
 
-  Boolean validate(Integer componentSize);
 }

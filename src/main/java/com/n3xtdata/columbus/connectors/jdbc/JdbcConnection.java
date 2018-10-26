@@ -15,7 +15,7 @@ package com.n3xtdata.columbus.connectors.jdbc;
 
 
 import com.n3xtdata.columbus.config.SpringContext;
-import com.n3xtdata.columbus.core.Connection;
+import com.n3xtdata.columbus.core.connection.Connection;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

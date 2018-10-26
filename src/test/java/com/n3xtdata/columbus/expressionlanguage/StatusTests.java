@@ -11,20 +11,25 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core.componentDetails;
+package com.n3xtdata.columbus.expressionlanguage;
 
-import com.n3xtdata.columbus.core.Component.ComponentType;
-import com.n3xtdata.columbus.core.ComponentDetails;
-import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
 
-public class ComponentDetailsFactory {
+import com.n3xtdata.columbus.core.evaluation.Status;
+import org.junit.Test;
 
-  public static ComponentDetails build(ComponentType componentType, HashMap<String, Object> map) {
-    if (componentType == ComponentType.JDBC) {
-      return new JdbcComponentDetails(map);
-    } else {
-      return null;
-    }
+public class StatusTests {
+
+  @Test
+  public void shouldReturnTechnicalErrorWhenNotFound() {
+    String status = "WHATEVER";
+    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
+  }
+
+  @Test
+  public void shouldReturnEnumWhenFound() {
+    String status = "success";
+    assertEquals(Status.SUCCESS, Status.contains(status));
   }
 
 }

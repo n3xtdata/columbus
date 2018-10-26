@@ -11,24 +11,43 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.core.schedule;
 
-import static org.junit.Assert.assertEquals;
+public class Schedule {
 
-import org.junit.Test;
+  private String type;
 
-public class StatusTests {
+  private String value;
 
-  @Test
-  public void shouldReturnTechnicalErrorWhenNotFound() {
-    String status = "WHATEVER";
-    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
+  public Schedule() {
+
   }
 
-  @Test
-  public void shouldReturnEnumWhenFound() {
-    String status = "success";
-    assertEquals(Status.SUCCESS, Status.contains(status));
+  public Schedule(String type, String value) {
+
+    this.type = type;
+    this.value = value;
+  }
+
+  public String getType() {
+
+    return type;
+  }
+
+  public void setType(String type) {
+
+    this.type = type;
+  }
+
+  public String getValue() {
+
+    return value;
+  }
+
+  public void setValue(String value) {
+
+    this.value = value;
   }
 
 }
+

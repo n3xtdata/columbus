@@ -11,43 +11,13 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.connection;
 
-public class Schedule {
+import java.util.List;
+import java.util.Map;
 
-  private String type;
+public interface Connection {
 
-  private String value;
-
-  public Schedule() {
-
-  }
-
-  public Schedule(String type, String value) {
-
-    this.type = type;
-    this.value = value;
-  }
-
-  public String getType() {
-
-    return type;
-  }
-
-  public void setType(String type) {
-
-    this.type = type;
-  }
-
-  public String getValue() {
-
-    return value;
-  }
-
-  public void setValue(String value) {
-
-    this.value = value;
-  }
+  List<Map<String, Object>> execute(String command) throws Exception;
 
 }
-

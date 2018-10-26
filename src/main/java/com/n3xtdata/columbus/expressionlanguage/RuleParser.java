@@ -11,10 +11,9 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.evaluation;
+package com.n3xtdata.columbus.expressionlanguage;
 
-import com.n3xtdata.columbus.core.Evaluation;
-import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
+import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,35 +27,10 @@ import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @SuppressWarnings("MagicConstant")
-public class RuleEvaluation implements Evaluation {
+public class RuleParser {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   private String rules;
-
-  @Override
-  public Status evaluate(ExecutionRuns runs) throws EvaluationException {
-
-    String status = this.parseRulesAndReturnStatus(runs);
-    return Status.contains(status);
-  }
-
-
-  private String parseRulesAndReturnStatus(ExecutionRuns runs) throws EvaluationException {
-
-    String[] separatedRules = getSplittedByStr(rules, "\n");
-    for (String rule : separatedRules) {
-      if (isEmptyLine(rule)) {
-        continue;
-      }
-
-      String status = this.parseRule(rule, runs);
-      if (status != null) {
-        return status;
-      }
-    }
-
-    throw new EvaluationException("No rules applicable");
-  }
 
   private String[] getSplittedByStr(String part, String str) {
     return part.split(Pattern.quote(str));
@@ -71,7 +45,10 @@ public class RuleEvaluation implements Evaluation {
     return str.replaceAll(Pattern.quote(" "), "");
   }
 
-  private String parseRule(String rule, ExecutionRuns runs) throws EvaluationException {
+  public String parseRule(String rule, ExecutionRuns runs) throws EvaluationException {
+    if(isEmptyLine(rule)) {
+      return null;
+    }
     logger.debug("Parsing rule: " + rule);
     String[] expressionAndAction = getSplittedByStr(rule, "->");
 
@@ -168,11 +145,6 @@ public class RuleEvaluation implements Evaluation {
 
   public void setRules(String rules) {
     this.rules = rules;
-  }
-
-  @Override
-  public Boolean validate(Integer componentSize) {
-    return true;
   }
 
 }

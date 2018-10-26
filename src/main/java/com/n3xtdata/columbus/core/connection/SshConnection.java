@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.connection;
 
 import java.util.Objects;
 

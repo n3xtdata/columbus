@@ -11,14 +11,13 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core.componentDetails;
+package com.n3xtdata.columbus.core.component;
 
 
 import com.n3xtdata.columbus.config.SpringContext;
-import com.n3xtdata.columbus.core.ComponentDetails;
-import com.n3xtdata.columbus.core.Connection;
+import com.n3xtdata.columbus.core.connection.Connection;
+import com.n3xtdata.columbus.utils.Params;
 import com.n3xtdata.columbus.data.MetadataService;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
-public class JdbcComponentDetails implements ComponentDetails {
+public class JdbcComponentParams implements ComponentParams {
 
   private static final ApplicationContext context = SpringContext.getAppContext();
   private static final MetadataService metadataService = (MetadataService) context.getBean("metadataServiceImpl");
@@ -37,13 +36,12 @@ public class JdbcComponentDetails implements ComponentDetails {
 
   private String sqlQuery;
 
-  public JdbcComponentDetails() {
+  public JdbcComponentParams() {
   }
 
-  public JdbcComponentDetails(HashMap<String, Object> map) {
-
-    this.connectionLabel = (String) map.get("connection");
-    this.sqlQuery = (String) map.get("sqlQuery");
+  public JdbcComponentParams(Params params) {
+    this.connectionLabel = (String) params.get("connection");
+    this.sqlQuery = (String) params.get("sqlQuery");
   }
 
   @Override
@@ -80,7 +78,7 @@ public class JdbcComponentDetails implements ComponentDetails {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    JdbcComponentDetails that = (JdbcComponentDetails) o;
+    JdbcComponentParams that = (JdbcComponentParams) o;
     return Objects.equals(logger, that.logger) &&
         Objects.equals(connectionLabel, that.connectionLabel) &&
         Objects.equals(sqlQuery, that.sqlQuery);
@@ -94,7 +92,7 @@ public class JdbcComponentDetails implements ComponentDetails {
 
   @Override
   public String toString() {
-    return "JdbcComponentDetails{" +
+    return "JdbcComponentParams{" +
         "connectionLabel='" + connectionLabel + '\'' +
         ", sqlQuery='" + sqlQuery + '\'' +
         '}';

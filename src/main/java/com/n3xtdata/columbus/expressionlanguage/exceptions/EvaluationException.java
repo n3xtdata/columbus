@@ -11,14 +11,17 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.expressionlanguage.exceptions;
 
+public class EvaluationException extends Exception {
 
-import java.util.List;
-import java.util.Map;
+  public EvaluationException(String message) {
 
-public interface ComponentDetails {
+    super(message);
+  }
 
-  List<Map<String, Object>> execute() throws Exception;
+  public EvaluationException() {
+
+  }
 
 }

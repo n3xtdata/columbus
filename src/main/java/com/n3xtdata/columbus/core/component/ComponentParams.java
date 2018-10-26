@@ -11,13 +11,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.component;
+
 
 import java.util.List;
 import java.util.Map;
 
-public interface Connection {
+public interface ComponentParams {
 
-  List<Map<String, Object>> execute(String command) throws Exception;
+  List<Map<String, Object>> execute() throws Exception;
 
 }

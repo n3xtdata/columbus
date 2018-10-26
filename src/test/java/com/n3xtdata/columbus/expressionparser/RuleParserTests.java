@@ -15,9 +15,8 @@ package com.n3xtdata.columbus.expressionparser;
 
 import static org.junit.Assert.assertTrue;
 
-import com.n3xtdata.columbus.evaluation.RuleEvaluation;
-import com.n3xtdata.columbus.evaluation.Status;
-import com.n3xtdata.columbus.evaluation.exceptions.EvaluationException;
+import com.n3xtdata.columbus.expressionlanguage.RuleParser;
+import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,18 +24,17 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-public class ExpressionParserTests {
+public class RuleParserTests {
 
-  private RuleEvaluation ruleEvaluation;
+  private RuleParser ruleParser;
   private ExecutionRuns runs;
   private List<Map<String, Object>> firstComponentRun;
 
   @Before
   public void before() {
-    this.ruleEvaluation = new RuleEvaluation();
+    this.ruleParser = new RuleParser();
     this.runs = new ExecutionRuns();
     this.firstComponentRun = new ArrayList<>();
   }
@@ -50,12 +48,11 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} >= 'B'  AND 'A' == 'A' -> SUCCESS";
+    String rule = "{first.status} >= 'B'  AND 'A' == 'A' -> SUCCESS";
 
-    this.ruleEvaluation.setRules(allRules);
-    Status status = this.ruleEvaluation.evaluate(runs);
+    String status = this.ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
   @Test
@@ -67,12 +64,11 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} == 'A' -> SUCCESS";
+    String rule = "{first.status} == 'A' -> SUCCESS";
 
-    ruleEvaluation.setRules(allRules);
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
   @Test
@@ -84,12 +80,12 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = " \n {first.status} == 'A' -> SUCCESS";
+    String rule = " \n {first.status} == 'A' -> SUCCESS";
 
-    ruleEvaluation.setRules(allRules);
-    Status status = ruleEvaluation.evaluate(runs);
+    ruleParser.setRules(rule);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
   @Test
@@ -101,12 +97,12 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} == 'B' -> SUCCESS \n {first.status} != 'C' -> WARNING";
+    String rule = "{first.status} != 'B' -> WARNING";
 
-    ruleEvaluation.setRules(allRules);
-    Status status = ruleEvaluation.evaluate(runs);
+    ruleParser.setRules(rule);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.WARNING));
+    assert (status.equals("WARNING"));
   }
 
   @Test(expected = EvaluationException.class)
@@ -117,9 +113,9 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} >= 1 ->";
-    ruleEvaluation.setRules(allRules);
-    ruleEvaluation.evaluate(runs);
+    String rule = "{first.status} >= 1 ->";
+    ruleParser.setRules(rule);
+    ruleParser.parseRule(rule, runs);
   }
 
   @Test(expected = EvaluationException.class)
@@ -130,29 +126,29 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.status} >= 1 -> SUCCESS";
-    ruleEvaluation.setRules(allRules);
+    String rule = "{first.status} >= 1 -> SUCCESS";
+    ruleParser.setRules(rule);
 
-    ruleEvaluation.evaluate(runs);
+    ruleParser.parseRule(rule, runs);
   }
 
 
   @Test(expected = EvaluationException.class)
   public void testInvalidOperatorShouldThrowException() throws EvaluationException {
 
-    String allRules = "{first.status} =! 1 -> SUCCESS";
-    ruleEvaluation.setRules(allRules);
+    String rule = "{first.status} =! 1 -> SUCCESS";
+    ruleParser.setRules(rule);
 
-    ruleEvaluation.evaluate(runs);
+    ruleParser.parseRule(rule, runs);
   }
 
   @Test(expected = EvaluationException.class)
   public void testNotFoundToBeReplacedValueShouldThrowException() throws EvaluationException {
 
-    String allRules = "{first.status} == 1 -> SUCCESS";
-    ruleEvaluation.setRules(allRules);
+    String rule = "{first.status} == 1 -> SUCCESS";
+    ruleParser.setRules(rule);
 
-    ruleEvaluation.evaluate(runs);
+    ruleParser.parseRule(rule, runs);
   }
 
   @Test(expected = EvaluationException.class)
@@ -163,10 +159,10 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.d} == 1 -> SUCCESS";
-    ruleEvaluation.setRules(allRules);
+    String rule = "{first.d} == 1 -> SUCCESS";
+    ruleParser.setRules(rule);
 
-    ruleEvaluation.evaluate(runs);
+    ruleParser.parseRule(rule, runs);
   }
 
   @Test
@@ -177,13 +173,13 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "(({first.status} == 2) OR 2==2) AND 'a'=='b' OR 1==1 -> ERROR \n {first.status} == 1 OR 2==2  AND 'a'=='a' -> SUCCESS";
+    String rule = "(({first.status} == 2) OR 2==2) AND 'a'=='b' OR 1==1 -> ERROR";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.ERROR));
+    assert (status.equals("ERROR"));
 
   }
 
@@ -196,13 +192,13 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "({first.status} == 2  OR  {first.status} == 3)  OR  {first.value}==13  AND 'a'=='b'  OR  (2==3  AND 1==1) -> ERROR \n ({first.status} == 1  OR  {first.value}==13  AND 'a'=='b')  OR  1==1 -> SUCCESS";
+    String rule = "({first.status} == 1  OR  {first.value}==13  AND 'a'=='b')  OR  1==1 -> SUCCESS";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
   @Test
@@ -213,13 +209,13 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "(1==2  OR  3==2) -> ERROR \n (2==2  OR  3==2) -> WARNING";
+    String rule = "(2==2  OR  3==2) -> WARNING";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.WARNING));
+    assert (status.equals("WARNING"));
   }
 
   @Test
@@ -230,13 +226,13 @@ public class ExpressionParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String allRules = "!(1==2  OR  3==2) -> ERROR";
+    String rule = "!(1==2  OR  3==2) -> ERROR";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.ERROR));
+    assert (status.equals("ERROR"));
   }
 
   @Test
@@ -249,13 +245,13 @@ public class ExpressionParserTests {
 
     runs.put("first", firstComponentRun);
 
-    String allRules = "(({first.status}/{first.value})*100) == 95 AND {first.value} == 100 -> SUCCESS";
+    String rule = "(({first.status}/{first.value})*100) == 95 AND {first.value} == 100 -> SUCCESS";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
 
@@ -270,19 +266,19 @@ public class ExpressionParserTests {
 
     runs.put("first", firstComponentRun);
 
-    String allRules = "{first.a} * {first.b} + {first.c} == 11 -> SUCCESS";
+    String rule = "{first.a} * {first.b} + {first.c} == 11 -> SUCCESS";
 
-    ruleEvaluation.setRules(allRules);
+    ruleParser.setRules(rule);
 
-    Status status = ruleEvaluation.evaluate(runs);
+    String status = ruleParser.parseRule(rule, runs);
 
-    assert (status.equals(Status.SUCCESS));
+    assert (status.equals("SUCCESS"));
   }
 
   @Test
   public void springExpressionParser() {
 
-    ExpressionParser parser = new SpelExpressionParser();
+    org.springframework.expression.ExpressionParser parser = new SpelExpressionParser();
 
     Boolean bd = parser.parseExpression("(2 == 1+1 AND 2 == 2) AND !(5 == 4)").getValue(Boolean.class);
 

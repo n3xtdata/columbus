@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.n3xtdata.columbus.core;
+package com.n3xtdata.columbus.core.component;
 
-import com.n3xtdata.columbus.core.componentDetails.ComponentDetailsFactory;
+import com.n3xtdata.columbus.utils.Params;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,11 +30,11 @@ public class Component {
 
   private String label;
 
-  private ComponentType componentType;
+  private ComponentType type;
 
-  private HashMap<String, Object> componentDetails;
+  private Params params;
 
-  private ComponentDetails details;
+  private ComponentParams componentParams;
 
   @SuppressWarnings({"unused"})
   public Component() {
@@ -54,23 +53,23 @@ public class Component {
   }
 
   @SuppressWarnings({"unused"})
-  public ComponentType getComponentType() {
-    return componentType;
+  public ComponentType getType() {
+    return type;
   }
 
   @SuppressWarnings({"unused"})
-  public void setComponentType(ComponentType componentType) {
+  public void setType(ComponentType type) {
 
-    this.componentType = componentType;
+    this.type = type;
   }
 
   @SuppressWarnings({"unused"})
-  public HashMap<String, Object> getComponentDetails() {
-    return componentDetails;
+  public Params getParams() {
+    return params;
   }
 
-  public void setComponentDetails(HashMap<String, Object> componentDetails) {
-    this.componentDetails = componentDetails;
+  public void setParams(Params params) {
+    this.params = params;
   }
 
   public void execute(ExecutionRuns runs) throws Exception {
@@ -81,7 +80,7 @@ public class Component {
 
     List<Map<String, Object>> result;
 
-    result = this.details.execute();
+    result = this.componentParams.execute();
 
     logger.debug(result.toString());
 
@@ -89,7 +88,7 @@ public class Component {
   }
 
   public void initDetails() {
-    this.details = ComponentDetailsFactory.build(this.componentType, this.componentDetails);
+    this.componentParams = ComponentParamsFactory.build(this.type, this.params);
   }
 
   @Override
@@ -103,29 +102,25 @@ public class Component {
     Component component = (Component) o;
     return Objects.equals(logger, component.logger) &&
         Objects.equals(label, component.label) &&
-        componentType == component.componentType &&
-        Objects.equals(componentDetails, component.componentDetails) &&
-        Objects.equals(details, component.details);
+        type == component.type &&
+        Objects.equals(params, component.params) &&
+        Objects.equals(componentParams, component.componentParams);
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(logger, label, componentType, componentDetails, details);
+    return Objects.hash(logger, label, type, params, componentParams);
   }
 
   @Override
   public String toString() {
     return "Component{" +
         "label='" + label + '\'' +
-        ", componentType=" + componentType +
-        ", componentDetails=" + componentDetails +
-        ", details=" + details +
+        ", type=" + type +
+        ", params=" + params +
+        ", componentParams=" + componentParams +
         '}';
   }
 
-  public enum ComponentType {
-    JDBC
-  }
 
 }
