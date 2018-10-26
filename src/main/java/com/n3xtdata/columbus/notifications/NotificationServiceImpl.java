@@ -23,10 +23,9 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService {
 
 
+  private final static String SUBJECT = "Columbus Notification";
   private final EmailService emailService;
   private final Properties properties;
-
-  private final static String SUBJECT = "Columbus Notification";
 
   @Autowired
   public NotificationServiceImpl(EmailService emailService, Properties properties) {
@@ -36,6 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Override
   public void sendNotification(Set<String> recipients) {
-    emailService.sendSimpleMail(recipients, SUBJECT, "lorem ipsum", this.properties.getNotification().getMail().getSender());
+    emailService
+        .sendSimpleMail(recipients, SUBJECT, "lorem ipsum", this.properties.getNotification().getMail().getSender());
   }
 }

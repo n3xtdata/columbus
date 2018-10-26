@@ -13,6 +13,8 @@
 
 package com.n3xtdata.columbus.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Component;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "com.n3xtdata.columbus")
 public class Properties {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private String home;
 
@@ -36,7 +40,7 @@ public class Properties {
     if (home.endsWith("/")) {
       home = home.substring(0, this.home.length() - 1);
     }
-
+    logger.info("Columbus home directory set: " + home);
     this.home = home;
   }
 

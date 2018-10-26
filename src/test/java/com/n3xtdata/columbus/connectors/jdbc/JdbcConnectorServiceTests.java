@@ -16,6 +16,7 @@ package com.n3xtdata.columbus.connectors.jdbc;
 import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
+import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;

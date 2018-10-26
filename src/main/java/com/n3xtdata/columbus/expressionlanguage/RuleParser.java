@@ -13,8 +13,8 @@
 
 package com.n3xtdata.columbus.expressionlanguage;
 
-import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
+import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +33,7 @@ public class RuleParser {
   private String rules;
 
   private String[] getSplittedByStr(String part, String str) {
-    return part.split(Pattern.quote(str),2);
+    return part.split(Pattern.quote(str), 2);
   }
 
   private Boolean isEmptyLine(String line) {
@@ -46,7 +46,7 @@ public class RuleParser {
   }
 
   public String parseRule(String rule, ExecutionRuns runs) throws EvaluationException {
-    if(isEmptyLine(rule)) {
+    if (isEmptyLine(rule)) {
       return null;
     }
     logger.debug("Parsing rule: " + rule);

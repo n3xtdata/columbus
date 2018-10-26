@@ -11,11 +11,11 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.n3xtdata.columbus.connectors.jdbc;
+package com.n3xtdata.columbus.core.connection;
 
 
 import com.n3xtdata.columbus.config.SpringContext;
-import com.n3xtdata.columbus.core.connection.Connection;
+import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -203,15 +203,6 @@ public class JdbcConnection implements Connection {
     return Files.readAllBytes(path);
   }
 
-  public Boolean validate() {
-    return true;
-  }
-
-  @SuppressWarnings("EmptyMethod")
-  public void init() {
-
-  }
-
   @Override
   public List<Map<String, Object>> execute(String command) throws Exception {
 
@@ -223,5 +214,8 @@ public class JdbcConnection implements Connection {
 
     return result;
   }
+
+  @SuppressWarnings({"unused"})
+  public void init() {}
 
 }
