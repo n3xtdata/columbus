@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -285,4 +286,10 @@ public class RuleParserTests {
     assertTrue(bd);
   }
 
+  @Test
+  public void testSplitMethod() {
+    String s = "bla.test.bla2";
+    String[] splitted = s.split(Pattern.quote("."), 2);
+    assert (splitted[1].equals("test.bla2"));
+  }
 }

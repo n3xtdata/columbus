@@ -33,7 +33,7 @@ public class RuleParser {
   private String rules;
 
   private String[] getSplittedByStr(String part, String str) {
-    return part.split(Pattern.quote(str));
+    return part.split(Pattern.quote(str),2);
   }
 
   private Boolean isEmptyLine(String line) {

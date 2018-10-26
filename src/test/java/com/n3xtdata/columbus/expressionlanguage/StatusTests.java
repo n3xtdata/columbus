@@ -23,13 +23,13 @@ public class StatusTests {
   @Test
   public void shouldReturnTechnicalErrorWhenNotFound() {
     String status = "WHATEVER";
-    assertEquals(Status.TECHNICAL_ERROR, Status.contains(status));
+    assertEquals(Status.TECHNICAL_ERROR, Status.fromString(status));
   }
 
   @Test
   public void shouldReturnEnumWhenFound() {
     String status = "success";
-    assertEquals(Status.SUCCESS, Status.contains(status));
+    assertEquals(Status.SUCCESS, Status.fromString(status));
   }
 
 }
