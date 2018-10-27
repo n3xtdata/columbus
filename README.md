@@ -44,24 +44,24 @@ Create your own checks and store those .yml files in the previously set $COLUMBU
 
 ```
 users/horst/columbus
-      │
-      └───connections
-      │   │   
-      │   └───jdbc
-      │       │   mysql.yml
-      │       │   oracle.yml
-      │       │   ...
-      │
-      └───checks
-          │   check1.yml
-          │   check2.yml
-          │
-          └───project-1
-          │   │   firstCheck.yml
-          │   │   ...
-          │
-          └───project-2
-          ...
+            │
+            └───connections
+            │   │   
+            │   └───jdbc
+            │       │   mysql.yml
+            │       │   oracle.yml
+            │       │   ...
+            │
+            └───checks
+                │   check1.yml
+                │   check2.yml
+                │
+                └───project-1
+                │   │   firstCheck.yml
+                │   │   ...
+                │
+                └───project-2
+                ...
 ```
 
 ### Setup Connections 
