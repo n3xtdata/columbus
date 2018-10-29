@@ -33,8 +33,8 @@ Setup the Columbus Home Directory
 
 ``` shell 
 mkdir $COLUMBUS_HOME/checks 
-mdkir $COLUMBUS_HOME/connections
-mdkir $COLUMBUS_HOME/connections/jdbc
+mkdir $COLUMBUS_HOME/connections
+mkdir $COLUMBUS_HOME/connections/jdbc
 ```
 
 ### Directory Structure
