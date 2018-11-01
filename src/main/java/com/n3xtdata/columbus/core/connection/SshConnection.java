@@ -16,9 +16,11 @@
 
 package com.n3xtdata.columbus.core.connection;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-public class SshConnection {
+public class SshConnection implements Connection {
 
   private String label;
 
@@ -31,6 +33,8 @@ public class SshConnection {
   private Integer port;
 
   private String path;
+
+  private String type;
 
   @SuppressWarnings({"unused"})
   public SshConnection() {
@@ -119,6 +123,10 @@ public class SshConnection {
     this.path = path;
   }
 
+  public String getType() {
+    return "SSH";
+  }
+
   @Override
   public String toString() {
 
@@ -150,5 +158,10 @@ public class SshConnection {
   @SuppressWarnings({"unused"})
   public void init() {
 
+  }
+
+  @Override
+  public List<Map<String, Object>> execute(String command) throws Exception {
+    return null;
   }
 }

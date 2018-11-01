@@ -13,6 +13,7 @@
 
 package com.n3xtdata.columbus.data;
 
+import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.connection.Connection;
 import com.n3xtdata.columbus.core.connection.JdbcConnection;
@@ -35,6 +36,7 @@ public class MetadataServiceImpl implements MetadataService {
 
   private HashMap<String, JdbcConnection> jdbcConnections;
   private HashMap<String, SshConnection> sshConnections;
+  private HashMap<String, Connection> connections = new HashMap<>();
   private HashMap<String, Notification> notifications;
 
   public MetadataServiceImpl() {
@@ -56,19 +58,26 @@ public class MetadataServiceImpl implements MetadataService {
     }
   }
 
-  public Set<JdbcConnection> getAllJdbcConnections() {
-
-    return new HashSet<>(this.jdbcConnections.values());
+  @Override
+  public Set<Connection> getAllConnections() {
+    return new HashSet<>(this.connections.values());
   }
 
   public Connection getConnectionByLabel(String label) throws Exception {
 
-    if (this.jdbcConnections.get(label) != null) {
-      return this.jdbcConnections.get(label);
+    if (this.connections.get(label) != null) {
+      return this.connections.get(label);
     } else {
       throw new Exception("Connection " + label + " does not exist!");
     }
   }
+
+  public Set<JdbcConnection> getAllJdbcConnections() {
+
+    return new HashSet<>(this.jdbcConnections.values());
+
+  }
+
 
   public JdbcConnection getJdbcConnectionByLabel(String label) throws Exception {
 
@@ -108,8 +117,7 @@ public class MetadataServiceImpl implements MetadataService {
 
   public void loadAll() throws Exception {
     this.loadChecks();
-    this.loadJdbcConnections();
-    this.loadSshConnections();
+    this.loadConnections();
     this.loadNotifications();
   }
 
@@ -119,6 +127,13 @@ public class MetadataServiceImpl implements MetadataService {
     this.checks = checkLoader.load();
     this.checks.forEach((k, v) -> logger.info(v.toString()));
     logger.info("Number of loaded Checks: " + this.checks.size());
+  }
+
+  private void loadConnections() throws Exception {
+    this.loadJdbcConnections();
+    this.loadSshConnections();
+    this.connections.putAll(jdbcConnections);
+    this.connections.putAll(sshConnections);
   }
 
   private void loadJdbcConnections() throws Exception {
