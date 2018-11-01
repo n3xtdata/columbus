@@ -25,9 +25,12 @@ public interface MetadataService {
 
   Check getCheckByLabel(String label) throws Exception;
 
-  Set<JdbcConnection> getAllJdbcConnections();
+
+  Set<Connection> getAllConnections();
 
   Connection getConnectionByLabel(String label) throws Exception;
+
+  Set<JdbcConnection> getAllJdbcConnections();
 
   JdbcConnection getJdbcConnectionByLabel(String label) throws Exception;
 

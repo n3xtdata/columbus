@@ -14,6 +14,7 @@
 package com.n3xtdata.columbus.core.connection;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.n3xtdata.columbus.config.SpringContext;
 import com.n3xtdata.columbus.connectors.jdbc.JdbcConnectorService;
 import java.io.IOException;
@@ -49,6 +50,8 @@ public class JdbcConnection implements Connection {
   private byte[] driverJar;
 
   private String path;
+
+  private String type;
 
   @SuppressWarnings({"unused"})
   public JdbcConnection() {
@@ -141,6 +144,7 @@ public class JdbcConnection implements Connection {
   }
 
   @SuppressWarnings({"unused"})
+  @JsonIgnore
   public byte[] getDriverJar() {
 
     return driverJar;
@@ -163,6 +167,11 @@ public class JdbcConnection implements Connection {
 
     this.path = path;
   }
+
+  public String getType() {
+    return "JDBC";
+  }
+
 
   @Override
   public String toString() {

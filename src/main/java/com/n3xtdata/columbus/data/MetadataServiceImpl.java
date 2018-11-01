@@ -34,6 +34,7 @@ public class MetadataServiceImpl implements MetadataService {
 
   private HashMap<String, JdbcConnection> jdbcConnections;
   private HashMap<String, SshConnection> sshConnections;
+  private HashMap<String, Connection> connections = new HashMap<>();
 
   public MetadataServiceImpl() {
 
@@ -55,21 +56,27 @@ public class MetadataServiceImpl implements MetadataService {
 
   }
 
+  @Override
+  public Set<Connection> getAllConnections() {
+    return new HashSet<>(this.connections.values());
+  }
+
+  public Connection getConnectionByLabel(String label) throws Exception {
+
+    if (this.connections.get(label) != null) {
+      return this.connections.get(label);
+    } else {
+      throw new Exception("Connection " + label + " does not exist!");
+    }
+
+  }
+
   public Set<JdbcConnection> getAllJdbcConnections() {
 
     return new HashSet<>(this.jdbcConnections.values());
 
   }
 
-  public Connection getConnectionByLabel(String label) throws Exception {
-
-    if (this.jdbcConnections.get(label) != null) {
-      return this.jdbcConnections.get(label);
-    } else {
-      throw new Exception("Connection " + label + " does not exist!");
-    }
-
-  }
 
   public JdbcConnection getJdbcConnectionByLabel(String label) throws Exception {
 
@@ -109,6 +116,8 @@ public class MetadataServiceImpl implements MetadataService {
     ColumbusYamlLoader<JdbcConnection> jdbcLoader = new ColumbusYamlLoader<>(JdbcConnection.class);
     this.jdbcConnections = jdbcLoader.load();
 
+
+
     this.jdbcConnections.forEach((k, v) -> logger.info(v.toString()));
 
     logger.info("Number of loaded JDBC Connections: " + this.jdbcConnections.size());
@@ -119,6 +128,9 @@ public class MetadataServiceImpl implements MetadataService {
     this.sshConnections.forEach((k, v) -> logger.info(v.toString()));
 
     logger.info("Number of loaded SSH Connections: " + this.sshConnections.size());
+
+    this.connections.putAll(jdbcConnections);
+    this.connections.putAll(sshConnections);
 
   }
 
