@@ -216,6 +216,7 @@ public class JdbcConnection implements Connection {
   }
 
   @SuppressWarnings({"unused"})
-  public void init() {}
+  public void init() {
+  }
 
 }

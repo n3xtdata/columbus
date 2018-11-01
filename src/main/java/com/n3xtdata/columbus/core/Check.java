@@ -19,6 +19,7 @@ import com.n3xtdata.columbus.core.evaluation.Status;
 import com.n3xtdata.columbus.core.schedule.Schedule;
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.n3xtdata.columbus.expressionlanguage.exceptions.EvaluationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class Check {
 
   private List<Schedule> schedules;
 
-  private Set<String> notifications;
+  private HashMap<Status, Set<String>> notifications;
 
   private String path;
 
@@ -49,7 +50,7 @@ public class Check {
   }
 
   public Check(String label, String description, Set<Component> components,
-      Evaluation evaluation, List<Schedule> schedules, Set<String> notifications, String path) {
+      Evaluation evaluation, List<Schedule> schedules, HashMap<Status, Set<String>> notifications, String path) {
     this.label = label;
     this.description = description;
     this.components = components;
@@ -105,12 +106,12 @@ public class Check {
     this.schedules = schedules;
   }
 
-  public Set<String> getNotifications() {
+  public HashMap<Status, Set<String>> getNotifications() {
     return notifications;
   }
 
   @SuppressWarnings({"unused"})
-  public void setNotifications(Set<String> notifications) {
+  public void setNotifications(HashMap<Status, Set<String>> notifications) {
     this.notifications = notifications;
   }
 

@@ -17,5 +17,5 @@ import java.util.Set;
 
 public interface NotificationService {
 
-  void sendNotification(Set<String> recipients);
+  void sendNotification(Set<String> recipients, String text);
 }

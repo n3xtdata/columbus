@@ -35,6 +35,7 @@ Setup the Columbus Home Directory
 mkdir $COLUMBUS_HOME/checks 
 mkdir $COLUMBUS_HOME/connections
 mkdir $COLUMBUS_HOME/connections/jdbc
+mkdir $COLUMBUS_HOME/notifications
 ```
 
 ### Directory Structure
@@ -53,15 +54,20 @@ users/horst/columbus
             │       │   ...
             │
             └───checks
-                │   check1.yml
-                │   check2.yml
-                │
-                └───project-1
-                │   │   firstCheck.yml
-                │   │   ...
-                │
-                └───project-2
-                ...
+            │   │   check1.yml
+            │   │   check2.yml
+            │   │
+            │   └───project-1
+            │   │   │   firstCheck.yml
+            │   │   │   ...
+            │   │
+            │   └───project-2
+            │    ...
+            │
+            └───notifications
+                │   emailGroups.yml
+                │   ...
+            
 ```
 
 ### Setup Connections 
@@ -86,6 +92,21 @@ password: password
 url: jdbc:oracle:thin:@myhost:1521:orc
 driverClass: oracle.jdbc.OracleDriver
 driverPath: /Users/horst/drivers/ojdbc6.jar
+```
+
+### Setup Notifications
+
+Create a new Yaml File in $COLUMBUS_HOME/notifications:
+
+``` yaml 
+label: groupA
+members:
+  - a1@example.com
+  - a2@example.com
+---
+label: groupB
+members:
+  - b1@example.com
 ```
 
 ### First Check
@@ -119,7 +140,11 @@ schedules:
   - type: SIMPLE
     value: 10
 notifications:
-  - mail@example.com
+  ERROR:
+    - groupA
+    - groupB
+  WARNING:
+    - groupB
 ```
 ## Start Columbus
 ```

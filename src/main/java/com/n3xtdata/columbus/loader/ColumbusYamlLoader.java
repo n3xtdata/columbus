@@ -15,9 +15,10 @@ package com.n3xtdata.columbus.loader;
 
 import com.n3xtdata.columbus.config.Properties;
 import com.n3xtdata.columbus.config.SpringContext;
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
+import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.connection.SshConnection;
+import com.n3xtdata.columbus.core.notification.Notification;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -54,10 +55,10 @@ public class ColumbusYamlLoader<T> {
       path = path + "/checks";
     } else if (t instanceof JdbcConnection) {
       path = path + "/connections/jdbc";
-
     } else if (t instanceof SshConnection) {
       path = path + "/connections/ssh";
-
+    } else if (t instanceof Notification) {
+      path = path + "/notifications";
     } else {
       throw new Exception("The given type is not supported");
     }

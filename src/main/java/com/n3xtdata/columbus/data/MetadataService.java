@@ -13,10 +13,11 @@
 
 package com.n3xtdata.columbus.data;
 
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.connection.Connection;
+import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.connection.SshConnection;
+import com.n3xtdata.columbus.core.notification.Notification;
 import java.util.Set;
 
 public interface MetadataService {
@@ -34,6 +35,10 @@ public interface MetadataService {
   Set<SshConnection> getAllSshConnections();
 
   SshConnection getSshConnectionByLabel(String label) throws Exception;
+
+  Set<Notification> getAllNotifications();
+
+  Notification getNotificationByLabel(String label) throws Exception;
 
   void loadAll() throws Exception;
 

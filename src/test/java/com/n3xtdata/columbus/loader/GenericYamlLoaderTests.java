@@ -20,10 +20,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.n3xtdata.columbus.ColumbusApplicationTests;
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.component.Component;
 import com.n3xtdata.columbus.core.component.ComponentType;
+import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.connection.SshConnection;
 import com.n3xtdata.columbus.utils.Params;
 import java.io.FileNotFoundException;

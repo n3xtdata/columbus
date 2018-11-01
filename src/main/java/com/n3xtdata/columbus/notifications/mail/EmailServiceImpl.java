@@ -44,6 +44,7 @@ public class EmailServiceImpl implements EmailService {
       message.setFrom(from);
       emailSender.send(message);
     } catch (MailException e) {
+      e.printStackTrace();
       logger.error("Could not send mail to " + recipients);
       logger.debug(e.getMessage());
     }

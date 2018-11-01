@@ -15,8 +15,12 @@ package com.n3xtdata.columbus.executor;
 
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.evaluation.Status;
+import com.n3xtdata.columbus.core.notification.Notification;
 import com.n3xtdata.columbus.data.MetadataService;
 import com.n3xtdata.columbus.notifications.NotificationService;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +50,29 @@ public class ExecutionServiceImpl implements ExecutionService {
     Status status = check.execute();
 
     if (check.getNotifications() != null && check.getNotifications().size() > 0) {
-      if (status.equals(Status.ERROR) || status.equals(Status.WARNING)) {
-        logger.info("Sending mail for check " + check.getLabel() + " to " + check.getNotifications().toString());
-        this.notificationService.sendNotification(check.getNotifications());
+      HashMap<Status, Set<String>> notifications = check.getNotifications();
+      try {
+        Set<String> notificationLabels = notifications.get(status);
+
+        notificationLabels.forEach(label -> {
+          try {
+            Notification notification = this.metadataService.getNotificationByLabel(label);
+            Set<String> emails = notification.getMembers();
+            StringBuilder strBuilder = new StringBuilder();
+            strBuilder.append("Check: ").append(checkLabel).append("\n");
+            strBuilder.append("Status: ").append(status).append("\n");
+            strBuilder.append("ExecutionTime: ").append(new Date().toString());
+            this.notificationService.sendNotification(emails, strBuilder.toString());
+            logger.info(
+                "Sending mails for check " + check.getLabel()
+                    + " to notification group '" + label + "' = " + emails.toString());
+          } catch (Exception e) {
+            logger.error("Notification with label: " + label + " not found!");
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+        logger.info("No Notifications configured for status: " + status.toString());
       }
     }
     return status;

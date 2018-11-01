@@ -75,7 +75,8 @@ public class RuleParser {
     try {
       return parser.parseExpression(expression).getValue(Boolean.class);
     } catch (SpelEvaluationException e) {
-      throw new EvaluationException("Parser could not evaluate " + expression);
+      throw new EvaluationException("Parser could not evaluate " + expression
+          + " --- Please use valid operators such as ['==', '!=', '*', '/', ..]");
     }
   }
 

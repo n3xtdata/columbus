@@ -33,10 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  public void sendNotification(Set<String> recipients) {
+  public void sendNotification(Set<String> recipients, String text) {
     emailService.sendSimpleMail(recipients
         , SUBJECT
-        , "lorem ipsum"
+        , text
         , this.properties.getNotification().getMail().getSender());
   }
 }
