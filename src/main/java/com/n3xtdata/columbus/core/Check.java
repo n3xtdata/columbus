@@ -156,11 +156,6 @@ public class Check {
   }
 
   @SuppressWarnings({"unused"})
-  public Boolean validate() {
-    return true;
-  }
-
-  @SuppressWarnings({"unused"})
   public void init() {
     this.evaluation.init();
     this.components.forEach(Component::initDetails);

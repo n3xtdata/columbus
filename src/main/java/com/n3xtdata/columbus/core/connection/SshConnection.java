@@ -148,11 +148,6 @@ public class SshConnection {
   }
 
   @SuppressWarnings({"unused"})
-  public Boolean validate() {
-    return true;
-  }
-
-  @SuppressWarnings({"unused"})
   public void init() {
 
   }

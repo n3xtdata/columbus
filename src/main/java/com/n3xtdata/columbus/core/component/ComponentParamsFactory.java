@@ -17,12 +17,14 @@ import com.n3xtdata.columbus.utils.Params;
 
 class ComponentParamsFactory {
 
-  static ComponentParams build(ComponentType componentType, Params map) {
-    if (componentType == ComponentType.JDBC) {
-      return new JdbcComponentParams(map);
-    } else {
-      return null;
+  static ComponentParams build(ComponentType type, Params params) {
+    switch (type) {
+      case JDBC:
+        return new JdbcComponentParams(params);
+      case REST:
+        return new RestComponentParams(params);
+      default:
+        return null;
     }
   }
-
 }

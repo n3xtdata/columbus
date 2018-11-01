@@ -16,7 +16,7 @@ package com.n3xtdata.columbus.core.evaluation;
 public enum Status {
   SUCCESS, WARNING, ERROR, TECHNICAL_ERROR;
 
-  public static Status contains(String str) {
+  public static Status fromString(String str) {
     for (Status status : Status.values()) {
       if (status.name().equalsIgnoreCase(str)) {
         return status;
