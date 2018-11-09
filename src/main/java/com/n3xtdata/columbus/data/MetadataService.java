@@ -26,7 +26,6 @@ public interface MetadataService {
 
   Check getCheckByLabel(String label) throws Exception;
 
-
   Set<Connection> getAllConnections();
 
   Connection getConnectionByLabel(String label) throws Exception;

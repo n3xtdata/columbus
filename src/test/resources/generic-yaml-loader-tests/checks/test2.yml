@@ -1,94 +1,104 @@
-label: test-1
-description: a short description ...
-components:
-- label: componentLabel
-  type: JDBC
-  params:
-    connection: jdbc-sqllite
-    sqlQuery: SELECT * FROM dummy
-evaluation:
-  type: CUSTOM
-  params:
-    rules:
-    - "'ERROR' == 'ERROR' -> SUCCESS"
-schedules:
-- type: CRON
-  value: 0 0/2 * 1/1 * ? *
-- type: SIMPLE
-  value: 10
+kind: check
+metadata:
+  label: test-1
+  description: a short description ...
+  components:
+  - label: componentLabel
+    type: JDBC
+    params:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
+  evaluation:
+    type: CUSTOM
+    params:
+      rules:
+      - "'ERROR' == 'ERROR' -> SUCCESS"
+  schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
-label: test-2
-description: a short description ...
-components:
-- label: componentLabel
-  type: JDBC
-  params:
-    connection: jdbc-sqllite
-    sqlQuery: SELECT * FROM dummy
-evaluation:
-  type: CUSTOM
-  params:
-    rules:
-    - "'ERROR' == 'ERROR' -> SUCCESS"
-schedules:
-- type: CRON
-  value: 0 0/2 * 1/1 * ? *
-- type: SIMPLE
-  value: 10
+kind: check
+metadata:
+  label: test-2
+  description: a short description ...
+  components:
+  - label: componentLabel
+    type: JDBC
+    params:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
+  evaluation:
+    type: CUSTOM
+    params:
+      rules:
+      - "'ERROR' == 'ERROR' -> SUCCESS"
+  schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
-label: test-3
-description: a short description ...
-components:
-- label: componentLabel
-  type: JDBC
-  params:
-    connection: jdbc-sqllite
-    sqlQuery: SELECT * FROM dummy
-evaluation:
-  type: CUSTOM
-  params:
-    rules:
-    - "'ERROR' == 'ERROR' -> SUCCESS"
-schedules:
-- type: CRON
-  value: 0 0/2 * 1/1 * ? *
-- type: SIMPLE
-  value: 10
+kind: check
+metadata:
+  label: test-3
+  description: a short description ...
+  components:
+  - label: componentLabel
+    type: JDBC
+    params:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
+  evaluation:
+    type: CUSTOM
+    params:
+      rules:
+      - "'ERROR' == 'ERROR' -> SUCCESS"
+  schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
-label: test-4
-description: a short description ...
-components:
-- label: componentLabel
-  type: JDBC
-  params:
-    connection: jdbc-sqllite
-    sqlQuery: SELECT * FROM dummy
-evaluation:
-  type: CUSTOM
-  params:
-    rules:
-    - "'ERROR' == 'ERROR' -> SUCCESS"
-schedules:
-- type: CRON
-  value: 0 0/2 * 1/1 * ? *
-- type: SIMPLE
-  value: 10
+kind: check
+metadata:
+  label: test-4
+  description: a short description ...
+  components:
+  - label: componentLabel
+    type: JDBC
+    params:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
+  evaluation:
+    type: CUSTOM
+    params:
+      rules:
+      - "'ERROR' == 'ERROR' -> SUCCESS"
+  schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10
 ---
-label: test-5
-description: a short description ...
-components:
-- label: componentLabel
-  type: JDBC
-  params:
-    connection: jdbc-sqllite
-    sqlQuery: SELECT * FROM dummy
-evaluation:
-  type: CUSTOM
-  params:
-    rules:
-    - "'ERROR' == 'ERROR' -> SUCCESS"
-schedules:
-- type: CRON
-  value: 0 0/2 * 1/1 * ? *
-- type: SIMPLE
-  value: 10
+kind: check
+metadata:
+  label: test-5
+  description: a short description ...
+  components:
+  - label: componentLabel
+    type: JDBC
+    params:
+      connection: jdbc-sqllite
+      sqlQuery: SELECT * FROM dummy
+  evaluation:
+    type: CUSTOM
+    params:
+      rules:
+      - "'ERROR' == 'ERROR' -> SUCCESS"
+  schedules:
+  - type: CRON
+    value: 0 0/2 * 1/1 * ? *
+  - type: SIMPLE
+    value: 10

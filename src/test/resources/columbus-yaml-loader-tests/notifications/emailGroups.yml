@@ -1,8 +1,12 @@
-label: groupA
-members:
-  - a1@example.com
-  - a2@example.com
+kind: notification
+metadata:
+  label: groupA
+  members:
+    - a1@example.com
+    - a2@example.com
 ---
-label: groupB
-members:
-  - b1@example.com
+kind: notification
+metadata:
+  label: groupB
+  members:
+    - b1@example.com

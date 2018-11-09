@@ -13,13 +13,15 @@
 
 package com.n3xtdata.columbus.data;
 
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
+import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.core.Check;
+import com.n3xtdata.columbus.core.ColumbusFile;
 import com.n3xtdata.columbus.core.connection.Connection;
 import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.connection.SshConnection;
 import com.n3xtdata.columbus.core.notification.Notification;
 import com.n3xtdata.columbus.loader.ColumbusYamlLoader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,25 +34,23 @@ public class MetadataServiceImpl implements MetadataService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private HashMap<String, Check> checks;
+  private Multimap<String, ColumbusFile> allObjects;
 
-  private HashMap<String, JdbcConnection> jdbcConnections;
-  private HashMap<String, SshConnection> sshConnections;
+  private HashMap<String, Notification> notifications = new HashMap<>();
+  private HashMap<String, Check> checks = new HashMap<>();
+  private HashMap<String, JdbcConnection> jdbcConnections = new HashMap<>();
+  private HashMap<String, SshConnection> sshConnections = new HashMap<>();
   private HashMap<String, Connection> connections = new HashMap<>();
-  private HashMap<String, Notification> notifications;
 
   public MetadataServiceImpl() {
 
   }
 
-
   public Set<Check> getAllChecks() {
-
     return new HashSet<>(this.checks.values());
   }
 
   public Check getCheckByLabel(String label) throws Exception {
-
     if (this.checks.get(label) != null) {
       return this.checks.get(label);
     } else {
@@ -64,7 +64,6 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   public Connection getConnectionByLabel(String label) throws Exception {
-
     if (this.connections.get(label) != null) {
       return this.connections.get(label);
     } else {
@@ -73,14 +72,11 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   public Set<JdbcConnection> getAllJdbcConnections() {
-
     return new HashSet<>(this.jdbcConnections.values());
-
   }
 
 
   public JdbcConnection getJdbcConnectionByLabel(String label) throws Exception {
-
     if (this.jdbcConnections.get(label) != null) {
       return this.jdbcConnections.get(label);
     } else {
@@ -93,7 +89,6 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   public SshConnection getSshConnectionByLabel(String label) throws Exception {
-
     if (this.sshConnections.get(label) != null) {
       return this.sshConnections.get(label);
     } else {
@@ -106,7 +101,6 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   public Notification getNotificationByLabel(String label) throws Exception {
-
     if (this.notifications.get(label) != null) {
       return this.notifications.get(label);
     } else {
@@ -114,47 +108,85 @@ public class MetadataServiceImpl implements MetadataService {
     }
   }
 
-
   public void loadAll() throws Exception {
+    ColumbusYamlLoader<ColumbusFile> objectLoader = new ColumbusYamlLoader<>(ColumbusFile.class);
+    this.allObjects = objectLoader.load();
+    logger.debug("MULTIMAP: " + this.allObjects.toString());
+
+    this.loadNotifications();
     this.loadChecks();
     this.loadConnections();
-    this.loadNotifications();
   }
 
+  private void loadNotifications() {
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get("notification");
+    columbusFiles.forEach(this::loadNotification);
+    logger.info("Number of loaded Notifications: " + this.notifications.size());
+  }
 
-  private void loadChecks() throws Exception {
-    ColumbusYamlLoader<Check> checkLoader = new ColumbusYamlLoader<>(Check.class);
-    this.checks = checkLoader.load();
-    this.checks.forEach((k, v) -> logger.info(v.toString()));
+  private void loadNotification(ColumbusFile columbusFile) {
+    Notification notification = new Helper<>(Notification.class).getObject(columbusFile);
+    this.notifications.put(notification.getLabel(), notification);
+    logger.info("adding Notification: " + notification.toString());
+  }
+
+  private void loadChecks() {
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get("check");
+    columbusFiles.forEach(this::loadCheck);
     logger.info("Number of loaded Checks: " + this.checks.size());
   }
 
-  private void loadConnections() throws Exception {
+  private void loadCheck(ColumbusFile columbusFile) {
+    Check check = new Helper<>(Check.class).getObject(columbusFile);
+    this.checks.put(check.getLabel(), check);
+    logger.info("adding Check: " + check.toString());
+  }
+
+  private void loadConnections() {
     this.loadJdbcConnections();
     this.loadSshConnections();
     this.connections.putAll(jdbcConnections);
     this.connections.putAll(sshConnections);
   }
 
-  private void loadJdbcConnections() throws Exception {
-    ColumbusYamlLoader<JdbcConnection> jdbcLoader = new ColumbusYamlLoader<>(JdbcConnection.class);
-    this.jdbcConnections = jdbcLoader.load();
-    this.jdbcConnections.forEach((k, v) -> logger.info(v.toString()));
+  private void loadJdbcConnections() {
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get("jdbcConnection");
+    columbusFiles.forEach(this::loadJdbcConnection);
     logger.info("Number of loaded JDBC Connections: " + this.jdbcConnections.size());
   }
 
-  private void loadSshConnections() throws Exception {
-    ColumbusYamlLoader<SshConnection> sshLoader = new ColumbusYamlLoader<>(SshConnection.class);
-    this.sshConnections = sshLoader.load();
-    this.sshConnections.forEach((k, v) -> logger.info(v.toString()));
+  private void loadJdbcConnection(ColumbusFile columbusFile) {
+    JdbcConnection jdbcConnection = new Helper<>(JdbcConnection.class).getObject(columbusFile);
+    this.jdbcConnections.put(jdbcConnection.getLabel(), jdbcConnection);
+  }
+
+  private void loadSshConnections() {
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get("sshConnection");
+    columbusFiles.forEach(this::loadSshConnection);
     logger.info("Number of loaded SSH Connections: " + this.sshConnections.size());
   }
 
-  private void loadNotifications() throws Exception {
-    ColumbusYamlLoader<Notification> notificationLoader = new ColumbusYamlLoader<>(Notification.class);
-    this.notifications = notificationLoader.load();
-    this.notifications.forEach((k, v) -> logger.info(v.toString()));
-    logger.info("Number of loaded Notifications: " + this.notifications.size());
+  private void loadSshConnection(ColumbusFile columbusFile) {
+    SshConnection sshConnection = new Helper<>(SshConnection.class).getObject(columbusFile);
+    this.sshConnections.put(sshConnection.getLabel(), sshConnection);
   }
 
+
+  private void add(ColumbusFile columbusFile) {
+    String kind = columbusFile.getKind();
+    switch (kind) {
+      case "check":
+        this.loadCheck(columbusFile);
+        break;
+      case "notification":
+        this.loadNotification(columbusFile);
+        break;
+      case "jdbcConnection":
+        this.loadJdbcConnection(columbusFile);
+        break;
+      case "sshConnection":
+        this.loadSshConnection(columbusFile);
+        break;
+    }
+  }
 }

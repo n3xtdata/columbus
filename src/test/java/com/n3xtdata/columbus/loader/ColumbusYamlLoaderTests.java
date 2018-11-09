@@ -18,53 +18,38 @@ package com.n3xtdata.columbus.loader;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.ColumbusApplicationTests;
-import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
-import com.n3xtdata.columbus.core.connection.SshConnection;
-import java.util.HashMap;
+import com.n3xtdata.columbus.core.ColumbusFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
 
-  private HashMap<String, Check> checks;
-  private HashMap<String, JdbcConnection> jdbcConnections;
-  private HashMap<String, SshConnection> sshConnections;
+  private Multimap<String, ColumbusFile> allObjects;
 
   @Before
   public void loadYamlFiles() throws Exception {
 
-    ColumbusYamlLoader<Check> checkLoader = new ColumbusYamlLoader<>(Check.class);
+    ColumbusYamlLoader<ColumbusFile> checkLoader = new ColumbusYamlLoader<>(ColumbusFile.class);
     String COLUMBUS_TEST_HOME = "src/test/resources/columbus-yaml-loader-tests";
     ReflectionTestUtils.setField(checkLoader, "COLUMBUS_HOME", COLUMBUS_TEST_HOME);
-    this.checks = checkLoader.load();
-
-    ColumbusYamlLoader<JdbcConnection> jdbcLoader = new ColumbusYamlLoader<>(JdbcConnection.class);
-    ReflectionTestUtils.setField(jdbcLoader, "COLUMBUS_HOME", COLUMBUS_TEST_HOME);
-    this.jdbcConnections = jdbcLoader.load();
-
-    ColumbusYamlLoader<SshConnection> sshLoader = new ColumbusYamlLoader<>(SshConnection.class);
-    ReflectionTestUtils.setField(sshLoader, "COLUMBUS_HOME", COLUMBUS_TEST_HOME);
-    this.sshConnections = sshLoader.load();
-
+    this.allObjects = checkLoader.load();
   }
 
   @Test
   public void shouldLoadChecks() {
-    assertEquals(5, this.checks.size());
+    assertEquals(7, this.allObjects.get("check").size());
   }
 
   @Test
   public void shouldLoadJdbcConnections() {
-    assertEquals(1, this.jdbcConnections.size());
+    assertEquals(1, this.allObjects.get("jdbcConnection").size());
   }
 
   @Test
   public void shouldLoadSshConnections() {
-    assertEquals(1, this.sshConnections.size());
+    assertEquals(1, this.allObjects.get("sshConnection").size());
   }
-
-
 }

@@ -1,5 +1,7 @@
-label: ssh-test
-username: user
-publicKey: pwd
-host: blabla
-port: 22
+kind: sshConnection
+metadata:
+  label: ssh-test
+  username: user
+  publicKey: pwd
+  host: blabla
+  port: 22

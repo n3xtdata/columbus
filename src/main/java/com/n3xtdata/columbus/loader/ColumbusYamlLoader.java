@@ -13,16 +13,13 @@
 
 package com.n3xtdata.columbus.loader;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.config.Properties;
 import com.n3xtdata.columbus.config.SpringContext;
-import com.n3xtdata.columbus.core.Check;
-import com.n3xtdata.columbus.core.connection.JdbcConnection;
-import com.n3xtdata.columbus.core.connection.SshConnection;
-import com.n3xtdata.columbus.core.notification.Notification;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -40,46 +37,31 @@ public class ColumbusYamlLoader<T> {
   private T t;
 
   public ColumbusYamlLoader(Class<T> t) throws IllegalAccessException, InstantiationException {
-
     this.t = t.newInstance();
   }
 
-
-  public HashMap<String, T> load() throws Exception {
+  public Multimap<String, T> load() {
 
     GenericYamlLoader<T> loader = new GenericYamlLoader<>(t);
 
     String path = COLUMBUS_HOME;
 
-    if (t instanceof Check) {
-      path = path + "/checks";
-    } else if (t instanceof JdbcConnection) {
-      path = path + "/connections/jdbc";
-    } else if (t instanceof SshConnection) {
-      path = path + "/connections/ssh";
-    } else if (t instanceof Notification) {
-      path = path + "/notifications";
-    } else {
-      throw new Exception("The given type is not supported");
-    }
-
     List<String> files = this.getAllFiles(path);
 
-    HashMap<String, T> hashMap = new HashMap<>();
+    Multimap<String, T> multiMap = ArrayListMultimap.create();
 
     files.forEach(file -> {
 
       try {
-        hashMap.putAll(loader.load(file));
+        multiMap.putAll(loader.load(file));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
 
     });
 
-    return hashMap;
+    return multiMap;
   }
-
 
   private List<String> getAllFiles(String path) {
 
@@ -104,6 +86,5 @@ public class ColumbusYamlLoader<T> {
     return this.fileList;
 
   }
-
 
 }

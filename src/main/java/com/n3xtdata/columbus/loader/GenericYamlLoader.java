@@ -13,11 +13,12 @@
 
 package com.n3xtdata.columbus.loader;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.TypeDescription;
@@ -30,37 +31,28 @@ class GenericYamlLoader<T> {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-  public GenericYamlLoader(T t) {
-
+  GenericYamlLoader(T t) {
     this.t = t;
   }
 
-  /*
-   *
-   * @param fileName
-   * @return
-   * @throws FileNotFoundException
-   */
-  public HashMap<String, T> load(String fileName) throws FileNotFoundException {
+  public Multimap<String, T> load(String fileName) throws FileNotFoundException {
 
     Constructor constructor = new Constructor(t.getClass());
     TypeDescription customTypeDescription = new TypeDescription(t.getClass());
     constructor.addTypeDescription(customTypeDescription);
     Yaml yaml = new Yaml(constructor);
     InputStream inputStream = new FileInputStream(fileName);
-    HashMap<String, T> hashMap = new HashMap<>();
+
+    Multimap<String, T> multiMap = ArrayListMultimap.create();
 
     try {
       yaml.loadAll(inputStream).forEach(element -> {
         try {
           //noinspection unchecked
-          String label = (String) element.getClass().getMethod("getLabel").invoke(element);
+          String kind = (String) element.getClass().getMethod("getKind").invoke(element);
 
-          element.getClass().getMethod("setPath", String.class).invoke(element, fileName);
-
-          element.getClass().getMethod("init").invoke(element);
           //noinspection unchecked
-          hashMap.put(label, (T) element);
+          multiMap.put(kind, (T) element);
 
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
           e.printStackTrace();
@@ -73,9 +65,8 @@ class GenericYamlLoader<T> {
       System.exit(0);
     }
 
-    return hashMap;
+    return multiMap;
 
   }
-
 
 }

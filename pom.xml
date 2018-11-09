@@ -92,6 +92,13 @@
       <artifactId>json-flattener</artifactId>
       <version>0.2.2</version>
     </dependency>
+
+    <!-- https://www.baeldung.com/java-map-duplicate-keys -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>23.0</version>
+    </dependency>
   </dependencies>
 
   <build>
