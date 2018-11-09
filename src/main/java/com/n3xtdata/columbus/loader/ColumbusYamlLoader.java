@@ -45,6 +45,7 @@ public class ColumbusYamlLoader<T> {
     GenericYamlLoader<T> loader = new GenericYamlLoader<>(t);
 
     String path = COLUMBUS_HOME;
+    path = path + "/files";
 
     List<String> files = this.getAllFiles(path);
 

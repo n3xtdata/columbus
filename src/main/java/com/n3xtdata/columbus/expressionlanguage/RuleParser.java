@@ -93,7 +93,7 @@ public class RuleParser {
       } else if (!o.toString().contains("'")) {
         o = "'" + o.toString() + "'";
       }
-      logger.info("Replaced " + str + " with Object " + o + " Type: " + o.getClass());
+      logger.info("Replaced " + str + " with Object " + o + " of Type: " + o.getClass().getName());
       expression = expression.replace(str, o.toString());
     }
     logger.info("new expression: " + expression);

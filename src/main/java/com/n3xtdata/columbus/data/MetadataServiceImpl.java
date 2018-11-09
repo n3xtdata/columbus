@@ -127,7 +127,7 @@ public class MetadataServiceImpl implements MetadataService {
   private void loadNotification(ColumbusFile columbusFile) {
     Notification notification = new Helper<>(Notification.class).getObject(columbusFile);
     this.notifications.put(notification.getLabel(), notification);
-    logger.info("adding Notification: " + notification.toString());
+    logger.info("adding: " + notification.toString());
   }
 
   private void loadChecks() {
@@ -139,7 +139,7 @@ public class MetadataServiceImpl implements MetadataService {
   private void loadCheck(ColumbusFile columbusFile) {
     Check check = new Helper<>(Check.class).getObject(columbusFile);
     this.checks.put(check.getLabel(), check);
-    logger.info("adding Check: " + check.toString());
+    logger.info("adding: " + check.toString());
   }
 
   private void loadConnections() {
@@ -158,6 +158,7 @@ public class MetadataServiceImpl implements MetadataService {
   private void loadJdbcConnection(ColumbusFile columbusFile) {
     JdbcConnection jdbcConnection = new Helper<>(JdbcConnection.class).getObject(columbusFile);
     this.jdbcConnections.put(jdbcConnection.getLabel(), jdbcConnection);
+    logger.info("adding: " + jdbcConnection.toString());
   }
 
   private void loadSshConnections() {
@@ -169,6 +170,7 @@ public class MetadataServiceImpl implements MetadataService {
   private void loadSshConnection(ColumbusFile columbusFile) {
     SshConnection sshConnection = new Helper<>(SshConnection.class).getObject(columbusFile);
     this.sshConnections.put(sshConnection.getLabel(), sshConnection);
+    logger.info("adding: " + sshConnection.toString());
   }
 
 

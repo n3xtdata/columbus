@@ -64,15 +64,14 @@ public class ExecutionServiceImpl implements ExecutionService {
             strBuilder.append("ExecutionTime: ").append(new Date().toString());
             this.notificationService.sendNotification(emails, strBuilder.toString());
             logger.info(
-                "Sending mails for check " + check.getLabel()
-                    + " to notification group '" + label + "' = " + emails.toString());
+                "Sending mails for check '" + check.getLabel()
+                    + "' to notification group '" + label + "' = " + emails.toString());
           } catch (Exception e) {
             logger.error("Notification with label: " + label + " not found!");
           }
         });
       } catch (Exception e) {
-        e.printStackTrace();
-        logger.info("No Notifications configured for status: " + status.toString());
+        logger.info("No notifications configured for status: " + status.toString());
       }
     }
     return status;
