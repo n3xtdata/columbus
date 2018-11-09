@@ -16,6 +16,7 @@ package com.n3xtdata.columbus.data;
 import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.core.Check;
 import com.n3xtdata.columbus.core.ColumbusFile;
+import com.n3xtdata.columbus.core.Kind;
 import com.n3xtdata.columbus.core.connection.Connection;
 import com.n3xtdata.columbus.core.connection.JdbcConnection;
 import com.n3xtdata.columbus.core.connection.SshConnection;
@@ -34,13 +35,13 @@ public class MetadataServiceImpl implements MetadataService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private Multimap<String, ColumbusFile> allObjects;
+  private Multimap<Kind, ColumbusFile> allObjects;
 
-  private HashMap<String, Notification> notifications = new HashMap<>();
-  private HashMap<String, Check> checks = new HashMap<>();
-  private HashMap<String, JdbcConnection> jdbcConnections = new HashMap<>();
-  private HashMap<String, SshConnection> sshConnections = new HashMap<>();
-  private HashMap<String, Connection> connections = new HashMap<>();
+  private final HashMap<String, Notification> notifications = new HashMap<>();
+  private final HashMap<String, Check> checks = new HashMap<>();
+  private final HashMap<String, JdbcConnection> jdbcConnections = new HashMap<>();
+  private final HashMap<String, SshConnection> sshConnections = new HashMap<>();
+  private final HashMap<String, Connection> connections = new HashMap<>();
 
   public MetadataServiceImpl() {
 
@@ -119,7 +120,7 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   private void loadNotifications() {
-    Collection<ColumbusFile> columbusFiles = this.allObjects.get("notification");
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get(Kind.notification);
     columbusFiles.forEach(this::loadNotification);
     logger.info("Number of loaded Notifications: " + this.notifications.size());
   }
@@ -131,7 +132,7 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   private void loadChecks() {
-    Collection<ColumbusFile> columbusFiles = this.allObjects.get("check");
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get(Kind.check);
     columbusFiles.forEach(this::loadCheck);
     logger.info("Number of loaded Checks: " + this.checks.size());
   }
@@ -150,7 +151,7 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   private void loadJdbcConnections() {
-    Collection<ColumbusFile> columbusFiles = this.allObjects.get("jdbcConnection");
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get(Kind.jdbcConnection);
     columbusFiles.forEach(this::loadJdbcConnection);
     logger.info("Number of loaded JDBC Connections: " + this.jdbcConnections.size());
   }
@@ -162,7 +163,7 @@ public class MetadataServiceImpl implements MetadataService {
   }
 
   private void loadSshConnections() {
-    Collection<ColumbusFile> columbusFiles = this.allObjects.get("sshConnection");
+    Collection<ColumbusFile> columbusFiles = this.allObjects.get(Kind.sshConnection);
     columbusFiles.forEach(this::loadSshConnection);
     logger.info("Number of loaded SSH Connections: " + this.sshConnections.size());
   }
@@ -173,22 +174,23 @@ public class MetadataServiceImpl implements MetadataService {
     logger.info("adding: " + sshConnection.toString());
   }
 
-
   private void add(ColumbusFile columbusFile) {
-    String kind = columbusFile.getKind();
+    Kind kind = columbusFile.getKind();
     switch (kind) {
-      case "check":
+      case check:
         this.loadCheck(columbusFile);
         break;
-      case "notification":
+      case notification:
         this.loadNotification(columbusFile);
         break;
-      case "jdbcConnection":
+      case jdbcConnection:
         this.loadJdbcConnection(columbusFile);
         break;
-      case "sshConnection":
+      case sshConnection:
         this.loadSshConnection(columbusFile);
         break;
+      default:
+        logger.error("Could not load Object because of invalid kind: '" + kind + "'");
     }
   }
 }

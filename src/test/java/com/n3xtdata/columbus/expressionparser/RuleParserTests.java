@@ -13,7 +13,7 @@
 
 package com.n3xtdata.columbus.expressionparser;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import com.n3xtdata.columbus.executor.ExecutionRuns;
 import com.n3xtdata.columbus.expressionlanguage.RuleParser;
@@ -283,13 +283,13 @@ public class RuleParserTests {
 
     Boolean bd = parser.parseExpression("(2 == 1+1 AND 2 == 2) AND !(5 == 4)").getValue(Boolean.class);
 
-    assertTrue(bd);
+    assertEquals(true, bd);
   }
 
   @Test
   public void testSplitMethod() {
     String s = "bla.test.bla2";
-    String[] splitted = s.split(Pattern.quote("."), 2);
-    assert (splitted[1].equals("test.bla2"));
+    String[] split = s.split(Pattern.quote("."), 2);
+    assert (split[1].equals("test.bla2"));
   }
 }

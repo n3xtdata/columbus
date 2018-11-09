@@ -13,28 +13,15 @@
 
 package com.n3xtdata.columbus.core;
 
-public class ColumbusFile {
+public enum Kind {
+  check, jdbcConnection, sshConnection, notification;
 
-  private Kind kind;
-
-  private Object metadata;
-
-  public ColumbusFile() {
-  }
-
-  public Kind getKind() {
-    return kind;
-  }
-
-  public void setKind(Kind kind) {
-    this.kind = kind;
-  }
-
-  public Object getMetadata() {
-    return metadata;
-  }
-
-  public void setMetadata(Object metadata) {
-    this.metadata = metadata;
+  public static Kind fromString(String str) {
+    for (Kind kind : Kind.values()) {
+      if (kind.name().equalsIgnoreCase(str)) {
+        return kind;
+      }
+    }
+    return null;
   }
 }

@@ -15,10 +15,10 @@ package com.n3xtdata.columbus.loader;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.n3xtdata.columbus.core.Kind;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.TypeDescription;
@@ -35,7 +35,7 @@ class GenericYamlLoader<T> {
     this.t = t;
   }
 
-  public Multimap<String, T> load(String fileName) throws FileNotFoundException {
+  public Multimap<Kind, T> load(String fileName) throws FileNotFoundException {
 
     Constructor constructor = new Constructor(t.getClass());
     TypeDescription customTypeDescription = new TypeDescription(t.getClass());
@@ -43,30 +43,26 @@ class GenericYamlLoader<T> {
     Yaml yaml = new Yaml(constructor);
     InputStream inputStream = new FileInputStream(fileName);
 
-    Multimap<String, T> multiMap = ArrayListMultimap.create();
+    Multimap<Kind, T> multiMap = ArrayListMultimap.create();
 
     try {
       yaml.loadAll(inputStream).forEach(element -> {
         try {
           //noinspection unchecked
-          String kind = (String) element.getClass().getMethod("getKind").invoke(element);
+          Kind kind = (Kind) element.getClass().getMethod("getKind").invoke(element);
 
           //noinspection unchecked
           multiMap.put(kind, (T) element);
-
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
           e.printStackTrace();
-          logger.error("An error occurred while parsing config file '" + fileName + "': " + e.getMessage());
+          logger.error("asfAn error occurred while parsing config file '" + fileName + "': " + e.getMessage());
           System.exit(0);
         }
       });
     } catch (Exception e) {
       logger.error("An error occurred while parsing config file '" + fileName + "': " + e.getMessage());
-      System.exit(0);
     }
-
     return multiMap;
-
   }
 
 }

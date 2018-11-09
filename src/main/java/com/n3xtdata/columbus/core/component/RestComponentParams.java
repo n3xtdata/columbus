@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -30,8 +31,8 @@ public class RestComponentParams implements ComponentParams {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private String url;
-  private Method method;
+  private final String url;
+  private final Method method;
 
   RestComponentParams(Params params) {
     this.url = (String) params.get("url");
@@ -56,7 +57,7 @@ public class RestComponentParams implements ComponentParams {
             .toString(Method.values()));
     }
 
-    Map<String, Object> flatJson = JsonFlattener.flattenAsMap(response.getBody());
+    Map<String, Object> flatJson = JsonFlattener.flattenAsMap(Objects.requireNonNull(response.getBody()));
     logger.debug("REST RESULT: " + flatJson.toString());
 
     List<Map<String, Object>> list = new ArrayList<>();

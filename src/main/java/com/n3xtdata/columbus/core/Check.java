@@ -207,7 +207,7 @@ public class Check {
         "label='" + label + '\'' +
         ", description='" + description + '\'' +
         ", components=" + components +
-        ", expressionlanguage=" + evaluation +
+        ", evaluation=" + evaluation +
         ", schedules=" + schedules +
         ", notifications=" + notifications +
         ", path='" + path + '\'' +

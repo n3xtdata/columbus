@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestApiImpl implements RestApi {
 
-  private MetadataService metadataService;
+  private final MetadataService metadataService;
 
   @Autowired
   public RestApiImpl(MetadataService metadataService) {
@@ -36,7 +36,7 @@ public class RestApiImpl implements RestApi {
   }
 
   @Override
-  public Connection getConnectionByLabel(@PathVariable  String label) throws Exception {
+  public Connection getConnectionByLabel(@PathVariable String label) throws Exception {
     return this.metadataService.getConnectionByLabel(label);
   }
 

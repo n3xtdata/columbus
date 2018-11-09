@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 
 class Helper<T> {
 
-  private Class<T> t;
+  private final Class<T> t;
 
   Helper(Class<T> t) {
     this.t = t;

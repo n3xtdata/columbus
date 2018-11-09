@@ -17,6 +17,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.config.Properties;
 import com.n3xtdata.columbus.config.SpringContext;
+import com.n3xtdata.columbus.core.Kind;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ColumbusYamlLoader<T> {
     this.t = t.newInstance();
   }
 
-  public Multimap<String, T> load() {
+  public Multimap<Kind, T> load() {
 
     GenericYamlLoader<T> loader = new GenericYamlLoader<>(t);
 
@@ -49,7 +50,7 @@ public class ColumbusYamlLoader<T> {
 
     List<String> files = this.getAllFiles(path);
 
-    Multimap<String, T> multiMap = ArrayListMultimap.create();
+    Multimap<Kind, T> multiMap = ArrayListMultimap.create();
 
     files.forEach(file -> {
 

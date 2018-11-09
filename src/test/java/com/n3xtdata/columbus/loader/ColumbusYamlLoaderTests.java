@@ -21,13 +21,14 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.collect.Multimap;
 import com.n3xtdata.columbus.ColumbusApplicationTests;
 import com.n3xtdata.columbus.core.ColumbusFile;
+import com.n3xtdata.columbus.core.Kind;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
 
-  private Multimap<String, ColumbusFile> allObjects;
+  private Multimap<Kind, ColumbusFile> allObjects;
 
   @Before
   public void loadYamlFiles() throws Exception {
@@ -40,16 +41,16 @@ public class ColumbusYamlLoaderTests extends ColumbusApplicationTests {
 
   @Test
   public void shouldLoadChecks() {
-    assertEquals(7, this.allObjects.get("check").size());
+    assertEquals(7, this.allObjects.get(Kind.check).size());
   }
 
   @Test
   public void shouldLoadJdbcConnections() {
-    assertEquals(1, this.allObjects.get("jdbcConnection").size());
+    assertEquals(1, this.allObjects.get(Kind.jdbcConnection).size());
   }
 
   @Test
   public void shouldLoadSshConnections() {
-    assertEquals(1, this.allObjects.get("sshConnection").size());
+    assertEquals(1, this.allObjects.get(Kind.sshConnection).size());
   }
 }
