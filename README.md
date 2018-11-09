@@ -43,7 +43,8 @@ Create your first check, connections and notifications in Columbus:
 ```yaml
 kind: check
 metadata:
-  label: exampleRowCountComparison
+  name: exampleRowCountComparison
+spec:
   description: this check compares a count of an oracle db table with a count on a mysql db table.
   components:
     - label: sourceDb
@@ -76,7 +77,8 @@ metadata:
 ---
 kind: jdbcConnection
 metadata:
-  label: jdbc-mysql
+  name: jdbc-mysql
+spec:
   username: admin
   password: password
   url: jdbc:mysql://localhost:3306/YourDBName
@@ -85,7 +87,8 @@ metadata:
 ---
 kind: jdbcConnection
 metadata:
-  label: jdbc-oracle
+  name: jdbc-oracle
+spec:
   username: admin
   password: password
   url: jdbc:oracle:thin:@myhost:1521:orc
@@ -94,13 +97,17 @@ metadata:
 ---
 kind: notification
 metadata:
-  label: groupA
+  name: groupA
+spec:
+  label: 
   members:
     - a1@example.com
     - a2@example.com
 ---
 kind: notification
 metadata:
+  name: groupB
+spec:
   label: groupB
   members:
     - b1@example.com

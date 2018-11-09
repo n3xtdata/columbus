@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("StringBufferReplaceableByString")
 @Service
 public class ExecutionServiceImpl implements ExecutionService {
 
@@ -45,8 +44,11 @@ public class ExecutionServiceImpl implements ExecutionService {
 
   @Override
   public Status execute(String checkLabel) throws Exception {
-
     Check check = this.metadataService.getCheckByLabel(checkLabel);
+    return executeCheck(check);
+  }
+
+  private Status executeCheck(Check check) {
 
     Status status = check.execute();
 
@@ -60,7 +62,7 @@ public class ExecutionServiceImpl implements ExecutionService {
             Notification notification = this.metadataService.getNotificationByLabel(label);
             Set<String> emails = notification.getMembers();
             StringBuilder strBuilder = new StringBuilder();
-            strBuilder.append("Check: ").append(checkLabel).append("\n");
+            strBuilder.append("Check: ").append(check.getLabel()).append("\n");
             strBuilder.append("Status: ").append(status).append("\n");
             strBuilder.append("ExecutionTime: ").append(new Date().toString());
             this.notificationService.sendNotification(emails, strBuilder.toString());

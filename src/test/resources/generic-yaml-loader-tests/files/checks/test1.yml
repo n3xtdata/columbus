@@ -1,6 +1,7 @@
 kind: check
 metadata:
-  label: test-1
+  name: test-1
+spec:
   description: a short description ...
   components:
   - label: componentLabel

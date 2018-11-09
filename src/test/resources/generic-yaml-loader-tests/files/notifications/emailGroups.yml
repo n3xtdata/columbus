@@ -1,5 +1,7 @@
 kind: notification
 metadata:
+  name: groupA
+spec:
   label: groupA
   members:
     - a1@example.com
@@ -7,6 +9,8 @@ metadata:
 ---
 kind: notification
 metadata:
+  name: groupB
+spec:
   label: groupB
   members:
     - b1@example.com

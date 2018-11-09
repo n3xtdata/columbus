@@ -13,38 +13,28 @@
 
 package com.n3xtdata.columbus.core;
 
-public class ColumbusFile {
+public class Metadata {
 
-  private Kind kind;
+  private String name;
 
-  private Metadata metadata;
+  private String label;
 
-  private Object spec;
-
-  public ColumbusFile() {
+  public Metadata() {
   }
 
-  public Kind getKind() {
-    return kind;
+  public String getName() {
+    return name;
   }
 
-  public void setKind(Kind kind) {
-    this.kind = kind;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public Metadata getMetadata() {
-    return metadata;
+  public String getLabel() {
+    return label;
   }
 
-  public void setMetadata(Metadata metadata) {
-    this.metadata = metadata;
-  }
-
-  public Object getSpec() {
-    return spec;
-  }
-
-  public void setSpec(Object spec) {
-    this.spec = spec;
+  public void setLabel(String label) {
+    this.label = label;
   }
 }

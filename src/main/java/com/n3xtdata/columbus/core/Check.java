@@ -162,7 +162,6 @@ public class Check {
     this.components.forEach(Component::initDetails);
   }
 
-
   public Status execute() {
 
     logger.info("Executing check " + this.label);

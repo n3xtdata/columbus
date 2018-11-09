@@ -1,6 +1,7 @@
 kind: jdbcConnection
 metadata:
-  label: jdbc-sqllite
+  name: jdbc-sqllite
+spec:
   username:
   password:
   url: jdbc:sqlite:src/test/resources/jdbc-tests/test.db

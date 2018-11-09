@@ -1,6 +1,7 @@
 kind: sshConnection
 metadata:
-  label: ssh-test
+  name: ssh-test
+spec:
   username: user
   publicKey: pwd
   host: blabla

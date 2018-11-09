@@ -1,6 +1,7 @@
 kind: check
 metadata:
-  label: test-5
+  name: test-5
+spec:
   description: a short description ...
   components:
   - componentType: JDBC

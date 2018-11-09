@@ -1,6 +1,7 @@
 kind: check
 metadata:
-  label: test-1
+  name: test-1
+spec:
   description: a short description ...
   components:
   - label: componentLabel
@@ -21,7 +22,8 @@ metadata:
 ---
 kind: check
 metadata:
-  label: test-2
+  name: test-2
+spec:
   description: a short description ...
   components:
   - label: componentLabel
@@ -42,7 +44,8 @@ metadata:
 ---
 kind: check
 metadata:
-  label: test-3
+  name: test-3
+spec:
   description: a short description ...
   components:
   - label: componentLabel
@@ -63,7 +66,8 @@ metadata:
 ---
 kind: check
 metadata:
-  label: test-4
+  name: test-4
+spec:
   description: a short description ...
   components:
   - label: componentLabel
@@ -84,7 +88,8 @@ metadata:
 ---
 kind: check
 metadata:
-  label: test-5
+  name: test-5
+spec:
   description: a short description ...
   components:
   - label: componentLabel

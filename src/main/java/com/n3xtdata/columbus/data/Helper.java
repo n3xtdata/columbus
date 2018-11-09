@@ -27,9 +27,11 @@ class Helper<T> {
 
   T getObject(ColumbusFile o) {
     ObjectMapper mapper = new ObjectMapper();
-    T element = mapper.convertValue(o.getMetadata(), t);
+    T element = mapper.convertValue(o.getSpec(), t);
+    String name = o.getMetadata().getName();
     try {
       element.getClass().getMethod("init").invoke(element);
+      element.getClass().getMethod("setLabel", String.class).invoke(element, name);
     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       e.printStackTrace();
     }
