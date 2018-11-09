@@ -99,7 +99,6 @@ kind: notification
 metadata:
   name: groupA
 spec:
-  label: 
   members:
     - a1@example.com
     - a2@example.com
@@ -108,7 +107,6 @@ kind: notification
 metadata:
   name: groupB
 spec:
-  label: groupB
   members:
     - b1@example.com
 ```
