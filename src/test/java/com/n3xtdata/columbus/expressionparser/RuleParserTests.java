@@ -167,7 +167,7 @@ public class RuleParserTests {
   }
 
   @Test
-  public void bla() throws EvaluationException {
+  public void testRuleWithParentheses() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -185,7 +185,7 @@ public class RuleParserTests {
   }
 
   @Test
-  public void bla2() throws EvaluationException {
+  public void testMultiplePlaceholderShouldBeReplaced() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -193,7 +193,7 @@ public class RuleParserTests {
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String rule = "({first.status} == 1  OR  {first.value}==13  AND 'a'=='b')  OR  1==1 -> SUCCESS";
+    String rule = "({first.status} == 1 OR {first.value}==13 AND 'a'=='b') OR 1==1 -> SUCCESS";
 
     ruleParser.setRules(rule);
 
@@ -203,14 +203,14 @@ public class RuleParserTests {
   }
 
   @Test
-  public void bla3() throws EvaluationException {
+  public void testSimpleOrRuleShouldBeTrue() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
     firstComponentRun.add(row);
     runs.put("first", firstComponentRun);
 
-    String rule = "(2==2  OR  3==2) -> WARNING";
+    String rule = "(2==2 OR 3==2) -> WARNING";
 
     ruleParser.setRules(rule);
 
@@ -220,7 +220,7 @@ public class RuleParserTests {
   }
 
   @Test
-  public void bla4() throws EvaluationException {
+  public void testNegativeRuleShouldBeTrue() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 1);
@@ -237,7 +237,7 @@ public class RuleParserTests {
   }
 
   @Test
-  public void bla5() throws EvaluationException {
+  public void testArithmeticShouldWork() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("status", 95);
@@ -257,7 +257,7 @@ public class RuleParserTests {
 
 
   @Test
-  public void bla6() throws EvaluationException {
+  public void testArithmeticShouldWorkInRightOrder() throws EvaluationException {
 
     Map<String, Object> row = new HashMap<>();
     row.put("a", 4);

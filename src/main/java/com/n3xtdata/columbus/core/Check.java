@@ -158,7 +158,9 @@ public class Check {
 
   @SuppressWarnings({"unused"})
   public void init() {
-    this.evaluation.init();
+    if(this.evaluation != null) {
+      this.evaluation.init();
+    }
     this.components.forEach(Component::initDetails);
   }
 

@@ -4,18 +4,18 @@ metadata:
 spec:
   description: a short description ...
   components:
-  - label: componentLabel
-    type: JDBC
-    params:
-      connection: jdbc-sqllite
-      sqlQuery: SELECT * FROM dummy
+    - label: componentLabel
+      type: JDBC
+      params:
+        connection: jdbc-sqllite
+        sqlQuery: SELECT * FROM dummy
   evaluation:
     type: CUSTOM
     params:
       rules:
-      - "'ERROR' == 'ERROR' -> SUCCESS"
+        - "'ERROR' == 'ERROR' -> SUCCESS"
   schedules:
-  - type: CRON
-    value: 0 0/2 * 1/1 * ? *
-  - type: SIMPLE
-    value: 10
+    - type: CRON
+      value: 0 0/2 * 1/1 * ? *
+    - type: SIMPLE
+      value: 10
